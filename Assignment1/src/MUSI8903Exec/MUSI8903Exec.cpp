@@ -157,6 +157,58 @@ int main(int argc, char* argv[])
     }
     outputFilter.close();
     
+    ////////////////////////
+    //IIR filter test code
+    /*x=zeros(100,1);x(1)=1; % unit impulse signal of length 100
+     g=0.5;
+     Delayline=zeros(10,1); % memory allocation for length 10
+     for n=1:length(x);
+     y(n)=x(n)+g*Delayline(10);
+     Delayline=[y(n);Delayline(1:10-1)];
+     end*/
+    float g2 = -1;
+    //int LenDelayLine = 10;
+    //float DelayLine[LenDelayLine]=0;
+    float DelayLine2[10]={};
+    float **OutputSig2 = 0;
+    
+    OutputSig2 = new float*[fileSpecs.iNumChannels];
+    for ( int i = 0; i<fileSpecs.iNumChannels; i++) {
+        OutputSig2[i] = new float[iInFileLength];
+    }
+    //**OutputSig={};
+    
+    for (int i=0; i < fileSpecs.iNumChannels;i++){
+        for (int j=0; j<iInFileLength; j++) {
+            OutputSig2[i][j] = ppfAudioData[i][j] + g2 * DelayLine2[9];
+            std::rotate(&DelayLine2[0], &DelayLine2[9], &DelayLine2[10]);
+            DelayLine2[0]=OutputSig2[i][j];
+            
+        }
+        memset(&DelayLine2, 0, sizeof(DelayLine2));
+    }
+    
+    // write filtered audio to txt file
+    std::string sOutputFilter2 = sInputFilePath + "_filter_iir.txt";
+    
+    std::ofstream outputFilter2(sOutputFilter2);
+    
+    i= fileSpecs.iNumChannels;
+    if (i>1){
+        for (int j=0; j<iInFileLength; j++) {
+            outputFilter2 << OutputSig2[i-2][j]<<"\t"<< OutputSig2[i-1][j] << endl;
+        }
+    }
+    else{
+        for (int j=0; j<iInFileLength; j++) {
+            outputFilter2 << OutputSig2[i-1][j] << endl;
+        }
+        
+    }
+    outputFilter2.close();
+    
+    
+    
     return 0;
     
 }
