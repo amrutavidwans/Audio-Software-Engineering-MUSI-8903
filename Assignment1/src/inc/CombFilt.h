@@ -35,9 +35,9 @@ public:
     
     //virtual Error_t process (float **ppfInputBuffer, float **ppfOutputBuffer, int iNumberOfFrames) = 0;
     
-protected:
-    CombFilt ();
-    virtual ~CombFilt ();
+//protected:
+  //  CombFilt ();
+    //virtual ~CombFilt ();
 };
 
 

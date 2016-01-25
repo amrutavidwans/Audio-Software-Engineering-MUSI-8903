@@ -13,16 +13,16 @@
 #include <algorithm>
 
 
-CombFilt::CombFilt ()
-{
+//CombFilt::CombFilt ()
+//{
     // this never hurts
-    this->reset ();
-}
+    //this->reset ();
+//}
 
-CombFilt::~CombFilt()
-{
-    this->reset ();
-}
+//CombFilt::~CombFilt()
+//{
+  //  this->reset ();
+//}
 
 
 Error_t CombFilt::create (CombFilt *&pCombFilt)
@@ -41,7 +41,7 @@ Error_t CombFilt::destroy (CombFilt*& pCombFilt)
     if (!pCombFilt)
         return kUnknownError;
     
-    pCombFilt->reset ();
+   // pCombFilt->reset ();
     
     delete pCombFilt;
     pCombFilt = 0;
