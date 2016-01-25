@@ -11,7 +11,8 @@
 #include "ErrorDef.h"
 
 class CombFilt
-{   float g,tau;
+{   float g;   ///
+    int tau;
 public:
     /*! version number */
     
@@ -21,9 +22,9 @@ public:
         IIR
     };
     
-    void GetFiltVar(float,float);
-    void FIRCombFilt(float audiodata);
-    void IIRCombFilt(float audiodata);
+    void GetFiltVar(float fg_ent,float ftau_ent,float fFs);
+    void FIRCombFilt(float **ppfAudioData,float **ppfFiltAudio,int iNumChannels ,int iInFileLength);
+    void IIRCombFilt(float **ppfAudioData,float **ppfFiltAudio,int iNumChannels ,int iInFileLength);
     
 
     static Error_t create (CombFilt*& pCombFiltIf);

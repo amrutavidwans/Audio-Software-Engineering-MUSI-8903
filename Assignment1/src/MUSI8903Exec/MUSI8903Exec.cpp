@@ -4,7 +4,7 @@
 #include <string>
 #include <ctime>
 #include <algorithm>
-#include <vector>
+
 
 #include "MUSI8903Config.h"
 #include "MyProject.h"
@@ -116,7 +116,7 @@ int main(int argc, char* argv[])
      y(n)=x(n)+g*Delayline(10);
      Delayline=[x(n);Delayline(1:10-1)];
      end*/
-   float g = -1;
+    float g = -1;
     //int LenDelayLine = 10;
     //float DelayLine[LenDelayLine]=0;
     float DelayLine[10]={};
