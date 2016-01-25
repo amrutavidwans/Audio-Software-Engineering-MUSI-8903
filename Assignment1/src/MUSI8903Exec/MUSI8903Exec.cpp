@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
 
     //////////////////////////////////////////////////////////////////////////////
     // parse command line arguments
-    sInputFilePath = "/Users/Amruta/Documents/MS GTCMT/Sem 2/Audio Software Engineering/sinewav4410.wav";//argv[0];
+    sInputFilePath = "/Users/milaprane/Desktop/sinewav4410.wav";//argv[0];
     //cout << sInputFilePath.length();
     sOutputFilePath = sInputFilePath + ".txt";
     //for (int i=0; i<(sInputFilePath.length()); i++) {
