@@ -7,9 +7,9 @@
 
 
 #include "MUSI8903Config.h"
-#include "MyProject.h"
 
 #include "AudioFileIf.h"
+#include "CombFilt.h"
 
 using std::cout;
 using std::endl;
@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
 
     //////////////////////////////////////////////////////////////////////////////
     // parse command line arguments
-    sInputFilePath = "/Users/milaprane/Desktop/sinewav4410.wav";//argv[0];
+    sInputFilePath = "/Users/Amruta/Documents/MS GTCMT/Sem 2/Audio Software Engineering/sinewav4410.wav";//argv[0];
     //cout << sInputFilePath.length();
     sOutputFilePath = sInputFilePath + ".txt";
     //for (int i=0; i<(sInputFilePath.length()); i++) {
@@ -100,43 +100,33 @@ int main(int argc, char* argv[])
     cout << "Hello there!" << endl << endl;
 
     //////////////////////////////////////////////////////////////////////////////
-    // clean-up
-    
-    float dl[10]={1,2,3,4,5,6,7,8,9,10};
-    std::rotate(&dl[0], &dl[9], &dl[10]);
-    std::cout<<dl;
-    
+    // Comb filter object created
     
     ////////////////////////
     //FIR filter test code
-    /*x=zeros(100,1);x(1)=1; % unit impulse signal of length 100
-     g=0.5;
-     Delayline=zeros(10,1);% memory allocation for length 10
-     for n=1:length(x);
-     y(n)=x(n)+g*Delayline(10);
-     Delayline=[x(n);Delayline(1:10-1)];
-     end*/
     float g = -1;
-    //int LenDelayLine = 10;
-    //float DelayLine[LenDelayLine]=0;
-    float DelayLine[10]={};
+    float ftau = 0.5;  // in seconds
+//    float DelayLine[1]={};
     float **OutputSig = 0;
     
     OutputSig = new float*[fileSpecs.iNumChannels];
     for ( int i = 0; i<fileSpecs.iNumChannels; i++) {
         OutputSig[i] = new float[iInFileLength];
     }
-    //**OutputSig={};
     
-    for (int i=0; i < fileSpecs.iNumChannels;i++){
-    for (int j=0; j<iInFileLength; j++) {
-        OutputSig[i][j] = ppfAudioData[i][j] + g * DelayLine[9];
-        std::rotate(&DelayLine[0], &DelayLine[9], &DelayLine[10]);
-        DelayLine[0]=ppfAudioData[i][j];
-        
-    }
-        memset(&DelayLine, 0, sizeof(DelayLine));
-    }
+    
+    // object for combfilter
+    
+    CombFilt *objFilter=0;
+    CombFilt::create(objFilter);
+    objFilter->GetFiltVar(g, ftau, fileSpecs.fSampleRateInHz);
+    
+    // depending on the input call FIR or IIR
+    if (strncmp(argv[3], "FIR", 3))
+        objFilter->FIRCombFilt(ppfAudioData, OutputSig, fileSpecs.iNumChannels, iInFileLength);
+    else
+        objFilter->IIRCombFilt(ppfAudioData, OutputSig, fileSpecs.iNumChannels, iInFileLength);
+    
     
     // write filtered audio to txt file
     std::string sOutputFilter = sInputFilePath + "_filter.txt";
@@ -156,59 +146,7 @@ int main(int argc, char* argv[])
         
     }
     outputFilter.close();
-    
-    ////////////////////////
-    //IIR filter test code
-    /*x=zeros(100,1);x(1)=1; % unit impulse signal of length 100
-     g=0.5;
-     Delayline=zeros(10,1); % memory allocation for length 10
-     for n=1:length(x);
-     y(n)=x(n)+g*Delayline(10);
-     Delayline=[y(n);Delayline(1:10-1)];
-     end*/
-    float g2 = -1;
-    //int LenDelayLine = 10;
-    //float DelayLine[LenDelayLine]=0;
-    float DelayLine2[10]={};
-    float **OutputSig2 = 0;
-    
-    OutputSig2 = new float*[fileSpecs.iNumChannels];
-    for ( int i = 0; i<fileSpecs.iNumChannels; i++) {
-        OutputSig2[i] = new float[iInFileLength];
-    }
-    //**OutputSig={};
-    
-    for (int i=0; i < fileSpecs.iNumChannels;i++){
-        for (int j=0; j<iInFileLength; j++) {
-            OutputSig2[i][j] = ppfAudioData[i][j] + g2 * DelayLine2[9];
-            std::rotate(&DelayLine2[0], &DelayLine2[9], &DelayLine2[10]);
-            DelayLine2[0]=OutputSig2[i][j];
-            
-        }
-        memset(&DelayLine2, 0, sizeof(DelayLine2));
-    }
-    
-    // write filtered audio to txt file
-    std::string sOutputFilter2 = sInputFilePath + "_filter_iir.txt";
-    
-    std::ofstream outputFilter2(sOutputFilter2);
-    
-    i= fileSpecs.iNumChannels;
-    if (i>1){
-        for (int j=0; j<iInFileLength; j++) {
-            outputFilter2 << OutputSig2[i-2][j]<<"\t"<< OutputSig2[i-1][j] << endl;
-        }
-    }
-    else{
-        for (int j=0; j<iInFileLength; j++) {
-            outputFilter2 << OutputSig2[i-1][j] << endl;
-        }
-        
-    }
-    outputFilter2.close();
-    
-    
-    
+
     return 0;
     
 }
@@ -217,7 +155,7 @@ int main(int argc, char* argv[])
 void     showClInfo()
 {
     cout << "GTCMT MUSI8903" << endl;
-    cout << "(c) 2016 by Alexander Lerch" << endl;
+    //cout << "(c) 2016 by Alexander Lerch" << endl;
     cout  << endl;
 
     return;

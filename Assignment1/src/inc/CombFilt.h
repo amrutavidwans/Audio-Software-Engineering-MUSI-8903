@@ -16,27 +16,27 @@ class CombFilt
 public:
     /*! version number */
     
-    enum FilterType
-    {
-        FIR,
-        IIR
-    };
+//    enum FilterType
+//    {
+//        FIR,
+//        IIR
+//    };
     
     void GetFiltVar(float fg_ent,float ftau_ent,float fFs);
     void FIRCombFilt(float **ppfAudioData,float **ppfFiltAudio,int iNumChannels ,int iInFileLength);
     void IIRCombFilt(float **ppfAudioData,float **ppfFiltAudio,int iNumChannels ,int iInFileLength);
     
 
-    static Error_t create (CombFilt*& pCombFiltIf);
-    static Error_t destroy (CombFilt*& pCombFiltIf);
+    static Error_t create (CombFilt *&pCombFiltIf);
+    static Error_t destroy (CombFilt *&pCombFiltIf);
     
     Error_t init ();
-    Error_t reset ();
+    //Error_t reset ();
     
     //virtual Error_t process (float **ppfInputBuffer, float **ppfOutputBuffer, int iNumberOfFrames) = 0;
     
-//protected:
-  //  CombFilt ();
+protected:
+    CombFilt ();
     //virtual ~CombFilt ();
 };
 
