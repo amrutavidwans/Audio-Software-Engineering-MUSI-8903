@@ -40,7 +40,7 @@ public:
     
 protected:
     CombFilt ();
-    //virtual ~CombFilt ();
+    //~CombFilt ();
 };
 
 

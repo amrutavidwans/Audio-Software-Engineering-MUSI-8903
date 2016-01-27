@@ -7,6 +7,9 @@
 //
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <tgmath.h>
+#include <iostream>
 #include "CombFilt.h"
 #include "ErrorDef.h"
 #include "AudioFileIf.h"
@@ -20,12 +23,6 @@ CombFilt::CombFilt ()
     // this never hurts
     this->init();
 }
-
-/*CombFilt::~CombFilt()
-{
-    this->destroy();
-}
-*/
 
 Error_t CombFilt::create (CombFilt *&pCombFilt)
 {
@@ -100,8 +97,6 @@ void CombFilt::destroyBuffer(int iNumChannels){
 
 void CombFilt::FIRCombFilt(float **ppfAudioData,float **ppfFiltAudio,int iNumChannels ,int iInFileLength)
 {
-    // handle range of values for g
-    
     for (int i=0; i < iNumChannels;i++){
         for (int j=0; j<iInFileLength; j++) {
             ppfFiltAudio[i][j] = ppfAudioData[i][j] + g * ppfDelayLine[i][tau-1];
@@ -109,7 +104,6 @@ void CombFilt::FIRCombFilt(float **ppfAudioData,float **ppfFiltAudio,int iNumCha
             ppfDelayLine[i][0]=ppfAudioData[i][j];
             
         }
-        //memset(&pDelayLine, 0, sizeof(pDelayLine));
     }
     
     
@@ -117,7 +111,13 @@ void CombFilt::FIRCombFilt(float **ppfAudioData,float **ppfFiltAudio,int iNumCha
 
 void CombFilt::IIRCombFilt(float **ppfAudioData,float **ppfFiltAudio,int iNumChannels ,int iInFileLength)
 {
-    // handle range of values for g
+    // handle range of values for g else filter will become unstable
+    if (std::fabs(g)>=1)
+    {
+        std::cout<< "Absolute value of gain greater than 1 !" << std::endl;
+        std::cout << "Using the default value of gain" << std::endl;
+        g=0.5;
+    }
     
     for (int i=0; i < iNumChannels;i++){
         for (int j=0; j<iInFileLength; j++) {
@@ -126,9 +126,7 @@ void CombFilt::IIRCombFilt(float **ppfAudioData,float **ppfFiltAudio,int iNumCha
             ppfDelayLine[i][0]=ppfFiltAudio[i][j];
             
         }
-        //memset(&pDelayLine, 0, sizeof(pDelayLine));
     }
-    
     
 }
 
