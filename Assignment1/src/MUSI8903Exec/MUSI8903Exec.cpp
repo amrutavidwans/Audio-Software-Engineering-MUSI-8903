@@ -99,6 +99,8 @@ int main(int argc, char* argv[])
     FIRzeroOutputTest();
     IIRfreqMatchTest();
     
+    zeroInputSignalTest();
+    
     
     //////////////////////////////////////////////////////////////////////////////
     // open the input wave file

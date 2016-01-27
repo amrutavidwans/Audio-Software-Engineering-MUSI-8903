@@ -13,7 +13,7 @@
 #include "CombFilt.h"
 #include "ErrorDef.h"
 #include "AudioFileIf.h"
-#include <algorithm>
+//#include <algorithm>
 #include "Util.h"
 #include <new>
 
@@ -100,8 +100,17 @@ void CombFilt::FIRCombFilt(float **ppfAudioData,float **ppfFiltAudio,int iNumCha
     for (int i=0; i < iNumChannels;i++){
         for (int j=0; j<iInFileLength; j++) {
             ppfFiltAudio[i][j] = ppfAudioData[i][j] + g * ppfDelayLine[i][tau-1];
-            std::rotate(&ppfDelayLine[i][0], &ppfDelayLine[i][tau-1], &ppfDelayLine[i][tau]);
-            ppfDelayLine[i][0]=ppfAudioData[i][j];
+            
+            for (int k = tau-1; k>0; k--)
+            {
+                ppfDelayLine[i][k]=ppfDelayLine[i][k-1];
+             }
+                ppfDelayLine[i][0]=ppfAudioData[i][j];
+            
+            /*for (int kkt=0;kkt<tau; kkt++){
+                std::cout<<ppfDelayLine[0][kkt]<<std::endl;
+            }*/
+            //std::cout<<std::endl;
             
         }
     }
@@ -122,7 +131,10 @@ void CombFilt::IIRCombFilt(float **ppfAudioData,float **ppfFiltAudio,int iNumCha
     for (int i=0; i < iNumChannels;i++){
         for (int j=0; j<iInFileLength; j++) {
             ppfFiltAudio[i][j] = ppfAudioData[i][j] + g * (ppfDelayLine[i][tau-1]);
-            std::rotate(&ppfDelayLine[i][0], &ppfDelayLine[i][tau-1], &ppfDelayLine[i][tau]);
+            for (int k = tau-1; k>0; k--)
+            {
+                ppfDelayLine[i][k]=ppfDelayLine[i][k-1];
+            }
             ppfDelayLine[i][0]=ppfFiltAudio[i][j];
             
         }

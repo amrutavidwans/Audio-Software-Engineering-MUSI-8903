@@ -41,7 +41,7 @@ public:
 void FIRzeroOutputTest()
 {
     // parameters
-    static const int kBlockSize = 1024;
+    //static const int kBlockSize = 1024;
     c_sinewave  *pcsine = 0;
     int iSampleRateInHz = 44100;
     int iFsineInHz = 4410;
@@ -86,7 +86,7 @@ void FIRzeroOutputTest()
     float **OutputSig = 0;
     OutputSig = new float*[iNumChannels];
     for ( int i = 0; i<iNumChannels; i++) {
-        OutputSig[i] = new float[kBlockSize];
+        OutputSig[i] = new float[SamplesInSine];
     }
     
     // object for combfilter
@@ -169,7 +169,7 @@ void FIRzeroOutputTest()
 void IIRfreqMatchTest(){
     
     // parameters
-    static const int kBlockSize = 1024;
+    //static const int kBlockSize = 1024;
     c_sinewave  *pcsine = 0;
     int iSampleRateInHz = 44100;
     int iFsineInHz = 4410;
@@ -194,7 +194,7 @@ void IIRfreqMatchTest(){
     pcsine->GetSineWave(sineval,iSampleRateInHz);
     
     // debug: write the filtered sine wav, open in matlab and compare with original sine wave
-     std::string sInputFile = "sinewave.txt";
+     /*std::string sInputFile = "sinewave.txt";
      std::ofstream inputFile(sInputFile);
      if (iNumChannels>1){
      for (int j=0; j<SamplesInSine; j++) {
@@ -207,14 +207,14 @@ void IIRfreqMatchTest(){
      }
      
      }
-     inputFile.close();
+     inputFile.close();*/
     
     //////////////////////////////////////////////////////////////////////////////
     // Output array
     float **OutputSig = 0;
     OutputSig = new float*[iNumChannels];
     for ( int i = 0; i<iNumChannels; i++) {
-        OutputSig[i] = new float[kBlockSize];
+        OutputSig[i] = new float[SamplesInSine];
     }
     
     // object for combfilter
@@ -228,7 +228,7 @@ void IIRfreqMatchTest(){
     objFilter->IIRCombFilt(sineval, OutputSig, iNumChannels, SamplesInSine);
     
     // debug: write the filtered sine wav, open in matlab and compare with original sine wave
-    std::string sOutputFilter = "sinewave_filter.txt";
+    /*std::string sOutputFilter = "sinewave_filter.txt";
      std::ofstream outputFilter(sOutputFilter);
      if (iNumChannels>1){
      for (int j=0; j<SamplesInSine; j++) {
@@ -241,7 +241,7 @@ void IIRfreqMatchTest(){
      }
      
      }
-     outputFilter.close();
+     outputFilter.close();*/
     
     //////////////////////////////////////////////////////////////////////////////
     // check for v low output compared to original sine wave
@@ -253,7 +253,7 @@ void IIRfreqMatchTest(){
     SumFiltSine = new float;
     pcsine->GetSineSum(OutputSig, SumFiltSine, iSampleRateInHz);
     
-    float CompareVal = 0.5;
+    float CompareVal = 0.6;
     float RatioOpIp=(*SumFiltSine)/(*SumOrigSine);
     
     if (RatioOpIp<CompareVal)
@@ -288,6 +288,159 @@ void IIRfreqMatchTest(){
     pcsine->destroy(pcsine);
     delete [] SumFiltSine;
     delete []SumOrigSine;
+    
+}
+
+void zeroInputSignalTest(){
+    // parameters
+    //static const int kBlockSize = 1024;
+    c_sinewave  *pcsine = 0;
+    int iSampleRateInHz = 44100;
+    int iFsineInHz = 0;
+    int iNumChannels = 1;
+    float SineAmp = 0.5;
+    float SineDur = 1;
+    int SamplesInSine = (iSampleRateInHz* SineDur);
+    //bool flag = 1;
+    float g = -0.7;   // g = -1 makes a few samples in the signal to go haywire
+    float ftau = 0.00022;
+    
+    // initialize a zero signal
+    pcsine->create(pcsine);
+    pcsine->SetSineWavParam(iFsineInHz, SineAmp, SineDur, iNumChannels);
+    float **sineval = 0;
+    sineval = new float *[iNumChannels];
+    for (int i=0; i<iNumChannels; i++){
+        sineval[i] =new float[SamplesInSine];
+    }
+    pcsine->GetSineWave(sineval,iSampleRateInHz);
+    
+    // debug: write the filtered sine wav, open in matlab and compare with original sine wave
+     std::string sInputFile = "sinewave.txt";
+     std::ofstream inputFile(sInputFile);
+     if (iNumChannels>1){
+     for (int j=0; j<SamplesInSine; j++) {
+     inputFile << sineval[iNumChannels-2][j]<<"\t"<< sineval[iNumChannels-1][j] << std::endl;
+     }
+     }
+     else{
+     for (int j=0; j<SamplesInSine; j++) {
+     inputFile << sineval[iNumChannels-1][j] << std::endl;
+     }
+     
+     }
+     inputFile.close();
+    
+    //////////////////////////////////////////////////////////////////////////////
+    // Output array
+    float **OutputSigIIR = 0;
+    OutputSigIIR = new float*[iNumChannels];
+    for ( int i = 0; i<iNumChannels; i++) {
+        OutputSigIIR[i] = new float[SamplesInSine];
+    }
+
+    float **OutputSigFIR = 0;
+    OutputSigFIR = new float*[iNumChannels];
+    for ( int i = 0; i<iNumChannels; i++) {
+        OutputSigFIR[i] = new float[SamplesInSine];
+    }
+    
+    // object for combfilter
+    CombFilt *objFilter=0;
+    CombFilt::create(objFilter);
+    objFilter->GetFiltVar(g, ftau, iSampleRateInHz);   // set filter values to those entered by user
+    objFilter->createBuffer(iNumChannels);
+    objFilter->clearBufer(iNumChannels);
+    
+    // IIR & FIR comb filtering
+    objFilter->IIRCombFilt(sineval, OutputSigIIR, iNumChannels, SamplesInSine);
+    objFilter->FIRCombFilt(sineval, OutputSigFIR, iNumChannels, SamplesInSine);
+    
+    // debug: write the filtered sine wav, open in matlab and compare with original sine wave
+     std::string sOutputFilter = "sinewave_filter.txt";
+     std::ofstream outputFilter(sOutputFilter);
+     if (iNumChannels>1){
+     for (int j=0; j<SamplesInSine; j++) {
+     outputFilter << OutputSigIIR[iNumChannels-2][j]<<"\t"<< OutputSigIIR[iNumChannels-1][j] << std::endl;
+     }
+     }
+     else{
+     for (int j=0; j<SamplesInSine; j++) {
+     outputFilter << OutputSigIIR[iNumChannels-1][j] << std::endl;
+     }
+     
+     }
+     outputFilter.close();
+    
+    //////////////////////////////////////////////////////////////////////////////
+    // check for v low output compared to original sine wave
+    float *SumOrigSine = 0;
+    SumOrigSine = new float;
+    pcsine->GetSineSum(sineval, SumOrigSine, iSampleRateInHz);
+    std::cout << *SumOrigSine <<std::endl;
+    
+    float *SumFiltSineIIR = 0;
+    SumFiltSineIIR = new float;
+    pcsine->GetSineSum(OutputSigIIR, SumFiltSineIIR, iSampleRateInHz);
+    std::cout<< *SumFiltSineIIR << std::endl;
+    
+    float *SumFiltSineFIR = 0;
+    SumFiltSineFIR = new float;
+    pcsine->GetSineSum(OutputSigFIR, SumFiltSineFIR, iSampleRateInHz);
+    std::cout << *SumFiltSineIIR << std::endl;
+    
+    ///////////////////////////////////////////////////
+    // Test condition and output test result
+    
+    if ((*SumFiltSineIIR) == (*SumOrigSine))
+    {
+        std::cout << "Test 3: IIR filter: Zero output for zero input" << std::endl;
+    
+        std::cout << "Test 3: Passed !" << std::endl;
+    }
+    else
+        std::cout << "Test 3: IIR Failed to give zero output !" << std::endl;
+    
+    
+    if ((*SumFiltSineFIR) == (*SumOrigSine))
+    {
+        std::cout << "Test 3: FIR filter: Zero output for zero input" << std::endl;
+        
+        std::cout << "Test 3: Passed !" << std::endl;
+    }
+    else
+        std::cout << "Test 3: FIR Failed to give zero output !" << std::endl;
+    
+    std::cout<<std::endl;
+    
+    
+    //////////////////////////////////////////////////////////////////////////////
+    // free the memory
+    for (int i=0; i<iNumChannels;i++)
+        delete [] sineval[i];
+    delete [] sineval;
+    sineval = 0;
+    
+    objFilter->destroyBuffer(iNumChannels);
+    
+    CombFilt::destroy(objFilter);
+    for (int i=0; i<iNumChannels;i++)
+        delete [] OutputSigIIR[i];
+    delete [] OutputSigIIR;
+    OutputSigIIR = 0;
+    
+    CombFilt::destroy(objFilter);
+    for (int i=0; i<iNumChannels;i++)
+        delete [] OutputSigFIR[i];
+    delete [] OutputSigFIR;
+    OutputSigFIR = 0;
+    
+    
+    pcsine->destroy(pcsine);
+    delete [] SumFiltSineIIR;
+    delete [] SumFiltSineFIR;
+    delete []SumOrigSine;
+    
     
 }
 
