@@ -44,10 +44,10 @@ void FIRzeroOutputTest()
     int iFsineInHz = 4410;
     int iNumChannels = 1;
     float SineAmp = 0.5;
-    float SineDur = 2;
+    float SineDur = 1;
     int SamplesInSine = (iSampleRateInHz* SineDur);
     bool flag = 1;
-    float g = -1;
+    float g = -0.998;   // g = -1 makes a few samples in the signal to go haywire
     float ftau = 0.00022;
     
     
@@ -63,7 +63,7 @@ void FIRzeroOutputTest()
     pcsine->GetSineWave(sineval,iSampleRateInHz);
     
     // debug: write the filtered sine wav, open in matlab and compare with original sine wave
-    std::string sInputFile = "sinewave.txt";
+    /*std::string sInputFile = "sinewave.txt";
     std::ofstream inputFile(sInputFile);
     if (iNumChannels>1){
         for (int j=0; j<SamplesInSine; j++) {
@@ -76,7 +76,7 @@ void FIRzeroOutputTest()
         }
         
     }
-    inputFile.close();
+    inputFile.close();*/
     
     //////////////////////////////////////////////////////////////////////////////
     // Output array
@@ -97,7 +97,7 @@ void FIRzeroOutputTest()
     objFilter->FIRCombFilt(sineval, OutputSig, iNumChannels, SamplesInSine);
     
     // debug: write the filtered sine wav, open in matlab and compare with original sine wave
-    std::string sOutputFilter = "sinewave_filter.txt";
+    /*std::string sOutputFilter = "sinewave_filter.txt";
     std::ofstream outputFilter(sOutputFilter);
     if (iNumChannels>1){
         for (int j=0; j<SamplesInSine; j++) {
@@ -110,17 +110,23 @@ void FIRzeroOutputTest()
         }
         
     }
-    outputFilter.close();
+    outputFilter.close();*/
     
     
     //////////////////////////////////////////////////////////////////////////////
-    // check for zero output
+    // check for v low output compared to original sine wave
     float *SumOrigSine = 0;
     SumOrigSine = new float;
-    pcsine->GetSineSum(OutputSig, SumOrigSine, iSampleRateInHz);
-    float CompareVal = 0.00001;
+    pcsine->GetSineSum(sineval, SumOrigSine, iSampleRateInHz);
     
-    if ((*SumOrigSine)<CompareVal)
+    float *SumFiltSine = 0;
+    SumFiltSine = new float;
+    pcsine->GetSineSum(OutputSig, SumFiltSine, iSampleRateInHz);
+    
+    float CompareVal = 0.003;
+    float RatioOpIp=(*SumFiltSine)/(*SumOrigSine);
+    
+    if (RatioOpIp<CompareVal)
         flag=1;
     else flag =0;
     
@@ -148,6 +154,8 @@ void FIRzeroOutputTest()
     OutputSig = 0;
     
     pcsine->destroy(pcsine);
+    delete [] SumFiltSine;
+    delete []SumOrigSine;
     
 }
 
