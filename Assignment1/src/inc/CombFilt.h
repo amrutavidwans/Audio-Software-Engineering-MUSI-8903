@@ -13,6 +13,7 @@
 class CombFilt
 {   float g;   ///
     int tau;
+    float **ppfDelayLine;
 public:
     /*! version number */
     
@@ -25,7 +26,9 @@ public:
     void GetFiltVar(float fg_ent,float ftau_ent,float fFs);
     void FIRCombFilt(float **ppfAudioData,float **ppfFiltAudio,int iNumChannels ,int iInFileLength);
     void IIRCombFilt(float **ppfAudioData,float **ppfFiltAudio,int iNumChannels ,int iInFileLength);
-    
+    void createBuffer(int iNumChannels);
+    void clearBufer(int iNumChannels);
+    void destroyBuffer(int iNumChannels);
 
     static Error_t create (CombFilt *&pCombFiltIf);
     static Error_t destroy (CombFilt *&pCombFiltIf);

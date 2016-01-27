@@ -96,37 +96,60 @@ void CombFilt::GetFiltVar(float fg_ent, float ftau_ent,float fFs)
         tau= static_cast<int>(temp-0.5F);
 }
 
-void CombFilt::FIRCombFilt(float **ppfAudioData,float **ppfFiltAudio,int iNumChannels ,int iInFileLength)
-{   float *pDelayLine=0;
+void CombFilt::createBuffer(int iNumChannels){
     
-    pDelayLine= new float [tau];
+    ppfDelayLine= new float *[iNumChannels];
+    for (int i=0; i< iNumChannels; i++) {
+        ppfDelayLine[i]=new float[tau];
+    }
+    
+}
+
+void CombFilt::clearBufer(int iNumChannels){
+    for (int i=0; i<iNumChannels; i++){
+        for(int j=0; j<tau; j++){
+            ppfDelayLine[i][j]=0;
+        }
+    }
+    
+}
+
+void CombFilt::destroyBuffer(int iNumChannels){
+    for (int i=0; i<iNumChannels; i++)
+        delete [] ppfDelayLine[i];
+    delete [] ppfDelayLine;
+    ppfDelayLine = 0;
+}
+
+void CombFilt::FIRCombFilt(float **ppfAudioData,float **ppfFiltAudio,int iNumChannels ,int iInFileLength)
+{
+    // handle range of values for g
     
     for (int i=0; i < iNumChannels;i++){
         for (int j=0; j<iInFileLength; j++) {
-            ppfFiltAudio[i][j] = ppfAudioData[i][j] + g * pDelayLine[9];
-            std::rotate(&pDelayLine[0], &pDelayLine[9], &pDelayLine[10]);
-            pDelayLine[0]=ppfAudioData[i][j];
+            ppfFiltAudio[i][j] = ppfAudioData[i][j] + g * ppfDelayLine[i][tau-1];
+            std::rotate(&ppfDelayLine[i][0], &ppfDelayLine[i][tau-1], &ppfDelayLine[i][tau]);
+            ppfDelayLine[i][0]=ppfAudioData[i][j];
             
         }
-        memset(&pDelayLine, 0, sizeof(pDelayLine));
+        //memset(&pDelayLine, 0, sizeof(pDelayLine));
     }
     
     
 }
 
 void CombFilt::IIRCombFilt(float **ppfAudioData,float **ppfFiltAudio,int iNumChannels ,int iInFileLength)
-{   float *pDelayLine=0;
-    
-    pDelayLine= new float [tau];
+{
+    // handle range of values for g
     
     for (int i=0; i < iNumChannels;i++){
         for (int j=0; j<iInFileLength; j++) {
-            ppfFiltAudio[i][j] = ppfAudioData[i][j] + g * pDelayLine[9];
-            std::rotate(&pDelayLine[0], &pDelayLine[9], &pDelayLine[10]);
-            pDelayLine[0]=ppfFiltAudio[i][j];
+            ppfFiltAudio[i][j] = ppfAudioData[i][j] + g * (ppfDelayLine[i][tau-1]);
+            std::rotate(&ppfDelayLine[i][0], &ppfDelayLine[i][tau-1], &ppfDelayLine[i][tau]);
+            ppfDelayLine[i][0]=ppfFiltAudio[i][j];
             
         }
-        memset(&pDelayLine, 0, sizeof(pDelayLine));
+        //memset(&pDelayLine, 0, sizeof(pDelayLine));
     }
     
     
