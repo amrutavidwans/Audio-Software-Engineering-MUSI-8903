@@ -57,34 +57,11 @@ Error_t CombFilt::init(){
     // initialize variables and buffers
     
     //pCombFilt = new CombFilt;
-    g=0.5;     // gain from 0-1
+    g=0.5;     // gain from 0-1 for IIR filter
     tau = 10;  // tau in seconds
     return kNoError;
 }
 
-/*Error_t CombFilt::reset (){
-    // reset buffers and variables to default values
-    
-    Error_t eErr = closeFile ();
-    if (eErr != kNoError)
-        return eErr;
-    
-    if (bFreeMemory)
-    {
-        eErr = freeMemory ();
-        if (eErr != kNoError)
-            return eErr;
-    }
-    
-    eErr = initDefaults ();
-    if (eErr != kNoError)
-        return eErr;
-    
-    return eErr;
-    
-    return kNoError;
-}
-*/
 
 void CombFilt::GetFiltVar(float fg_ent, float ftau_ent,float fFs)
 {
