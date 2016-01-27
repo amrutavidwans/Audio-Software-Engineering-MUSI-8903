@@ -87,14 +87,13 @@ int main(int argc, char* argv[])
     
     CombFilt *objFilter=0;
     CombFilt::create(objFilter);
-    objFilter->GetFiltVar(g, ftau, fileSpecs.fSampleRateInHz);
+    objFilter->GetFiltVar(g, ftau, fileSpecs.fSampleRateInHz);   // set filter values to those entered by user
     objFilter->createBuffer(fileSpecs.iNumChannels);
     int NumChannels= fileSpecs.iNumChannels;
 
     objFilter->clearBufer(fileSpecs.iNumChannels);
     
     std::string sOutputFilter = sInputFilePath + "_filter.txt";
-    
     std::ofstream outputFilter(sOutputFilter);
     
 
@@ -111,7 +110,7 @@ int main(int argc, char* argv[])
         else
             objFilter->IIRCombFilt(ppfAudioData, OutputSig, fileSpecs.iNumChannels, iNumFrames);
 
-    
+        // write filtered audio to txt file
         if (NumChannels>1){
             for (int j=0; j<iNumFrames; j++) {
                 outputFilter << OutputSig[NumChannels-2][j]<<"\t"<< OutputSig[NumChannels-1][j] << endl;
@@ -126,8 +125,7 @@ int main(int argc, char* argv[])
     
     }
     
-    // write filtered audio to txt file
-    
+    //close file after writing is done
     outputFilter.close();
     
     
