@@ -113,9 +113,9 @@ int main(int argc, char* argv[])
     
     CAudioFileIf::FileSpec_t fileSpecs;
     phAudioFile->getFileSpec(fileSpecs);
-    cout << fileSpecs.iNumChannels<<endl;
+    //cout << fileSpecs.iNumChannels<<endl;
     phAudioFile->getLength (iInFileLength);
-    cout << iInFileLength<<endl;
+    //cout << iInFileLength<<endl;
     
     //////////////////////////////////////////////////////////////////////////////
     // allocate memory
@@ -126,7 +126,7 @@ int main(int argc, char* argv[])
  
     //////////////////////////////////////////////////////////////////////////////
     // do processing
-    cout << "Hello there!" << endl << endl;
+    //cout << "Hello there!" << endl << endl;
 
     //////////////////////////////////////////////////////////////////////////////
     // Comb filter object created
@@ -157,8 +157,8 @@ int main(int argc, char* argv[])
     {
         long long iNumFrames = kBlockSize;
         phAudioFile->readData(ppfAudioData, iNumFrames);
-        if (iNumFrames < kBlockSize)
-            cout << "Checking last frame" << endl;
+        //if (iNumFrames < kBlockSize)
+          //  cout << "Checking last frame" << endl;
         
         if (strncmp(argv[3], "FIR", 3))
             objFilter->FIRCombFilt(ppfAudioData, OutputSig, fileSpecs.iNumChannels, iNumFrames);

@@ -377,17 +377,17 @@ void zeroInputSignalTest(){
     float *SumOrigSine = 0;
     SumOrigSine = new float;
     pcsine->GetSineSum(sineval, SumOrigSine, iSampleRateInHz);
-    std::cout << *SumOrigSine <<std::endl;
+    //std::cout << *SumOrigSine <<std::endl;
     
     float *SumFiltSineIIR = 0;
     SumFiltSineIIR = new float;
     pcsine->GetSineSum(OutputSigIIR, SumFiltSineIIR, iSampleRateInHz);
-    std::cout<< *SumFiltSineIIR << std::endl;
+    //std::cout<< *SumFiltSineIIR << std::endl;
     
     float *SumFiltSineFIR = 0;
     SumFiltSineFIR = new float;
     pcsine->GetSineSum(OutputSigFIR, SumFiltSineFIR, iSampleRateInHz);
-    std::cout << *SumFiltSineIIR << std::endl;
+    //std::cout << *SumFiltSineIIR << std::endl;
     
     ///////////////////////////////////////////////////
     // Test condition and output test result
