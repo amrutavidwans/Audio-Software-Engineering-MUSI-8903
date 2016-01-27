@@ -97,6 +97,7 @@ int main(int argc, char* argv[])
     // perform Unit tests
 
     FIRzeroOutputTest();
+    IIRfreqMatchTest();
     
     
     //////////////////////////////////////////////////////////////////////////////
