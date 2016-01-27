@@ -10,6 +10,7 @@
 
 #include "AudioFileIf.h"
 #include "CombFilt.h"
+#include "c_sinewave.h"
 
 using std::cout;
 using std::endl;
@@ -34,12 +35,13 @@ int main(int argc, char* argv[])
     CAudioFileIf            *phAudioFile        = 0;
     
     static const int        kBlockSize          = 1024;
+    c_sinewave              *pcsine             = 0   ;
 
     showClInfo ();
 
     //////////////////////////////////////////////////////////////////////////////
     // parse command line arguments
-    sInputFilePath = "/Users/Amruta/Documents/MS GTCMT/Sem 2/Audio Software Engineering/sinewav4410.wav";//argv[0];
+    sInputFilePath = "/Users/milaprane/Desktop/sinewav4410.wav";//argv[0];
     //cout << sInputFilePath.length();
     sOutputFilePath = sInputFilePath + ".txt";
     
@@ -57,6 +59,23 @@ int main(int argc, char* argv[])
     cout << fileSpecs.iNumChannels<<endl;
     phAudioFile->getLength (iInFileLength);
     cout << iInFileLength<<endl;
+    
+    ///////////////////////////////////////////////////////////////////////////////////
+    //////Testing the sine wave class
+    
+    pcsine->create(pcsine);
+    pcsine->SetSineWavParam(4410, 0.5,2);
+    float *sineval =new float[static_cast<int>(fileSpecs.fSampleRateInHz* 2)];
+    pcsine->GetSineWave(sineval,fileSpecs.fSampleRateInHz);
+    for (int i=0; i<(fileSpecs.fSampleRateInHz* 2); i++) {
+        cout<< sineval[i] << endl;
+    }
+    
+    
+    
+    pcsine->destroy(pcsine);
+    
+
     
     //////////////////////////////////////////////////////////////////////////////
     // allocate memory
@@ -131,6 +150,7 @@ int main(int argc, char* argv[])
     
     ///////////////////////////////////////////////
     // clean-up
+    
     CAudioFileIf::destroy(phAudioFile);
     for (int i=0;i<fileSpecs.iNumChannels;i++){
         delete [] ppfAudioData[i];

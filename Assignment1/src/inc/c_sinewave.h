@@ -6,34 +6,77 @@
 //
 //
 #include <math.h>
+#include "ErrorDef.h"
 #ifndef c_sinewave_h
 #define c_sinewave_h
 #define PI 3.14159265
 
+#endif /* c_sinewave_h */
 class c_sinewave
 {   float freq,Amp,TimeInSec;
 public:
     void SetSineWavParam(float ffreq,float fAmp,float fTimeInSec);
-    float GetSineWave(float fSamplingFreq);
+    void GetSineWave(float *foutsine,float fSamplingFreq);
+    Error_t create(c_sinewave *&pc_sinewave);
+    Error_t destroy(c_sinewave *&pc_sinewave);
+    Error_t init();
 protected:
-    c_sinewave ();
-    ~c_sinewave()
-}
-#endif /* c_sinewave_h */
-(
-void c_sinewave::SetSineWavParam(float ffreq,float fAmp,float fTimeInSec)
+    c_sinewave();
+    //~c_sinewave();
+};
+
+c_sinewave::c_sinewave()
 {
-    ffreq=freq;
-    fAmp=Amp;
-    fTimeInSec=TimeInSec;
+    this->init();
 }
 
- float c_sinewave::GetSineWave(float fSamplingFreq)
-{   int iNosamples=TimeInSec * fSamplingFreq
-    foutsine=new float[iNoSamples];
+Error_t c_sinewave::init()
+{
+    freq=441;
+    Amp=0.5;
+    TimeInSec=3;
+    return kNoError;
+}
+
+Error_t c_sinewave::create (c_sinewave *&pc_sinewave)
+{
+    pc_sinewave = new c_sinewave;
+    
+    if (!pc_sinewave)
+        return kUnknownError;
+    
+    
+    return kNoError;
+}
+
+Error_t c_sinewave::destroy (c_sinewave *&pc_sinewave)
+{
+    if (!pc_sinewave)
+        return kUnknownError;
+    
+    // pCombFilt->reset ();
+    
+    delete pc_sinewave;
+    pc_sinewave = 0;
+    
+    return kNoError;
+    
+}
+
+void c_sinewave::SetSineWavParam (float ffreq,float fAmp,float fTimeInSec)
+{
+    freq= ffreq;
+    Amp= fAmp;
+    TimeInSec= fTimeInSec;
+}
+
+void c_sinewave::GetSineWave(float *foutsine,float fSamplingFreq)
+{   int iNoSamples=TimeInSec * (fSamplingFreq);
+    
     for(int i=0;i<iNoSamples;i++)
     {
-        foutsine = Amp * sin ( (2*PI*freq*i)/fSamplingFreq);
+        foutsine[i] = (Amp * sin ( (2*PI*freq*i)/fSamplingFreq));
+        //std::cout<< foutsine[i]<<std::endl;
     }
-    return foutsine;
+   
 }
