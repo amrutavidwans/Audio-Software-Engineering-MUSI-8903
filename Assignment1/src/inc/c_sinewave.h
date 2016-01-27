@@ -69,7 +69,7 @@ void c_sinewave::GetSineSum(float **pc_sine, float *SineSum, float fSamplingFreq
     int iNoSamples=TimeInSec * (fSamplingFreq);
     for (int i=0; i<iNumChannels; i++) {
         for (int j=0; j<iNoSamples; j++){
-            *SineSum = *SineSum + fabs(pc_sine[i][j]);
+            (*SineSum) = (*SineSum) + fabs(pc_sine[i][j]);
         }
     }
 }

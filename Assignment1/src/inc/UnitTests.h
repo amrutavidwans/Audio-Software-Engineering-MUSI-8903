@@ -178,7 +178,7 @@ void IIRfreqMatchTest(){
     float SineDur = 1;
     int SamplesInSine = (iSampleRateInHz* SineDur);
     bool flag = 1;
-    float g = -1;   // g = -1 makes a few samples in the signal to go haywire
+    float g = 0.75;
     float ftau = 0.00022;
     
     
@@ -253,10 +253,10 @@ void IIRfreqMatchTest(){
     SumFiltSine = new float;
     pcsine->GetSineSum(OutputSig, SumFiltSine, iSampleRateInHz);
     
-    float CompareVal = 0.6;
+    float CompareVal = 1;
     float RatioOpIp=(*SumFiltSine)/(*SumOrigSine);
     
-    if (RatioOpIp<CompareVal)
+    if (RatioOpIp>CompareVal)
         flag=1;
     else flag =0;
     
@@ -392,7 +392,7 @@ void zeroInputSignalTest(){
     ///////////////////////////////////////////////////
     // Test condition and output test result
     
-    if ((*SumFiltSineIIR) == (*SumOrigSine))
+    if ((*SumFiltSineIIR) == 0)
     {
         std::cout << "Test 3: IIR filter: Zero output for zero input" << std::endl;
     
@@ -402,7 +402,7 @@ void zeroInputSignalTest(){
         std::cout << "Test 3: IIR Failed to give zero output !" << std::endl;
     
     
-    if ((*SumFiltSineFIR) == (*SumOrigSine))
+    if ((*SumFiltSineFIR) == 0)
     {
         std::cout << "Test 3: FIR filter: Zero output for zero input" << std::endl;
         
