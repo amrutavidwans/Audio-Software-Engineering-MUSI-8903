@@ -62,7 +62,22 @@ void FIRzeroOutputTest()
     }
     pcsine->GetSineWave(sineval,iSampleRateInHz);
     
-    std::cout<< **sineval << std::endl;
+    // debug: write the filtered sine wav, open in matlab and compare with original sine wave
+    std::string sInputFile = "sinewave.txt";
+    std::ofstream inputFile(sInputFile);
+    if (iNumChannels>1){
+        for (int j=0; j<SamplesInSine; j++) {
+            inputFile << sineval[iNumChannels-2][j]<<"\t"<< sineval[iNumChannels-1][j] << std::endl;
+        }
+    }
+    else{
+        for (int j=0; j<SamplesInSine; j++) {
+            inputFile << sineval[iNumChannels-1][j] << std::endl;
+        }
+        
+    }
+    inputFile.close();
+    
     //////////////////////////////////////////////////////////////////////////////
     // Output array
     float **OutputSig = 0;
@@ -80,6 +95,22 @@ void FIRzeroOutputTest()
     
     // FIR comb filtering
     objFilter->FIRCombFilt(sineval, OutputSig, iNumChannels, SamplesInSine);
+    
+    // debug: write the filtered sine wav, open in matlab and compare with original sine wave
+    std::string sOutputFilter = "sinewave_filter.txt";
+    std::ofstream outputFilter(sOutputFilter);
+    if (iNumChannels>1){
+        for (int j=0; j<SamplesInSine; j++) {
+            outputFilter << OutputSig[iNumChannels-2][j]<<"\t"<< OutputSig[iNumChannels-1][j] << std::endl;
+        }
+    }
+    else{
+        for (int j=0; j<SamplesInSine; j++) {
+            outputFilter << OutputSig[iNumChannels-1][j] << std::endl;
+        }
+        
+    }
+    outputFilter.close();
     
     
     //////////////////////////////////////////////////////////////////////////////

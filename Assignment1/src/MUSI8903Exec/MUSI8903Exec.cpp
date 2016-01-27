@@ -145,8 +145,8 @@ int main(int argc, char* argv[])
 
     objFilter->clearBufer(fileSpecs.iNumChannels);
     
-    std::string sOutputFilter = sInputFilePath + "_filter.txt";
-    std::ofstream outputFilter(sOutputFilter);
+    // file for writing the output into
+    std::ofstream outputFilter(sOutputFilePath);
     
 
     // depending on the input call FIR or IIR
