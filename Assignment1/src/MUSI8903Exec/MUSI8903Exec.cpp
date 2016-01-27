@@ -103,20 +103,22 @@ int main(int argc, char* argv[])
     {
         long long iNumFrames = kBlockSize;
         phAudioFile->readData(ppfAudioData, iNumFrames);
+        if (iNumFrames < kBlockSize)
+            cout << "Checking last frame" << endl;
         
         if (strncmp(argv[3], "FIR", 3))
-            objFilter->FIRCombFilt(ppfAudioData, OutputSig, fileSpecs.iNumChannels, kBlockSize);
+            objFilter->FIRCombFilt(ppfAudioData, OutputSig, fileSpecs.iNumChannels, iNumFrames);
         else
-            objFilter->IIRCombFilt(ppfAudioData, OutputSig, fileSpecs.iNumChannels, kBlockSize);
+            objFilter->IIRCombFilt(ppfAudioData, OutputSig, fileSpecs.iNumChannels, iNumFrames);
 
     
         if (NumChannels>1){
-            for (int j=0; j<kBlockSize; j++) {
+            for (int j=0; j<iNumFrames; j++) {
                 outputFilter << OutputSig[NumChannels-2][j]<<"\t"<< OutputSig[NumChannels-1][j] << endl;
             }
         }
         else{
-            for (int j=0; j<kBlockSize; j++) {
+            for (int j=0; j<iNumFrames; j++) {
                 outputFilter << OutputSig[NumChannels-1][j] << endl;
             }
             
