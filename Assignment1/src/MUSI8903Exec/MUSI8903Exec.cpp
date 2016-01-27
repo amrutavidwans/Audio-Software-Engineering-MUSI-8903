@@ -7,7 +7,7 @@
 
 
 #include "MUSI8903Config.h"
-
+#include "UnitTests.h"
 #include "AudioFileIf.h"
 #include "CombFilt.h"
 #include "c_sinewave.h"
@@ -28,24 +28,77 @@ int main(int argc, char* argv[])
 
     long long               iInFileLength       = 0;        //!< length of input file
 
-    clock_t                 time                = 0;
+    //clock_t                 time                = 0;
 
     float                   **ppfAudioData      = 0;
 
     CAudioFileIf            *phAudioFile        = 0;
     
     static const int        kBlockSize          = 1024;
-    c_sinewave              *pcsine             = 0   ;
+    
+    //c_sinewave              *pcsine             = 0   ;
 
+    float g = 0;
+    
+    float ftau = 0;
     showClInfo ();
 
     //////////////////////////////////////////////////////////////////////////////
     // parse command line arguments
-    sInputFilePath = "/Users/milaprane/Desktop/sinewav4410.wav";//argv[0];
-    //cout << sInputFilePath.length();
-    sOutputFilePath = sInputFilePath + ".txt";
     
+    if (argc ==5)
+    {
+        sInputFilePath  = argv[1];
+        sOutputFilePath = sInputFilePath + ".txt";
+        g = atof(argv[2]);
+        ftau = atof(argv[3]);
+        std::string sFilterType = argv[4];
+    }
+    else if (argc == 4)
+    {
+        sInputFilePath  = argv[1];
+        sOutputFilePath = sInputFilePath + ".txt";
+        g = atof(argv[2]);
+        ftau = atof(argv[3]);
+        cout << "Taking default filter: FIR filter" << endl;
+        std::string sFilterType = "FIR";
+    }
+    
+    else if (argc == 3)
+    {
+        sInputFilePath  = argv[1];
+        sOutputFilePath = sInputFilePath + ".txt";
+        g = atof(argv[2]);
+        cout << "Taking default value for delay" << endl;
+        ftau = 0.0002;
+        cout << "Taking default value of filter: FIR filter" << endl;
+        std::string sFilterType = "FIR";
+    }
+    else if (argc == 2)
+    {
+        sInputFilePath  = argv[1];
+        sOutputFilePath = sInputFilePath + ".txt";
+        cout << "Taking default value of gain" << endl;
+        g = 0.5;
+        cout << "Taking default value for delay" << endl;
+        ftau = 0.0002;
+        cout << "Taking default value of filter: FIR filter" << endl;
+        std::string sFilterType = "FIR";
+    }
+    
+    else if (argc < 2)
+    {
+        return -1;
+        
+    }
+    
+    
+    /////////////////////////////////////////////////////////////////////////////
+    // perform Unit tests
 
+    FIRzeroOutputTest();
+    
+    
     //////////////////////////////////////////////////////////////////////////////
     // open the input wave file
     CAudioFileIf::create (phAudioFile);
@@ -54,28 +107,12 @@ int main(int argc, char* argv[])
     if(errorMessages == kFileOpenError) {
         cout<<"File open error!\n";
     }
+    
     CAudioFileIf::FileSpec_t fileSpecs;
     phAudioFile->getFileSpec(fileSpecs);
     cout << fileSpecs.iNumChannels<<endl;
     phAudioFile->getLength (iInFileLength);
     cout << iInFileLength<<endl;
-    
-    ///////////////////////////////////////////////////////////////////////////////////
-    //////Testing the sine wave class
-    
-    pcsine->create(pcsine);
-    pcsine->SetSineWavParam(4410, 0.5,2);
-    float *sineval =new float[static_cast<int>(fileSpecs.fSampleRateInHz* 2)];
-    pcsine->GetSineWave(sineval,fileSpecs.fSampleRateInHz);
-    for (int i=0; i<(fileSpecs.fSampleRateInHz* 2); i++) {
-        cout<< sineval[i] << endl;
-    }
-    
-    
-    
-    pcsine->destroy(pcsine);
-    
-
     
     //////////////////////////////////////////////////////////////////////////////
     // allocate memory
@@ -90,10 +127,6 @@ int main(int argc, char* argv[])
 
     //////////////////////////////////////////////////////////////////////////////
     // Comb filter object created
-    
-    float g = -1;
-    float ftau = 0.0022;  // in seconds
-//    float DelayLine[1]={};
     float **OutputSig = 0;
     
     OutputSig = new float*[fileSpecs.iNumChannels];
