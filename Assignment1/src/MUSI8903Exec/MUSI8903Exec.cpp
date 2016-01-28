@@ -92,6 +92,12 @@ int main(int argc, char* argv[])
         
     }
     
+    if (ftau < 0){
+        std::cout<<"Negative values of tau not allowed" << std::endl;
+        std::cout << "Taking in Default value of tau" << std::endl;
+        ftau = 0.0002;
+    }
+    
     
     /////////////////////////////////////////////////////////////////////////////
     // perform Unit tests

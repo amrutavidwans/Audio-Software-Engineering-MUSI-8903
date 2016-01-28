@@ -354,6 +354,8 @@ void zeroInputSignalTest(){
     
     // IIR & FIR comb filtering
     objFilter->IIRCombFilt(sineval, OutputSigIIR, iNumChannels, SamplesInSine);
+    objFilter->clearBufer(iNumChannels);
+    
     objFilter->FIRCombFilt(sineval, OutputSigFIR, iNumChannels, SamplesInSine);
     
     // debug: write the filtered sine wav, open in matlab and compare with original sine wave
