@@ -978,10 +978,10 @@ void VaryingSamplingRateTest(){
     // output test result
     std::cout << "Test 5a: FIR filter output zero with match in feedforward delay line frequency for different frequency" << std::endl;
     if (flag) {
-        std::cout << "Test 1: Passed !" << std::endl;
+        std::cout << "Test 5a: Passed !" << std::endl;
     }
     else
-        std::cout << "Test 1: Failed !" << std::endl;
+        std::cout << "Test 5a: Failed !" << std::endl;
     std::cout<<std::endl;
     
     /////////////////////////////////////////////////
@@ -1006,10 +1006,10 @@ void VaryingSamplingRateTest(){
     // output test result
     std::cout << "Test 5b: IIR filter magnitude increase/decrease if input frequency matches feedback for different frequency" << std::endl;
     if (flag) {
-        std::cout << "Test 2: Passed !" << std::endl;
+        std::cout << "Test 5b: Passed !" << std::endl;
     }
     else
-        std::cout << "Test 2: Failed !" << std::endl;
+        std::cout << "Test 5b: Failed !" << std::endl;
     std::cout<<std::endl;
 
     
