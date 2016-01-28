@@ -123,7 +123,7 @@ void CombFilt::IIRCombFilt(float **ppfAudioData,float **ppfFiltAudio,int iNumCha
     // handle range of values for g else filter will become unstable
     if (std::fabs(g)>=1)
     {
-        std::cout<< "Absolute value of gain greater than 1 !" << std::endl;
+        std::cout<< "Absolute value of gain greater than or equal to 1 !" << std::endl;
         std::cout << "Using the default value of gain" << std::endl;
         g=0.5;
     }
