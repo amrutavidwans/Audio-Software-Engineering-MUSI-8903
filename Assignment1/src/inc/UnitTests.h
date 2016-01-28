@@ -892,5 +892,115 @@ void InputBlockSizeTest(){
     
 }
 
+void VaryingSamplingRateTest(){
+    c_sinewave  *pcsine = 0;
+    int iSampleRateInHz = 44100;
+    int iSampleRateInHzby2 = 22050;
+    int iFsineInHz = 4410;
+    int iNumChannels = 1;
+    float SineAmp = 0.5;
+    float SineDur = 1;
+    
+  
+    float g = -1;   // g = -1 makes a few samples in the signal to go haywire
+    float ftau = 0.00022;
+    
+    ///////////////////////////////////////////////////////////////////////////////////
+    //////Testing with known sine wave
+    pcsine->create(pcsine);
+    pcsine->SetSineWavParam(iFsineInHz, SineAmp, SineDur, iNumChannels);
+    float **sineval = 0;
+    float **sinevalby2=0;
+    sineval = new float *[iNumChannels];
+    sinevalby2 = new float *[iNumChannels];
+    for (int i=0; i<iNumChannels; i++){
+        sineval[i] =new float[static_cast<int>(SineDur*iSampleRateInHz)];
+        sinevalby2[i]= new float[static_cast<int>(SineDur*iSampleRateInHzby2)];
+    }
+    pcsine->GetSineWave(sineval,iSampleRateInHz);
+    pcsine->GetSineWave(sinevalby2, iSampleRateInHzby2);
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // Output array for Sample Rate=44100,FIR
+    float **OutputSig1 = 0;
+    OutputSig1 = new float*[iNumChannels];
+    for ( int i = 0; i<iNumChannels; i++) {
+        OutputSig1[i] = new float[static_cast<int>(SineDur*iSampleRateInHz)];
+    }
+    
+    //Output array for Sample Rate=22050,FIR
+    float **OutputSig2 = 0;
+    OutputSig2 = new float*[iNumChannels];
+    for ( int i = 0; i<iNumChannels; i++) {
+        OutputSig2[i] = new float[static_cast<int>(SineDur*iSampleRateInHzby2)];
+    }
+    
+    //Output array for Sample Rate=22050,IIR
+    float **OutputSig3 = 0;
+    OutputSig3 = new float*[iNumChannels];
+    for ( int i = 0; i<iNumChannels; i++) {
+        OutputSig3[i] = new float[static_cast<int>(SineDur*iSampleRateInHzby2)];
+    }
+    
+    //Output array for Sample Rate=22050,IIR
+    float **OutputSig4 = 0;
+    OutputSig4 = new float*[iNumChannels];
+    for ( int i = 0; i<iNumChannels; i++) {
+        OutputSig4[i] = new float[static_cast<int>(SineDur*iSampleRateInHzby2)];
+    }
+    
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ///Combfilter 1
+    CombFilt *objFilter=0;
+    CombFilt::create(objFilter);
+    objFilter->GetFiltVar(g, ftau, iSampleRateInHz);   // set filter values to those entered by user
+    objFilter->createBuffer(iNumChannels);
+    objFilter->clearBufer(iNumChannels);
+    
+    ///////////////////////////////////////////////////////////
+    CombFilt *objFilter2=0;
+    CombFilt::create(objFilter2);
+    objFilter2->GetFiltVar(g, ftau, iSampleRateInHz);   // set filter values to those entered by user
+    objFilter2->createBuffer(iNumChannels);
+    objFilter2->clearBufer(iNumChannels);
+    
+    ////////////////////////////
+    CombFilt *objFilter3=0;
+    CombFilt::create(objFilter3);
+    objFilter3->GetFiltVar(g, ftau, iSampleRateInHz);   // set filter values to those entered by user
+    objFilter3->createBuffer(iNumChannels);
+    objFilter3->clearBufer(iNumChannels);
+    ///////////////////////////
+    CombFilt *objFilter4=0;
+    CombFilt::create(objFilter4);
+    objFilter4->GetFiltVar(g, ftau, iSampleRateInHz);   // set filter values to those entered by user
+    objFilter4->createBuffer(iNumChannels);
+    objFilter4->clearBufer(iNumChannels);
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    objFilter->IIRCombFilt(sineval, OutputSig1, iNumChannels,static_cast<int>(SineDur*iSampleRateInHz));
+    objFilter2->IIRCombFilt(sineval, OutputSig2, iNumChannels,static_cast<int>(SineDur*iSampleRateInHzby2));
+    objFilter3->FIRCombFilt(sineval, OutputSig3, iNumChannels,static_cast<int>(SineDur*iSampleRateInHz));
+    objFilter4->FIRCombFilt(sineval, OutputSig4, iNumChannels,static_cast<int>(SineDur*iSampleRateInHzby2));
+    
+    
+    
+    
+    if((*OutputSig1)==(*OutputSig2))
+        std::cout<<"IIR Filter Test for Multiple Sampling frequencies succesful!"<<std::endl;
+    else
+        std::cout<<"IIR Filter Test for Multiple Sampling frequencies unsuccesful!"<<std::endl;
+    
+    if((*OutputSig3)==(*OutputSig4))
+        std::cout<<"FIR Filter Test for Multiple Sampling frequencies succesful!"<<std::endl;
+    else
+        std::cout<<"FIR Filter Test for Multiple Sampling frequencies unsuccesful!"<<std::endl;
+    
+    
+    
+    
+}
 
 #endif /* UnitTests_h */
