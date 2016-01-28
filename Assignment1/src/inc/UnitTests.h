@@ -394,22 +394,22 @@ void zeroInputSignalTest(){
     
     if ((*SumFiltSineIIR) == 0)
     {
-        std::cout << "Test 3: IIR filter: Zero output for zero input" << std::endl;
+        std::cout << "Test 3a: IIR filter: Zero output for zero input" << std::endl;
     
-        std::cout << "Test 3: Passed !" << std::endl;
+        std::cout << "Test 3a: Passed !" << std::endl;
     }
     else
-        std::cout << "Test 3: IIR Failed to give zero output !" << std::endl;
+        std::cout << "Test 3a: IIR Failed to give zero output !" << std::endl;
     
     
     if ((*SumFiltSineFIR) == 0)
     {
-        std::cout << "Test 3: FIR filter: Zero output for zero input" << std::endl;
+        std::cout << "Test 3b: FIR filter: Zero output for zero input" << std::endl;
         
-        std::cout << "Test 3: Passed !" << std::endl;
+        std::cout << "Test 3b: Passed !" << std::endl;
     }
     else
-        std::cout << "Test 3: FIR Failed to give zero output !" << std::endl;
+        std::cout << "Test 3b: FIR Failed to give zero output !" << std::endl;
     
     std::cout<<std::endl;
     
@@ -454,13 +454,13 @@ void InputBlockSizeTest(){
     static const int kBlockSizeby2 = 512;
     c_sinewave  *pcsine = 0;
     int iSampleRateInHz = 44100;
-    int iFsineInHz = 4410;
+    int iFsineInHz = 441;
     int iNumChannels = 1;
     float SineAmp = 0.5;
     float SineDur = 1;
     int SamplesInSine = (iSampleRateInHz* SineDur);
-    bool flag = 1;
-    float g = -1;   // g = -1 makes a few samples in the signal to go haywire
+    //bool flag = 1;
+    float g = -0.5;   // g = -1 makes a few samples in the signal to go haywire
     float ftau = 0.00022;
     
     
@@ -475,120 +475,374 @@ void InputBlockSizeTest(){
     }
     pcsine->GetSineWave(sineval,iSampleRateInHz);
     
-    // debug: write the filtered sine wav, open in matlab and compare with original sine wave
-    /*std::string sInputFile = "sinewave.txt";
-     std::ofstream inputFile(sInputFile);
-     if (iNumChannels>1){
-     for (int j=0; j<SamplesInSine; j++) {
-     inputFile << sineval[iNumChannels-2][j]<<"\t"<< sineval[iNumChannels-1][j] << std::endl;
-     }
-     }
-     else{
-     for (int j=0; j<SamplesInSine; j++) {
-     inputFile << sineval[iNumChannels-1][j] << std::endl;
-     }
-     
-     }
-     inputFile.close();
-     */
     //////////////////////////////////////////////////////////////////////////////
+    //// objects IIR
     // Output array for BlockSize=1024
-    float **OutputSig1 = 0;
-    OutputSig1 = new float*[iNumChannels];
+    float **OutputSig1IIR = 0;
+    OutputSig1IIR = new float*[iNumChannels];
     for ( int i = 0; i<iNumChannels; i++) {
-        OutputSig1[i] = new float[kBlockSize];
+        OutputSig1IIR[i] = new float[SamplesInSine];
     }
     
     //Output array for BlockSize=2048
-    float **OutputSig2 = 0;
-    OutputSig2 = new float*[iNumChannels];
+    float **OutputSig2IIR = 0;
+    OutputSig2IIR = new float*[iNumChannels];
     for ( int i = 0; i<iNumChannels; i++) {
-        OutputSig2[i] = new float[kBlockSize2];
+        OutputSig2IIR[i] = new float[SamplesInSine];
     }
-    
     
     //Output array for BlockSize=512
-    float **OutputSigby2 = 0;
-    OutputSigby2 = new float*[iNumChannels];
+    float **OutputSigby2IIR = 0;
+    OutputSigby2IIR = new float*[iNumChannels];
     for ( int i = 0; i<iNumChannels; i++) {
-        OutputSigby2[i] = new float[kBlockSizeby2];
+        OutputSigby2IIR[i] = new float[SamplesInSine];
     }
     
+    ////////////////////FIR objects
+    float **OutputSig1FIR = 0;
+    OutputSig1FIR = new float*[iNumChannels];
+    for ( int i = 0; i<iNumChannels; i++) {
+        OutputSig1FIR[i] = new float[SamplesInSine];
+    }
+    
+    //Output array for BlockSize=2048
+    float **OutputSig2FIR = 0;
+    OutputSig2FIR = new float*[iNumChannels];
+    for ( int i = 0; i<iNumChannels; i++) {
+        OutputSig2FIR[i] = new float[SamplesInSine];
+    }
+    
+    //Output array for BlockSize=512
+    float **OutputSigby2FIR = 0;
+    OutputSigby2FIR = new float*[iNumChannels];
+    for ( int i = 0; i<iNumChannels; i++) {
+        OutputSigby2FIR[i] = new float[SamplesInSine];
+    }
+    
+    //Output array temporary
+    float **TempArr1 = 0;
+    TempArr1 = new float*[iNumChannels];
+    for ( int i = 0; i<iNumChannels; i++) {
+        TempArr1[i] = new float[kBlockSize];
+    }
+    
+    //Output array temporary
+    float **TempArr2 = 0;
+    TempArr2 = new float*[iNumChannels];
+    for ( int i = 0; i<iNumChannels; i++) {
+        TempArr2[i] = new float[kBlockSize2];
+    }
+    
+    //Output array temporary
+    float **TempArrby2 = 0;
+    TempArrby2 = new float*[iNumChannels];
+    for ( int i = 0; i<iNumChannels; i++) {
+        TempArrby2[i] = new float[kBlockSizeby2];
+    }
+
+    //Output array temporary
+    float **TempArrOP1 = 0;
+    TempArrOP1 = new float*[iNumChannels];
+    for ( int i = 0; i<iNumChannels; i++) {
+        TempArrOP1[i] = new float[kBlockSize];
+    }
+    
+    //Output array temporary
+    float **TempArrOP2 = 0;
+    TempArrOP2 = new float*[iNumChannels];
+    for ( int i = 0; i<iNumChannels; i++) {
+        TempArrOP2[i] = new float[kBlockSize2];
+    }
+    
+    //Output array temporary
+    float **TempArrbyOP2 = 0;
+    TempArrbyOP2 = new float*[iNumChannels];
+    for ( int i = 0; i<iNumChannels; i++) {
+        TempArrbyOP2[i] = new float[kBlockSizeby2];
+    }
     
     // object for combfilter
     CombFilt *objFilter=0;
-    CombFilt *objFilter2=0;
-    CombFilt *objFilterby2=0;
     CombFilt::create(objFilter);
-    CombFilt::create(objFilter2);
-    CombFilt::create(objFilterby2);
     
     objFilter->GetFiltVar(g, ftau, iSampleRateInHz);
     objFilter->createBuffer(iNumChannels);
     objFilter->clearBufer(iNumChannels);
     
-    objFilter2->GetFiltVar(g, ftau, iSampleRateInHz);
-    objFilter2->createBuffer(iNumChannels);
-    objFilter2->clearBufer(iNumChannels);
-    
-    objFilterby2->GetFiltVar(g, ftau, iSampleRateInHz);
-    objFilterby2->createBuffer(iNumChannels);
-    objFilterby2->clearBufer(iNumChannels);
-    
-    // IIR comb filtering for blocksize = 1024
-    for (int i=0;i<SamplesInSine; i = i + kBlockSize )
+    // FIR and IIR comb filtering for blocksize = 1024
+    int chkTemp = SamplesInSine;
+    int chk=0;
+    while (chkTemp>0)
     {
-        long long iNumFrames = SamplesInSine/kBlockSize;
+        long long iNumFrames = kBlockSize;
+
+        if (chkTemp < kBlockSize)
+            iNumFrames = chkTemp;
         
-        if (iNumFrames < kBlockSize)
-            std::cout << "Checking last frame" << std::endl;
+        for (int i=0; i<iNumChannels; i++)
+        {
+            for (int j=0; j<iNumFrames; j++) {
+                TempArr1[i][j]=sineval[i][iNumFrames*chk+j];
+                //std::cout << TempArr1[i][j] << std::endl;
+            }
+        }
         
-        objFilter->IIRCombFilt(sineval, OutputSig1, iNumChannels, kBlockSize);
+        objFilter->FIRCombFilt(TempArr1, TempArrOP1, iNumChannels, iNumFrames);
+        
+        for (int i=0; i<iNumChannels; i++)
+        {
+            for (int j=0; j<iNumFrames; j++) {
+                OutputSig1FIR[i][iNumFrames*chk+j]=TempArrOP1[i][j];
+                //std::cout << OutputSig1FIR[i][iNumFrames*chk+j] << std::endl;
+            }
+        }
+        /*objFilter->IIRCombFilt(TempArr1, TempArrOP1, iNumChannels, iNumFrames);
+        
+        for (int i=0; i<iNumChannels; i++)
+        {
+            for (int j=0; j<iNumFrames; j++) {
+                OutputSig1IIR[i][iNumFrames*chk+j]=TempArrOP1[i][j];
+                //std::cout << OutputSig1IIR[i][iNumFrames*chk+j] << std::endl;
+            }
+        }*/
+        
+        
+        chkTemp = chkTemp - kBlockSize;
+        chk=chk+1;
+    }
+    objFilter->clearBufer(iNumChannels);
+    
+    
+    chkTemp = SamplesInSine;
+    chk=0;
+    while (chkTemp>0)
+    {
+        long long iNumFrames = kBlockSize;
+        
+        if (chkTemp < kBlockSize)
+            iNumFrames = chkTemp;
+        
+        for (int i=0; i<iNumChannels; i++)
+        {
+            for (int j=0; j<iNumFrames; j++) {
+                TempArr1[i][j]=sineval[i][iNumFrames*chk+j];
+                //std::cout << TempArr1[i][j] << std::endl;
+            }
+        }
+        
+         objFilter->IIRCombFilt(TempArr1, TempArrOP1, iNumChannels, iNumFrames);
+         
+         for (int i=0; i<iNumChannels; i++)
+         {
+         for (int j=0; j<iNumFrames; j++) {
+         OutputSig1IIR[i][iNumFrames*chk+j]=TempArrOP1[i][j];
+         //std::cout << OutputSig1IIR[i][iNumFrames*chk+j] << std::endl;
+         }
+         }
+        
+        chkTemp = chkTemp - kBlockSize;
+        chk=chk+1;
+    }
+    objFilter->clearBufer(iNumChannels);
+    
+    // FIR and IIR comb filtering for blocksize = 2048
+
+    chkTemp = SamplesInSine;
+    chk=0;
+    while (chkTemp>0)
+    {
+        long long iNumFrames = kBlockSize2;
+        
+        if (chkTemp < kBlockSize2)
+            iNumFrames = chkTemp;
+        
+        for (int i=0; i<iNumChannels; i++)
+        {
+            for (int j=0; j<iNumFrames; j++)
+                TempArr2[i][j]=sineval[i][iNumFrames*chk+j];
+        }
+        
+        objFilter->FIRCombFilt(TempArr2, TempArrOP2, iNumChannels, iNumFrames);
+        
+        for (int i=0; i<iNumChannels; i++)
+        {
+            for (int j=0; j<iNumFrames; j++)
+                OutputSig2FIR[i][iNumFrames*chk+j]=TempArrOP2[i][j];
+        }
+        
+        /*objFilter->IIRCombFilt(TempArr2, TempArrOP2, iNumChannels, iNumFrames);
+        
+        for (int i=0; i<iNumChannels; i++)
+        {
+            for (int j=0; j<iNumFrames; j++)
+                OutputSig2IIR[i][iNumFrames*chk+j]=TempArrOP2[i][j];
+        }*/
+        
+        
+        chkTemp = chkTemp - kBlockSize2;
+        chk=chk+1;
+    }
+    objFilter->clearBufer(iNumChannels);
+    /*
+    for (int i = 0; i < SamplesInSine; i++) {
+        std::cout << OutputSig1IIR[0][i] << " " << OutputSig2IIR[0][i] << std::endl;
+    }
+    */
+    
+    chkTemp = SamplesInSine;
+    chk=0;
+    while (chkTemp>0)
+    {
+        long long iNumFrames = kBlockSize2;
+        
+        if (chkTemp < kBlockSize2)
+            iNumFrames = chkTemp;
+        
+        for (int i=0; i<iNumChannels; i++)
+        {
+            for (int j=0; j<iNumFrames; j++)
+                TempArr2[i][j]=sineval[i][iNumFrames*chk+j];
+        }
+        
+        
+         objFilter->IIRCombFilt(TempArr2, TempArrOP2, iNumChannels, iNumFrames);
+         
+         for (int i=0; i<iNumChannels; i++)
+         {
+         for (int j=0; j<iNumFrames; j++)
+         OutputSig2IIR[i][iNumFrames*chk+j]=TempArrOP2[i][j];
+         }
+        
+        chkTemp = chkTemp - kBlockSize2;
+        chk=chk+1;
+    }
+    objFilter->clearBufer(iNumChannels);
+    
+    // FIR and IIR comb filtering for blocksize = 512
+    
+    chkTemp = SamplesInSine;
+    chk=0;
+    while (chkTemp>0)
+    {
+        long long iNumFrames = kBlockSizeby2;
+        
+        if (chkTemp < kBlockSizeby2)
+            iNumFrames = chkTemp;
+        
+        for (int i=0; i<iNumChannels; i++)
+        {
+            for (int j=0; j<iNumFrames; j++)
+                TempArrby2[i][j]=sineval[i][iNumFrames*chk+j];
+        }
+        
+        objFilter->FIRCombFilt(TempArrby2, TempArrbyOP2, iNumChannels, iNumFrames);
+        
+        for (int i=0; i<iNumChannels; i++)
+        {
+            for (int j=0; j<iNumFrames; j++)
+                OutputSigby2FIR[i][iNumFrames*chk+j]=TempArrbyOP2[i][j];
+        }
+        
+        /*objFilter->IIRCombFilt(TempArrby2, TempArrbyOP2, iNumChannels, iNumFrames);
+        
+        for (int i=0; i<iNumChannels; i++)
+        {
+            for (int j=0; j<iNumFrames; j++)
+                OutputSigby2IIR[i][iNumFrames*chk+j]=TempArrbyOP2[i][j];
+        }*/
+        
+        
+        chkTemp = chkTemp - kBlockSizeby2;
+        chk=chk+1;
     }
     
+    objFilter->clearBufer(iNumChannels);
     
-    
-    // IIR comb filtering for blocksize = 2048
-    for (int i=0;i<SamplesInSine; i = i + kBlockSize2 )
+    chkTemp = SamplesInSine;
+    chk=0;
+    while (chkTemp>0)
     {
-        long long iNumFrames = SamplesInSine/kBlockSize2;
+        long long iNumFrames = kBlockSizeby2;
         
-        if (iNumFrames < kBlockSize2)
-            std::cout << "Checking last frame" << std::endl;
+        if (chkTemp < kBlockSizeby2)
+            iNumFrames = chkTemp;
         
-        objFilter->IIRCombFilt(sineval, OutputSig2, iNumChannels, kBlockSize2);
+        for (int i=0; i<iNumChannels; i++)
+        {
+            for (int j=0; j<iNumFrames; j++)
+                TempArrby2[i][j]=sineval[i][iNumFrames*chk+j];
+        }
+        
+        objFilter->IIRCombFilt(TempArrby2, TempArrbyOP2, iNumChannels, iNumFrames);
+         
+         for (int i=0; i<iNumChannels; i++)
+         {
+         for (int j=0; j<iNumFrames; j++)
+         OutputSigby2IIR[i][iNumFrames*chk+j]=TempArrbyOP2[i][j];
+         }
+        
+        chkTemp = chkTemp - kBlockSizeby2;
+        chk=chk+1;
     }
     
-    // IIR comb filtering for blocksize = 512
-    for (int i=0;i<SamplesInSine; i = i + kBlockSizeby2 )
-    {
-        long long iNumFrames = SamplesInSine/kBlockSizeby2;
-        
-        if (iNumFrames < kBlockSizeby2)
-            std::cout << "Checking last frame" << std::endl;
-        
-        objFilter->IIRCombFilt(sineval, OutputSigby2, iNumChannels, kBlockSizeby2);
-    }
+    objFilter->clearBufer(iNumChannels);
     
-    // debug: write the filtered sine wav, open in matlab and compare with original sine wave
-    std::string sOutputFilter = "sinewave_filter.txt";
-    std::string sOutputFilter2 = "sinewave_filter2.txt";
-    std::string sOutputFilterby2 = "sinewave_filterby2.txt";
-    std::ofstream outputFilter(sOutputFilter);
-    std::ofstream outputFilter2(sOutputFilter);
-    std::ofstream outputFilterby2(sOutputFilter);
-    
-    
-    
+//    // debug: write the filtered sine wav, open in matlab and compare with original sine wave
+//    std::string sOutputFilter = "sinewave_filter.txt";
+//    std::string sOutputFilter2 = "sinewave_filter2.txt";
+//    std::string sOutputFilterby2 = "sinewave_filterby2.txt";
+//    std::ofstream outputFilter(sOutputFilter);
+//    std::ofstream outputFilter2(sOutputFilter);
+//    std::ofstream outputFilterby2(sOutputFilter);
     
     ///////////////////////////////////////////////////
     // output test result
-    std::cout << "Test 2: IIR filter magnitude increase/decrease if input frequency matches feedback" << std::endl;
-    if (flag) {
-        std::cout << "Test 2: Passed !" << std::endl;
+    
+    float *SumFiltSine1IIR = 0;
+    SumFiltSine1IIR = new float;
+    pcsine->GetSineSum(OutputSig1IIR, SumFiltSine1IIR, iSampleRateInHz);
+    //std::cout<< *SumFiltSine1IIR << std::endl;
+    
+    float *SumFiltSine1FIR = 0;
+    SumFiltSine1FIR = new float;
+    pcsine->GetSineSum(OutputSig1FIR, SumFiltSine1FIR, iSampleRateInHz);
+    //std::cout << *SumFiltSine1FIR << std::endl;
+    
+    float *SumFiltSine2IIR = 0;
+    SumFiltSine2IIR = new float;
+    pcsine->GetSineSum(OutputSig2IIR, SumFiltSine2IIR, iSampleRateInHz);
+    //std::cout<< *SumFiltSine2IIR << std::endl;
+    
+    float *SumFiltSine2FIR = 0;
+    SumFiltSine2FIR = new float;
+    pcsine->GetSineSum(OutputSig2FIR, SumFiltSine2FIR, iSampleRateInHz);
+    //std::cout << *SumFiltSine2FIR << std::endl;
+    
+    float *SumFiltSineby2IIR = 0;
+    SumFiltSineby2IIR = new float;
+    pcsine->GetSineSum(OutputSigby2IIR, SumFiltSineby2IIR, iSampleRateInHz);
+    //std::cout<< *SumFiltSineby2IIR << std::endl;
+    
+    float *SumFiltSineby2FIR = 0;
+    SumFiltSineby2FIR = new float;
+    pcsine->GetSineSum(OutputSigby2FIR, SumFiltSineby2FIR, iSampleRateInHz);
+    //std::cout << *SumFiltSineby2FIR << std::endl;
+    
+    ////////////print test results
+    float thresh =400;
+    std::cout << "Test 4a: IIR Filter: Different block length, same output" << std::endl;
+    if (((*SumFiltSineby2IIR) - (*SumFiltSine2IIR))<thresh && ((*SumFiltSine2IIR) - (*SumFiltSine1IIR))< thresh) {
+        std::cout << "Test 4a: Passed !" << std::endl;
     }
     else
-        std::cout << "Test 2: Failed !" << std::endl;
+        std::cout << "Test 4a: Failed !" << std::endl;
+    
+    std::cout << "Test 4b: FIR Filter: Different block length, same output" << std::endl;
+    if (((*SumFiltSineby2FIR) - (*SumFiltSine2FIR))<thresh && ((*SumFiltSine2FIR) - (*SumFiltSine1FIR))< thresh) {
+        std::cout << "Test 4b: Passed !" << std::endl;
+    }
+    else
+        std::cout << "Test 4b: Failed !" << std::endl;
     std::cout<<std::endl;
     
     //////////////////////////////////////////////////////////////////////////////
@@ -602,9 +856,34 @@ void InputBlockSizeTest(){
     
     CombFilt::destroy(objFilter);
     for (int i=0; i<iNumChannels;i++)
-        delete [] OutputSig1[i];
-    delete [] OutputSig1;
-    OutputSig1 = 0;
+        delete [] OutputSig1IIR[i];
+    delete [] OutputSig1IIR;
+    OutputSig1IIR = 0;
+    
+    for (int i=0; i<iNumChannels;i++)
+        delete [] OutputSig1FIR[i];
+    delete [] OutputSig1FIR;
+    OutputSig1FIR = 0;
+    
+    for (int i=0; i<iNumChannels;i++)
+        delete [] OutputSig2IIR[i];
+    delete [] OutputSig2IIR;
+    OutputSig2IIR = 0;
+    
+    for (int i=0; i<iNumChannels;i++)
+        delete [] OutputSig2FIR[i];
+    delete [] OutputSig2FIR;
+    OutputSig2FIR = 0;
+    
+    for (int i=0; i<iNumChannels;i++)
+        delete [] OutputSigby2FIR[i];
+    delete [] OutputSigby2FIR;
+    OutputSigby2FIR = 0;
+    
+    for (int i=0; i<iNumChannels;i++)
+        delete [] OutputSigby2IIR[i];
+    delete [] OutputSigby2IIR;
+    OutputSigby2IIR = 0;
     
     pcsine->destroy(pcsine);
     

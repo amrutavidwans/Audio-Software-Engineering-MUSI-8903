@@ -100,6 +100,7 @@ int main(int argc, char* argv[])
     IIRfreqMatchTest();
     
     zeroInputSignalTest();
+    InputBlockSizeTest();
     
     
     //////////////////////////////////////////////////////////////////////////////
