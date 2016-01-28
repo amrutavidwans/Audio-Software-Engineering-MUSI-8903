@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
         sOutputFilePath = sInputFilePath + ".txt";
         g = atof(argv[2]);
         cout << "Taking default value for delay" << endl;
-        ftau = 0.0002;
+        ftau = 0.5;
         cout << "Taking default filter: FIR filter" << endl;
         std::string sFilterType = "FIR";
     }
@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
         cout << "Taking default value of gain" << endl;
         g = 0.5;
         cout << "Taking default value for delay" << endl;
-        ftau = 0.0002;
+        ftau = 0.5;
         cout << "Taking default filter: FIR filter" << endl;
         std::string sFilterType = "FIR";
     }
@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
     if (ftau < 0){
         std::cout<<"Negative values of tau not allowed" << std::endl;
         std::cout << "Taking in Default value of tau" << std::endl;
-        ftau = 0.0002;
+        ftau = 0.5;
     }
     
     

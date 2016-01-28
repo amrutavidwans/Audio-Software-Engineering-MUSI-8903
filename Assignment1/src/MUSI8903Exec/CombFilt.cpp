@@ -55,7 +55,7 @@ Error_t CombFilt::init(){
     
     //pCombFilt = new CombFilt;
     g=0.5;     // gain from 0-1 for IIR filter
-    tau = 0.00022;  // tau in seconds
+    tau = 0.5;  // tau in seconds
     return kNoError;
 }
 
