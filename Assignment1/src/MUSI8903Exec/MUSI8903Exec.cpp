@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
         g = atof(argv[2]);
         cout << "Taking default value for delay" << endl;
         ftau = 0.0002;
-        cout << "Taking default value of filter: FIR filter" << endl;
+        cout << "Taking default filter: FIR filter" << endl;
         std::string sFilterType = "FIR";
     }
     else if (argc == 2)
@@ -82,12 +82,13 @@ int main(int argc, char* argv[])
         g = 0.5;
         cout << "Taking default value for delay" << endl;
         ftau = 0.0002;
-        cout << "Taking default value of filter: FIR filter" << endl;
+        cout << "Taking default filter: FIR filter" << endl;
         std::string sFilterType = "FIR";
     }
     
     else if (argc < 2)
     {
+        cout << "Give file name and parameters" << endl;
         return -1;
         
     }
