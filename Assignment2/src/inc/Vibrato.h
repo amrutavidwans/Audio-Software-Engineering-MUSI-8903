@@ -12,24 +12,24 @@
 
 #include <stdio.h>
 #include "RingBuffer.h"
+#include "c_sinewave.h"
 
 class Vibrato{
-    CRingBuffer<<#class T#>>
+    CRingBuffer<double> RingBuff;
+    c_sinewave LFO;
+    float ModFreq,Width,SamplingRate;   //Width in seconds,ModFreq in Hz
+    
 public:
-    void process(CRingBuffer<float> **tRingBuff,float **fOutbuff);
-    void addParam(float Modfreq);
+    void process(float **fInBuff,float **fOutbuff);
+    void addParam(float Modfreq,float Width,float SamplingRate);
     void create();
     void destroy();
 protected:
     
 
 private:
-
-
-
-
-
-
+    Vibrato();
+    ~Vibrato();
 };
 
 #endif /* Vibrato_h */
