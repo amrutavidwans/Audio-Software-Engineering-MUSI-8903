@@ -127,6 +127,30 @@ public:
             memcpy (&ptBuff[iNumValues2End], m_ptBuff, sizeof(T)*(iLength - iNumValues2End));
     }
     
+    /*! return the value at the current read index
+     \param int iOffset: read at offset from read index
+     \return float the value from the read index
+     \ this function was added to work with the fractional delay in the vibrato functionality
+     */
+    T get (double iOffset = 0) const
+    {
+        int iReadPrev = m_iReadIdx + iOffset;
+        int iReadNxt = m_iReadIdx + iOffset + 1;
+        
+        while (iReadPrev > m_iBuffLength-1)
+            iReadPrev  -= m_iBuffLength;
+        while (iReadPrev < 0)
+            iReadPrev  += m_iBuffLength;
+        
+        
+        while (iReadNxt > m_iBuffLength-1)
+            iReadNxt  -= m_iBuffLength;
+        while (iReadNxt < 0)
+            iReadNxt  += m_iBuffLength;
+        
+        return ((m_ptBuff[iReadNxt]*iOffset)+(m_ptBuff[iReadPrev]*(1-iOffset)));
+    }
+    
     /*! set buffer content and indices to 0
     \return void
     */
