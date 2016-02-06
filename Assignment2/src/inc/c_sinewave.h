@@ -34,7 +34,7 @@ c_sinewave::c_sinewave()
 Error_t c_sinewave::init()
 {
     freq=441;
-    Amp=0.5;
+    Amp=1;
     TimeInSec=3;
     iNumChannels = 2;
     return kNoError;

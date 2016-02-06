@@ -13,23 +13,34 @@
 #include <stdio.h>
 #include "RingBuffer.h"
 #include "c_sinewave.h"
+#include "ErrorDef.h"
 
 class Vibrato{
-    CRingBuffer<double> RingBuff;
-    c_sinewave LFO;
-    float ModFreq,Width,SamplingRate;   //Width in seconds,ModFreq in Hz
+private:
+    CRingBuffer<float> **ppfRingBuff;
+    c_sinewave **ppcLFO;
+    
+    enum VibratoParam {
+        kModFreq,
+        kWidth,
+        kNumParams
+    };
+    
+    float fVibParam[kNumParams];//ModFreq,Width,
+    float fVibParamRange[kNumParams][2];
+    float SamplingRate;
+    int iNumChannels;   //Width in seconds,ModFreq in Hz
     
 public:
     void process(float **fInBuff,float **fOutbuff);
-    void addParam(float Modfreq,float Width,float SamplingRate);
-    void create();
-    void destroy();
-protected:
     
-
-private:
-    Vibrato();
-    ~Vibrato();
+    void setVibratoParam(VibratoParam eVibParam, float fParamVal);
+    float getVibratoParam(VibratoParam eVibParam) const;
+    
+    
+protected:
+    Vibrato(float fVParam[2], int UserNumChannels,float UserSamplingRate);
+    virtual ~Vibrato();
 };
 
 #endif /* Vibrato_h */
