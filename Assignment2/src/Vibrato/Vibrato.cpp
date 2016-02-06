@@ -28,6 +28,11 @@ Vibrato::Vibrato(float fVParam[2], int UserNumChannels,float UserSamplingRate){
     fVibParamRange[kWidth][0] = 0.005 * SamplingRate;
     fVibParamRange[kWidth][1] = 0.01 * SamplingRate;
     
+       if(!(fVibParamRange[kModFreq][0]< fVParam[0]<=fVibParamRange[kModFreq][1])||!(fVibParamRange[kWidth][0]< fVParam[0]<=fVibParamRange[kWidth][1]))
+       { fVibParam[kModFreq]= 5/SamplingRate;
+           fVibParam[kWidth]=0.005* SamplingRate;
+       }
+    
     c_sinewave **ppcLFO;
     
     int idx = CUtil::float2int<int>(fVibParam[kWidth]);
