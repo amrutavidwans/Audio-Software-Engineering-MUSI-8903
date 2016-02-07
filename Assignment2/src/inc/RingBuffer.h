@@ -132,7 +132,7 @@ public:
      \return float the value from the read index
      \ this function was added to work with the fractional delay in the vibrato functionality
      */
-    T get (double iOffset = 0) const
+    T getValuesAtNonIntLocations (double iOffset = 0) const
     {
         int iReadPrev = m_iReadIdx + iOffset;
         int iReadNxt = m_iReadIdx + iOffset + 1;
