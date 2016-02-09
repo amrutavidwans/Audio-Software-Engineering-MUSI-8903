@@ -8,11 +8,11 @@
 
 #include "Synthesis.h"
 #include "Vector.h"
-#include "CombFilterIf.h"
+#include "CombFilter.h"
 
 SUITE(CombFilter)
 {
-    struct CombFilterData
+    struct VibratoData
     {
         CombFilterData() :
             m_pCombFilter(0),
