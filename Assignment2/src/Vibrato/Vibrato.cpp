@@ -61,8 +61,7 @@ Vibrato::~Vibrato(){
 }
 
 
-// the actual vibrato process function
-void Vibrato::process(float **ppfInBuff, float **ppfOutbuff, int iNumOfFrames){
+// the actual vibrato process function void Vibrato::process(float **ppfInBuff, float **ppfOutbuff, int iNumOfFrames){
 
     for (int j=0; j<iNumOfFrames; j++){
         

@@ -16,6 +16,7 @@
 #include "Synthesis.h"
 #include "Vector.h"
 #include "Vibrato.h"
+//#include "Vibrato.cpp"
 
 using namespace std;
 
@@ -24,7 +25,7 @@ SUITE(Vibrato_Test)
     struct VibratoData
     {
         VibratoData() :
-        pVibrato(0),
+        pVibrato(fVib, numChannels,sampleRate,blockLength),
         inputData(0),
         outputData(0),
         dataLength(35131),
@@ -33,7 +34,8 @@ SUITE(Vibrato_Test)
         sampleRate(8000),
         fVib()
         {
-            *pVibrato= Vibrato::Vibrato(fVib, numChannels,sampleRate,blockLength);
+            pVibrato= *new Vibrato::Vibrato(fVib, numChannels,sampleRate,blockLength);
+            
             
             inputData = new float*[numChannels];
             outputData = new float*[numChannels];
@@ -75,12 +77,12 @@ SUITE(Vibrato_Test)
                     inputTmp[i] = &inputData[i][dataLength - numFramesRemaining];
                     outputTmp[i] = &outputData[i][dataLength - numFramesRemaining];
                 }
-                pVibrato-> process(inputTmp, outputTmp, numFrames);
+                pVibrato.process(inputTmp, outputTmp, numFrames);
                 numFramesRemaining -= numFrames;
             }
         }
         
-        Vibrato *pVibrato;
+        Vibrato pVibrato;
         float   **inputData,
         **outputData,
         **inputTmp,
@@ -97,7 +99,7 @@ SUITE(Vibrato_Test)
     TEST_FIXTURE(VibratoData, MOD_AMP_ZERO)
     {     float fVibZeromodAmp[3]={5,0,0.05};
         //Set modulation amplitude to 0
-        *pVibrato= Vibrato::Vibrato(fVibZeromodAmp, numChannels,sampleRate,blockLength);
+        pVibrato= *new Vibrato::Vibrato(fVibZeromodAmp, numChannels,sampleRate,blockLength);
         
         //Generate arbitrary sine wave
         for (int c = 0; c < numChannels; c++)
@@ -116,7 +118,7 @@ SUITE(Vibrato_Test)
     
     TEST_FIXTURE(VibratoData, INPUT_DC)
     {
-        *pVibrato= Vibrato::Vibrato(fVib, numChannels,sampleRate,blockLength);
+        pVibrato= *new Vibrato::Vibrato(fVib, numChannels,sampleRate,blockLength);
         
         //Generate DC input
         float dc_value = 0.5;
@@ -139,7 +141,7 @@ SUITE(Vibrato_Test)
     TEST_FIXTURE(VibratoData, VARYING_BLOCK_SIZE)
     {
         float **outputData2;
-        *pVibrato= Vibrato::Vibrato(fVib, numChannels,sampleRate,blockLength);
+        pVibrato= *new Vibrato::Vibrato(fVib, numChannels,sampleRate,blockLength);
         
         //Generate arbitrary sine wave
         for (int c = 0; c < numChannels; c++)
@@ -164,7 +166,7 @@ SUITE(Vibrato_Test)
                 inputTmp[i] = &inputData[i][dataLength - numFramesRemaining];
                 outputTmp[i] = &outputData2[i][dataLength - numFramesRemaining];
             }
-            pVibrato->process(inputTmp, outputTmp, numFrames);
+            pVibrato.process(inputTmp, outputTmp, numFrames);
             numFramesRemaining -= numFrames;
         }
         for (int i=0; i < numChannels; i++)
@@ -184,7 +186,7 @@ SUITE(Vibrato_Test)
     
     TEST_FIXTURE(VibratoData, ZERO_INPUT)
     {
-        *pVibrato= Vibrato::Vibrato(fVib, numChannels,sampleRate,blockLength);
+        pVibrato= *new Vibrato::Vibrato(fVib, numChannels,sampleRate,blockLength);
         
         //Generate zero input
         for (int i = 0; i < numChannels; i++)
@@ -207,7 +209,7 @@ SUITE(Vibrato_Test)
     TEST_FIXTURE(VibratoData, ZERO_MOD_FREQ)
     {   float fVibnew[3]= {0,0.05,0.05};        //Set modulation amplitude to 0
         
-        *pVibrato= Vibrato::Vibrato(fVibnew, numChannels,sampleRate,blockLength);
+        pVibrato= *new  Vibrato::Vibrato(fVibnew, numChannels,sampleRate,blockLength);
         
         //Generate arbitrary sine wave
         for (int c = 0; c < numChannels; c++)

@@ -1,10 +1,10 @@
 set (APP TestExec)
 
 set (TestLIB UnitTest++)
-
 set (FilterLIB CombFilter)
 set (AudioLIB AudioFileIO)
 set (SndLIB sndlib)
+set (VibratoLIB Vibrato)
 
 ##############################################################
 ## unitTest++
@@ -57,7 +57,7 @@ if (WITH_TESTS)
     add_executable(${APP} ${${APP}_SOURCES} ${${APP}_HEADERS} ${${APP}_SOURCES_TEST} ${${APP}_HEADERS_TEST})
 
     # link the libraries
-    target_link_libraries(${APP} ${LIB} ${TestLIB} ${FilterLIB} ${AudioLIB} ${SndLIB} ${OS_LIBS})
+    target_link_libraries(${APP} ${LIB} ${TestLIB} ${FilterLIB} ${AudioLIB} ${SndLIB} ${OS_LIBS} ${VibratoLIB})
 endif (WITH_TESTS)
 
 

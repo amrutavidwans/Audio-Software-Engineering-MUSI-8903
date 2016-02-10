@@ -34,7 +34,7 @@ private:
     int iFramesProcessed;
     
 public:
-    void process(float **ppfInBuff,float **ppfOutbuff, int iNumOfFrames);
+     void process(float **ppfInBuff,float **ppfOutbuff, int iNumOfFrames);
     
     void setVibratoParam(VibratoParam eVibParam, float fParamVal);
     float getVibratoParam(VibratoParam eVibParam) const;
