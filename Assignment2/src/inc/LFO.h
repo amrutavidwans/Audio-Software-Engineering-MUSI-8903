@@ -17,44 +17,37 @@ private:
     float Amp;
    // float phase;
 public:
-    LFO();
-    void init();
-    float GetSineWaveValue(float TimeInSec);
-    void setValsSineWave(float freq, float Amp);
-    float getFreq();
-    float getAmp();
-};
 
-LFO::LFO()
+LFO()
 {
     this->init();
 }
 
-void LFO::init()
+void init()
 {
     freq=441;
     Amp=1;
    // phase = 0;
 }
 
-void LFO::setValsSineWave(float Userfreq, float UserAmp){
+void setValsSineWave(float Userfreq, float UserAmp){
     freq = Userfreq;
     Amp = UserAmp;
 }
 
 
-float LFO::GetSineWaveValue(float TimeInSec)
+float GetSineWaveValue(float TimeInSec)
 {
     return (Amp * sin (2*PI*freq*TimeInSec));
 }
 
-float LFO::getFreq(){
+float getFreq(){
     return freq;
 }
 
-float LFO::getAmp(){
+float getAmp(){
     return Amp;
 }
-
+};
 
 #endif /* LFO_h */
