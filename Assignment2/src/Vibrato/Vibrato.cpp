@@ -28,7 +28,7 @@ Vibrato::Vibrato(float fVParam[3], int UserNumChannels,float UserSamplingRate, i
     
     fVibParamRange[kModFreq][0] = 5 / SamplingRate;
     fVibParamRange[kModFreq][1] = 14 / SamplingRate;
-    fVibParamRange[kWidth][0] = 0.005 * SamplingRate;
+    fVibParamRange[kWidth][0] = 0.005 * SamplingRate;     // WIdth is the modulation Amplitude
     fVibParamRange[kWidth][1] = 0.01 * SamplingRate;
     fVibParamRange[kDelay][0] = fVibParamRange[kWidth][0]; // must be atleast equal to the width
     fVibParamRange[kDelay][1] = iMaxDelayInSec - fVibParamRange[kWidth][0]; // must be less than max possible width specified in the input of the constructor

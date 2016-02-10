@@ -2,6 +2,8 @@
 #define __CombFilter_hdr__
 
 #include "ErrorDef.h"
+#include "CombFilterIf.h"
+#include "RingBuffer.h"
 
 class CCombFilterBase
 {

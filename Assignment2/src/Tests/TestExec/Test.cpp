@@ -5,6 +5,9 @@
 
 // include project headers
 #include "AudioFileIf.h"
+#include "Synthesis.h"
+#include "Vector.h"
+#include "Vibrato.h"
 
 #define WITH_FLOATEXCEPTIONS
 #define WITH_MEMORYCHECK

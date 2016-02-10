@@ -62,6 +62,8 @@ int main(int argc, char* argv[])
         cout << "Text file open error!";
         return -1;
     }
+    
+
 
     //////////////////////////////////////////////////////////////////////////////
     // allocate memory
@@ -71,6 +73,8 @@ int main(int argc, char* argv[])
 
     time                    = clock();
     //////////////////////////////////////////////////////////////////////////////
+    
+/////////////////////////////////////////////////////////////////////////////////
     // get audio data and write it to the output file
     while (!phAudioFile->isEof())
     {
@@ -81,7 +85,7 @@ int main(int argc, char* argv[])
         {
             for (int c = 0; c < stFileSpec.iNumChannels; c++)
             {
-                hOutputFile << ppfAudioData[c][i] << "\t";
+                
             }
             hOutputFile << endl;
         }
