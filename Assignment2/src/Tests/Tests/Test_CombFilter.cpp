@@ -9,10 +9,11 @@
 #include "Synthesis.h"
 #include "Vector.h"
 #include "CombFilter.h"
+#include "CombFilterIf.h"
 
 SUITE(CombFilter)
 {
-    struct VibratoData
+    struct CombFilterData
     {
         CombFilterData() :
             m_pCombFilter(0),

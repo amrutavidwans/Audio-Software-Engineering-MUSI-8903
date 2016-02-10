@@ -39,8 +39,6 @@ public:
     void setVibratoParam(VibratoParam eVibParam, float fParamVal);
     float getVibratoParam(VibratoParam eVibParam) const;
     
-    
-protected:
     Vibrato(float fVParam[3], int UserNumChannels,float UserSamplingRate, int iMaxDelayInSec);
     virtual ~Vibrato();
 };
