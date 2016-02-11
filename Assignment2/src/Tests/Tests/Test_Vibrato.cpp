@@ -12,6 +12,8 @@
 #include <cassert>
 #include <cstdio>
 #include <iostream>
+#include <fstream>
+#include <string>
 #include "UnitTest++.h"
 #include "Synthesis.h"
 #include "Vector.h"
@@ -29,7 +31,7 @@ SUITE(Vibrato_Test)
         outputData(0),
         dataLength(35131),
         blockLength(171),
-        numChannels(3),
+        numChannels(1),
         sampleRate(8000)
         {
             pVibrato = new Vibrato::Vibrato(fVib, numChannels,sampleRate,blockLength);
@@ -65,6 +67,13 @@ SUITE(Vibrato_Test)
         
         void TestProcess()
         {
+            // file for writing the output into
+            /*string sInputFilePath = "Input.txt";
+            string sOutputFilePath="Output.txt";                //!< file paths
+            
+            ofstream outputFilter(sOutputFilePath);
+            ofstream inputFilter(sInputFilePath);*/
+            
             int numFramesRemaining = dataLength;
             while (numFramesRemaining > 0)
             {
@@ -76,7 +85,25 @@ SUITE(Vibrato_Test)
                 }
                 pVibrato->process(inputTmp, outputTmp, numFrames);
                 numFramesRemaining -= numFrames;
+                
             }
+            
+           /* for (int i=0; i<dataLength; i++){
+                for (int j=0; j<numChannels; j++){
+                    
+                    outputFilter<<outputData[j][i]<< " ";
+                    inputFilter<<inputData[j][i]<< " ";
+                    
+                }
+                
+                outputFilter<<endl;
+                inputFilter<<endl;
+                
+            }
+            
+            outputFilter.close();
+            inputFilter.close();*/
+            
         }
         
         Vibrato *pVibrato;
