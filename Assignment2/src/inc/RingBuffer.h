@@ -135,7 +135,7 @@ public:
     T getValuesAtNonIntLocations (double iOffset = 0) const
     {
         int iReadPrev = static_cast<int>(floor(iOffset));
-        float frac = iOffset - iReadPrev;
+        double frac = iOffset - iReadPrev;
         /*
         while (iReadPrev > m_iBuffLength-1)
             iReadPrev  -= m_iBuffLength;

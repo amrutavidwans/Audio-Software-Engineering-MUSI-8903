@@ -100,7 +100,7 @@ void Vibrato::process(float **ppfInBuff, float **ppfOutbuff, int iNumOfFrames){
             int BuffReadIdx = ppfRingBuff[i]->getReadIdx();
             
             double idx = BuffWrtIdx - tapMod - BuffReadIdx;
-            float temp = ppfRingBuff[i]->getValuesAtNonIntLocations(idx);
+            double temp = ppfRingBuff[i]->getValuesAtNonIntLocations(idx);
             
             ppfOutbuff[i][j] =  temp;  // value to be accessed is
             
