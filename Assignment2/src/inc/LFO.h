@@ -23,6 +23,8 @@ LFO()
     this->init();
 }
 
+//Initialising the LFO with Standard values freq=441 Hz and Amplitude=1 Hz
+
 void init()
 {
     freq=441;
