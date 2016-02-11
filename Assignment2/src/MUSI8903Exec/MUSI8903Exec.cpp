@@ -27,6 +27,7 @@ int main(int argc, char* argv[])
     CAudioFileIf::FileSpec_t  stFileSpec;
     float                   kVibParamEnt[3];
     double                     iInFileLength;
+    hOutputFile.precision(15);
     showClInfo ();
     
 //////////////////////////////////////////////////////////////////////////////
