@@ -132,14 +132,15 @@ if (!phAudioFile->isOpen())
         long long iNumFrames = kBlockSize;
         
         phAudioFile->readData(ppfAudioData, iNumFrames);
+        Vibr->process(ppfAudioData, ppfVibratoAudio, iNumFrames);
         
         for (int i = 0; i < iNumFrames; i++)
         {
             for (int c = 0; c < stFileSpec.iNumChannels; c++)
             {
-                Vibr->process(ppfAudioData, ppfVibratoAudio, iNumFrames);
+                
                 //std::cout<<ppfVibratoAudio[c][i]<<std::endl;
-                hOutputFile<< ppfAudioData[c][i] << " ";
+                hOutputFile<< ppfVibratoAudio[c][i] << " ";
             }
 
             hOutputFile<< endl;
