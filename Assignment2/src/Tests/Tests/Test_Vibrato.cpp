@@ -68,11 +68,11 @@ SUITE(Vibrato_Test)
         void TestProcess()
         {
             // file for writing the output into
-            /*string sInputFilePath = "Input.txt";
+            string sInputFilePath = "Input.txt";
             string sOutputFilePath="Output.txt";                //!< file paths
             
             ofstream outputFilter(sOutputFilePath);
-            ofstream inputFilter(sInputFilePath);*/
+            ofstream inputFilter(sInputFilePath);
             
             int numFramesRemaining = dataLength;
             while (numFramesRemaining > 0)
@@ -88,7 +88,7 @@ SUITE(Vibrato_Test)
                 
             }
             
-           /* for (int i=0; i<dataLength; i++){
+            for (int i=0; i<dataLength; i++){
                 for (int j=0; j<numChannels; j++){
                     
                     outputFilter<<outputData[j][i]<< " ";
@@ -102,7 +102,7 @@ SUITE(Vibrato_Test)
             }
             
             outputFilter.close();
-            inputFilter.close();*/
+            inputFilter.close();
             
         }
         

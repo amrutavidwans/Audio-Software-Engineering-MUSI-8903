@@ -25,33 +25,33 @@ Vibrato::Vibrato(float fVParam[3], int UserNumChannels,float UserSamplingRate, i
     fVibParam[kWidth] = fVParam[kWidth] * SamplingRate;
     fVibParam[kDelay] = fVParam[kDelay] * SamplingRate;
     
-    fVibParamRange[kModFreq][0] = 5 / SamplingRate;
+    fVibParamRange[kModFreq][0] = -0.00001 / SamplingRate;
     fVibParamRange[kModFreq][1] = 14 / SamplingRate;
-    fVibParamRange[kWidth][0] = 0.005 * SamplingRate;     // WIdth is the modulation Amplitude
+    fVibParamRange[kWidth][0] = -0.00001 * SamplingRate;     // WIdth is the modulation Amplitude
     fVibParamRange[kWidth][1] = 0.01 * SamplingRate;
-    fVibParamRange[kDelay][0] = fVibParamRange[kWidth][0]; // must be atleast equal to the width
-    fVibParamRange[kDelay][1] = iMaxDelayInSec - fVibParamRange[kWidth][0]; // must be less than max possible width specified in the input of the constructor
+    fVibParamRange[kDelay][0] = -0.00001; // must be atleast equal to the width
+    fVibParamRange[kDelay][1] = 0.01 * SamplingRate;
     
     // check if parameters are in range
-       if(!(fVibParamRange[kModFreq][0]<= fVibParam[kModFreq] & fVibParam[kModFreq]<=fVibParamRange[kModFreq][1]))
+    /*   if((fVibParamRange[kModFreq][0]> fVibParam[kModFreq] || fVibParam[kModFreq]>fVibParamRange[kModFreq][1]))
        {
            std::cout<< "Modulation frequency out of range. Enter values from 5-14Hz" << std::endl;
            std::cout << "Initializing to default value of 5Hz" <<std::endl;
            fVibParam[kModFreq]= 5/SamplingRate;
        }
     
-    if (!(fVibParamRange[kWidth][0]<= fVibParam[kWidth] & fVibParam[kWidth]<=fVibParamRange[kWidth][1])) {
+    if ((fVibParamRange[kWidth][0]> fVibParam[kWidth] || fVibParam[kWidth]>fVibParamRange[kWidth][1])) {
         std::cout<< "Modulation width out of range. Enter values from 0.005 - 0.01 sec" << std::endl;
         std::cout << "Initializing to default value of 0.005sec" <<std::endl;
         fVibParam[kWidth]=0.005* SamplingRate;
     }
     
-    if (!(fVibParamRange[kDelay][0]<= fVibParam[kDelay] & fVibParam[kDelay]<=fVibParamRange[kDelay][1])) {
-        std::cout<< "Delay out of range. It must be at least equal to modulatio width" << std::endl;
+    if ((fVibParamRange[kDelay][0]> fVibParam[kDelay] || fVibParam[kDelay]>fVibParamRange[kDelay][1])) {
+        std::cout<< "Delay out of range. It must be at least equal to modulation width" << std::endl;
         std::cout << "Initializing it to modulation Width" <<std::endl;
         fVibParam[kDelay]=fVibParam[kWidth];
     }
-    
+    */
     
     if (fVibParam[kWidth]>fVibParam[kDelay]) {                            // width should not be greater than the delay
         std::cout <<"Width cannot be greater than Delay" << std::endl;

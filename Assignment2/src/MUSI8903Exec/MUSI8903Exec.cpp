@@ -97,7 +97,11 @@ if (!phAudioFile->isOpen())
 // allocate memory
     ppfAudioData            = new float* [stFileSpec.iNumChannels];
     for (int i = 0; i < stFileSpec.iNumChannels; i++)
-    ppfAudioData[i] = new float [kBlockSize];
+        ppfAudioData[i] = new float [kBlockSize];
+    
+    ppfVibratoAudio            = new float* [stFileSpec.iNumChannels];
+    for (int i = 0; i < stFileSpec.iNumChannels; i++)
+        ppfVibratoAudio[i] = new float [kBlockSize];
     
     time                    = clock();
     
@@ -108,9 +112,7 @@ if (!phAudioFile->isOpen())
     float SampleRate= stFileSpec.fSampleRateInHz;
     Vibrato *Vibr = new Vibrato::Vibrato(kVibParamEnt,NumChannels,SampleRate,kBlockSize);
     
-    ppfVibratoAudio            = new float* [stFileSpec.iNumChannels];
-    for (int i = 0; i < stFileSpec.iNumChannels; i++)
-        ppfVibratoAudio[i] = new float [kBlockSize];
+    
 
 //////////////////////////////////////////////////////////////////////////////
     // open the output text file
@@ -128,6 +130,7 @@ if (!phAudioFile->isOpen())
     while (!phAudioFile->isEof())
     {
         long long iNumFrames = kBlockSize;
+        
         phAudioFile->readData(ppfAudioData, iNumFrames);
         
         for (int i = 0; i < iNumFrames; i++)
@@ -136,7 +139,7 @@ if (!phAudioFile->isOpen())
             {
                 Vibr->process(ppfAudioData, ppfVibratoAudio, iNumFrames);
                 //std::cout<<ppfVibratoAudio[c][i]<<std::endl;
-                hOutputFile<< ppfVibratoAudio[c][i] << " ";
+                hOutputFile<< ppfAudioData[c][i] << " ";
             }
 
             hOutputFile<< endl;
@@ -169,7 +172,6 @@ if (!phAudioFile->isOpen())
     void     showClInfo()
     {
         cout << "GTCMT MUSI8903" << endl;
-        cout << "(c) 2016 by Alexander Lerch" << endl;
         cout  << endl;
         
         return;
