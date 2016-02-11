@@ -111,7 +111,7 @@ if (!phAudioFile->isOpen())
    
     int NumChannels= stFileSpec.iNumChannels;
     float SampleRate= stFileSpec.fSampleRateInHz;
-    Vibrato *Vibr = new Vibrato::Vibrato(kVibParamEnt,NumChannels,SampleRate,kBlockSize);
+    Vibrato *Vibr = new Vibrato::Vibrato(kVibParamEnt,NumChannels,SampleRate,1);
     
     
 

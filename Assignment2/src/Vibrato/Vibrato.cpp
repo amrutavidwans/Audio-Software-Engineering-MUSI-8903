@@ -22,18 +22,18 @@ Vibrato::Vibrato(float fVParam[3], int UserNumChannels,float UserSamplingRate, i
     iFramesProcessed = 0;
     
     fVibParam[kModFreq] = fVParam[kModFreq] / SamplingRate;
-    fVibParam[kWidth] = fVParam[kWidth] * SamplingRate;
-    fVibParam[kDelay] = fVParam[kDelay] * SamplingRate;
+    fVibParam[kWidth] = static_cast<int>(round(fVParam[kWidth] * SamplingRate));
+    fVibParam[kDelay] = static_cast<int>(round(fVParam[kDelay] * SamplingRate));
     
     fVibParamRange[kModFreq][0] = -0.00001 / SamplingRate;
     fVibParamRange[kModFreq][1] = 14 / SamplingRate;
     fVibParamRange[kWidth][0] = -0.00001 * SamplingRate;     // WIdth is the modulation Amplitude
-    fVibParamRange[kWidth][1] = 0.01 * SamplingRate;
-    fVibParamRange[kDelay][0] = -0.00001; // must be atleast equal to the width
-    fVibParamRange[kDelay][1] = 0.01 * SamplingRate;
+    fVibParamRange[kWidth][1] = (iMaxDelayInSec*SamplingRate/2);
+    fVibParamRange[kDelay][0] = -0.00001 * SamplingRate; // must be atleast equal to the width
+    fVibParamRange[kDelay][1] = (iMaxDelayInSec*SamplingRate/2);
     
     // check if parameters are in range
-    /*   if((fVibParamRange[kModFreq][0]> fVibParam[kModFreq] || fVibParam[kModFreq]>fVibParamRange[kModFreq][1]))
+       if((fVibParamRange[kModFreq][0]> fVibParam[kModFreq] || fVibParam[kModFreq]>fVibParamRange[kModFreq][1]))
        {
            std::cout<< "Modulation frequency out of range. Enter values from 5-14Hz" << std::endl;
            std::cout << "Initializing to default value of 5Hz" <<std::endl;
@@ -51,7 +51,7 @@ Vibrato::Vibrato(float fVParam[3], int UserNumChannels,float UserSamplingRate, i
         std::cout << "Initializing it to modulation Width" <<std::endl;
         fVibParam[kDelay]=fVibParam[kWidth];
     }
-    */
+    
     
     if (fVibParam[kWidth]>fVibParam[kDelay]) {                            // width should not be greater than the delay
         std::cout <<"Width cannot be greater than Delay" << std::endl;
@@ -94,11 +94,13 @@ void Vibrato::process(float **ppfInBuff, float **ppfOutbuff, int iNumOfFrames){
             ppfRingBuff[i]->putPostInc(ppfInBuff[i][j]); // put new value in the write location of ring buffer and then increment write location
             ppfRingBuff[i]->getPostInc();  // increment read index of ring buffer
             
-            float tapMod = 1 + fVibParam[kDelay] + (fVibParam[kWidth] * ppcLFO.GetSineWaveValue(iFramesProcessed/SamplingRate));
+            double tapMod = 1 + fVibParam[kDelay] + (fVibParam[kWidth] * ppcLFO.GetSineWaveValue(iFramesProcessed/SamplingRate));
             
             int BuffWrtIdx = ppfRingBuff[i]->getWriteIdx();
             int BuffReadIdx = ppfRingBuff[i]->getReadIdx();
-            float temp =ppfRingBuff[i]->getValuesAtNonIntLocations(BuffWrtIdx-tapMod - BuffReadIdx);
+            
+            double idx = BuffWrtIdx - tapMod - BuffReadIdx;
+            float temp = ppfRingBuff[i]->getValuesAtNonIntLocations(idx);
             
             ppfOutbuff[i][j] =  temp;  // value to be accessed is
             

@@ -134,12 +134,8 @@ public:
      */
     T getValuesAtNonIntLocations (double iOffset = 0) const
     {
-        int iReadPrev = iOffset;
-        int iReadNxt = iOffset + 1;
-        
+        int iReadPrev = static_cast<int>(floor(iOffset));
         float frac = iOffset - iReadPrev;
-        
-        
         /*
         while (iReadPrev > m_iBuffLength-1)
             iReadPrev  -= m_iBuffLength;
@@ -152,7 +148,7 @@ public:
         while (iReadNxt < 0)
             iReadNxt  += m_iBuffLength;
         */
-        return (get(iReadNxt)*frac +  get(iReadPrev)*(1-frac));
+        return static_cast<T>(get(iReadPrev+1)*frac +  get(iReadPrev)*(1-frac));
     }
     
     /*! set buffer content and indices to 0
