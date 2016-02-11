@@ -68,11 +68,11 @@ SUITE(Vibrato_Test)
         void TestProcess()
         {
             // file for writing the output into
-            string sInputFilePath = "Input.txt";
+            /*string sInputFilePath = "Input.txt";
             string sOutputFilePath="Output.txt";                //!< file paths
             
             ofstream outputFilter(sOutputFilePath);
-            ofstream inputFilter(sInputFilePath);
+            ofstream inputFilter(sInputFilePath);*/
             
             int numFramesRemaining = dataLength;
             while (numFramesRemaining > 0)
@@ -88,7 +88,7 @@ SUITE(Vibrato_Test)
                 
             }
             
-            for (int i=0; i<dataLength; i++){
+            /*for (int i=0; i<dataLength; i++){
                 for (int j=0; j<numChannels; j++){
                     
                     outputFilter<<outputData[j][i]<< " ";
@@ -102,7 +102,7 @@ SUITE(Vibrato_Test)
             }
             
             outputFilter.close();
-            inputFilter.close();
+            inputFilter.close();*/
             
         }
         
@@ -173,6 +173,9 @@ SUITE(Vibrato_Test)
         
         TestProcess();
 
+        pVibrato->~Vibrato();
+        pVibrato= new Vibrato::Vibrato(fVib, numChannels,sampleRate,blockLength);
+        
         outputData2 = new float*[numChannels];
         for (int i = 0; i < numChannels; i++)
         {
@@ -197,7 +200,7 @@ SUITE(Vibrato_Test)
         {
             for (int j = 0; j < dataLength; j++)
             {
-                CHECK_CLOSE(outputData2[i][j], outputData[i][j], 3e-1F);
+                CHECK_CLOSE(outputData2[i][j], outputData[i][j], 1e-3F);
             }
         }
         
