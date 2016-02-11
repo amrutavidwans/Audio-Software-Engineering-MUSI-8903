@@ -108,6 +108,20 @@ if (!phAudioFile->isOpen())
     float SampleRate= stFileSpec.fSampleRateInHz;
     Vibrato *Vibr = new Vibrato::Vibrato(kVibParamEnt,NumChannels,SampleRate,kBlockSize);
     
+    ppfVibratoAudio            = new float* [stFileSpec.iNumChannels];
+    for (int i = 0; i < stFileSpec.iNumChannels; i++)
+        ppfVibratoAudio[i] = new float [kBlockSize];
+
+//////////////////////////////////////////////////////////////////////////////
+    // open the output text file
+    
+    hOutputFile.open (sOutputFilePath.c_str(), std::ios::out);
+    if (!hOutputFile.is_open())
+    {
+        cout << "Text file open error!";
+        return -1;
+    }
+
    
 /////////////////////////////////////////////////////////////////////////////////
 // get audio data and write it to the output file
@@ -121,21 +135,15 @@ if (!phAudioFile->isOpen())
             for (int c = 0; c < stFileSpec.iNumChannels; c++)
             {
                 Vibr->process(ppfAudioData, ppfVibratoAudio, iNumFrames);
+                //std::cout<<ppfVibratoAudio[c][i]<<std::endl;
+                hOutputFile<< ppfVibratoAudio[c][i] << " ";
             }
-            hOutputFile << endl;
+
+            hOutputFile<< endl;
         }
     }
     
     cout << "reading/writing done in: \t"    << (clock()-time)*1.F/CLOCKS_PER_SEC << " seconds." << endl;
-//////////////////////////////////////////////////////////////////////////////
-// open the output text file
-    
-    hOutputFile.open (sOutputFilePath.c_str(), std::ios::out);
-    if (!hOutputFile.is_open())
-    {
-        cout << "Text file open error!";
-        return -1;
-    }
 
 //////////////////////////////////////////////////////////////////////////////
 // clean-up
@@ -146,6 +154,12 @@ if (!phAudioFile->isOpen())
     delete [] ppfAudioData[i];
     delete [] ppfAudioData;
     ppfAudioData = 0;
+    
+    for (int i = 0; i < stFileSpec.iNumChannels; i++)
+        delete [] ppfVibratoAudio[i];
+    delete [] ppfVibratoAudio;
+    ppfVibratoAudio = 0;
+    
     Vibr->~Vibrato();
     return 0;
     

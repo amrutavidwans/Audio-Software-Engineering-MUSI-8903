@@ -33,10 +33,34 @@ Vibrato::Vibrato(float fVParam[3], int UserNumChannels,float UserSamplingRate, i
     fVibParamRange[kDelay][1] = iMaxDelayInSec - fVibParamRange[kWidth][0]; // must be less than max possible width specified in the input of the constructor
     
     // check if parameters are in range
-     /*  if(!(fVibParamRange[kModFreq][0]< fVParam[0]<=fVibParamRange[kModFreq][1])||!(fVibParamRange[kWidth][0]< fVParam[0]<=fVibParamRange[kWidth][1]))
-       { fVibParam[kModFreq]= 5/SamplingRate;
-           fVibParam[kWidth]=0.005* SamplingRate;
-       }*/
+       if(!(fVibParamRange[kModFreq][0]<= fVibParam[kModFreq] & fVibParam[kModFreq]<=fVibParamRange[kModFreq][1]))
+       {
+           std::cout<< "Modulation frequency out of range. Enter values from 5-14Hz" << std::endl;
+           std::cout << "Initializing to default value of 5Hz" <<std::endl;
+           fVibParam[kModFreq]= 5/SamplingRate;
+       }
+    
+    if (!(fVibParamRange[kWidth][0]<= fVibParam[kWidth] & fVibParam[kWidth]<=fVibParamRange[kWidth][1])) {
+        std::cout<< "Modulation width out of range. Enter values from 0.005 - 0.01 sec" << std::endl;
+        std::cout << "Initializing to default value of 0.005sec" <<std::endl;
+        fVibParam[kWidth]=0.005* SamplingRate;
+    }
+    
+    if (!(fVibParamRange[kDelay][0]<= fVibParam[kDelay] & fVibParam[kDelay]<=fVibParamRange[kDelay][1])) {
+        std::cout<< "Delay out of range. It must be at least equal to modulatio width" << std::endl;
+        std::cout << "Initializing it to modulation Width" <<std::endl;
+        fVibParam[kDelay]=fVibParam[kWidth];
+    }
+    
+    
+    if (fVibParam[kWidth]>fVibParam[kDelay]) {                            // width should not be greater than the delay
+        std::cout <<"Width cannot be greater than Delay" << std::endl;
+        std::cout <<"Interchanging Width and Delay" << std::endl;
+        float temp = fVibParam[kDelay];
+        fVibParam[kDelay]=fVibParam[kWidth];
+        fVibParam[kWidth]=temp;
+        
+    }
     
     ppcLFO.setValsSineWave(fVParam[kModFreq], 1.0);
     
