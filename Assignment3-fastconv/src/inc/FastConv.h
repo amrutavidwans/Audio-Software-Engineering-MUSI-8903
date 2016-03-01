@@ -45,7 +45,8 @@ private:
     float *m_pfImpulseResponse;
     int m_iBlockLength;
     int m_iLengthOfBuffers;
-    
+    CRingBuffer<float> *m_pCRingBuffCurr;
+    CRingBuffer<float> *m_pCRingBuffPrev;
 };
 
 
