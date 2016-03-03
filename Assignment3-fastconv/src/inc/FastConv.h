@@ -40,6 +40,8 @@ public:
     
     Error_t processTimeDomain (float *pfInputBuffer, float *pfOutputBuffer, int iLengthOfBuffers );
 
+    Error_t flushBuffer(float *pfOutputBuffer, int iLengthOfBuffer);
+    
 private:
     int m_iLengthOfIr;
     float *m_pfImpulseResponse;
@@ -47,6 +49,7 @@ private:
     int m_iLengthOfBuffers;
     CRingBuffer<float> *m_pCRingBuffCurr;
     CRingBuffer<float> *m_pCRingBuffPrev;
+    //CRingBuffer<float> *m_pCRingBuffInput;
 };
 
 

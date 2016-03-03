@@ -22,18 +22,20 @@ CFastConv::~CFastConv( void )
 Error_t CFastConv::init(float *pfImpulseResponse, int iLengthOfIr, int iBlockLength /*= 8192*/)
 {
 
-    m_pfImpulseResponse = new float[iLengthOfIr];
+    m_pfImpulseResponse = new float[iLengthOfIr+iBlockLength-1];
     m_iLengthOfIr = iLengthOfIr;
     m_iBlockLength = iBlockLength;
-    for (int i=0; i<m_iLengthOfIr; i++)
+    for (int i=0; i<(m_iLengthOfIr+m_iBlockLength-1); i++)
     {
-        // store the inverted impulse response
-        m_pfImpulseResponse[i] = pfImpulseResponse[m_iLengthOfIr - i -1];
+        if (i<m_iLengthOfIr)
+            m_pfImpulseResponse[i] = pfImpulseResponse[i];  //m_iLengthOfIr - i -1 //store the impulse response
+        else
+            m_pfImpulseResponse[i] = 0;
     }
     m_pCRingBuffCurr = new CRingBuffer<float> ((m_iBlockLength+m_iLengthOfIr-1)*2);
-    m_pCRingBuffCurr->setWriteIdx(m_iBlockLength+m_iLengthOfIr);
+    //m_pCRingBuffCurr->setWriteIdx(m_iBlockLength+m_iLengthOfIr);
     m_pCRingBuffPrev = new CRingBuffer<float> ((m_iBlockLength+m_iLengthOfIr-1)*2);
-    m_pCRingBuffPrev->setWriteIdx(m_iLengthOfIr+1);
+    //m_pCRingBuffPrev->setWriteIdx(m_iLengthOfIr+1);
     
     return kNoError;
 }
@@ -59,35 +61,34 @@ Error_t CFastConv::processTimeDomain (float *pfInputBuffer, float *pfOutputBuffe
 {
     // zeropadding of input signal
     float *pftempBuff= new float [iLengthOfBuffers+m_iLengthOfIr-1];
-    for (int i=0;i<iLengthOfBuffers; i++)
+    for (int i=0;i<iLengthOfBuffers+m_iLengthOfIr-1; i++)
     {
-        pftempBuff[i]=pfInputBuffer[i];
-    }
-    for (int i=iLengthOfBuffers; i<iLengthOfBuffers+m_iLengthOfIr-1; i++)
-    {
-        pftempBuff[i]=0;
+        if (i<iLengthOfBuffers)
+            pftempBuff[i]=pfInputBuffer[i];
+        else
+            pftempBuff[i]=0;
     }
     
+    // convolution loop
     for (int i = 0; i< (iLengthOfBuffers+m_iLengthOfIr-1); i++)
     {
         float ftempVal = 0;
-        for (int j=0; j<m_iLengthOfIr; j++)
+        for (int j=0; j<iLengthOfBuffers; j++)
         {
-            ftempVal += m_pfImpulseResponse [j] * pftempBuff[i];
+            if ((i-j)>=0)
+            ftempVal += m_pfImpulseResponse [i-j] * pftempBuff[j];
         }
         m_pCRingBuffCurr->putPostInc(ftempVal);
-        m_pCRingBuffCurr->getPostInc();
+        //m_pCRingBuffCurr->getPostInc();    // dummy call just to increment the read index
         
     }
     
     // add the prev reverb tail with starting iLengthOfBuffers number of current output values
-    int count =0;
     for (int i=0; i<iLengthOfBuffers; i++)
     {
-        if (count < m_iLengthOfIr)
+        if (i < m_iLengthOfIr)
         {
             pfOutputBuffer[i]=m_pCRingBuffCurr->getPostInc()+m_pCRingBuffPrev->getPostInc();
-            count +=1;
         }
         else
             pfOutputBuffer[i]=m_pCRingBuffCurr->getPostInc();
@@ -100,6 +101,17 @@ Error_t CFastConv::processTimeDomain (float *pfInputBuffer, float *pfOutputBuffe
     }
     
     delete [] pftempBuff;
+    
+    return kNoError;
+}
+
+Error_t CFastConv::flushBuffer(float *pfOutputBuffer, int iLengthOfBuffer)
+{// user should provide iLengthOfBuffer atleast equal to the impulse response length as that much will remain in the end
+    for (int i=0; i<iLengthOfBuffer; i++)
+    {
+        if (i<m_iLengthOfIr)
+            pfOutputBuffer[i]= m_pCRingBuffPrev->getPostInc();
+    }
     
     return kNoError;
 }
