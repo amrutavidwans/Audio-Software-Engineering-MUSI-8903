@@ -7,6 +7,7 @@
 
 CFastConv::CFastConv( void )
 {
+    
     reset();
 }
 
@@ -18,13 +19,38 @@ CFastConv::~CFastConv( void )
     reset();
 }
 
+Error_t CFastConv::createInstance (CFastConv*& pCFastConv)
+{
+    pCFastConv = new CFastConv ();
+    
+    if (!pCFastConv)
+        return kUnknownError;
+    
+    
+    return kNoError;
+}
+
+Error_t CFastConv::destroyInstance (CFastConv*& pCFastConv)
+{
+    if (!pCFastConv)
+        return kUnknownError;
+    
+    pCFastConv->reset();
+    
+    delete pCFastConv;
+    pCFastConv = 0;
+    
+    return kNoError;
+    
+}
 
 Error_t CFastConv::init(float *pfImpulseResponse, int iLengthOfIr, int iBlockLength /*= 8192*/)
 {
 
-    m_pfImpulseResponse = new float[iLengthOfIr+iBlockLength-1];
     m_iLengthOfIr = iLengthOfIr;
     m_iBlockLength = iBlockLength;
+    m_pfImpulseResponse = new float[iLengthOfIr];
+    
     for (int i=0; i<(m_iLengthOfIr+m_iBlockLength-1); i++)
     {
         if (i<m_iLengthOfIr)
@@ -44,7 +70,13 @@ Error_t CFastConv::init(float *pfImpulseResponse, int iLengthOfIr, int iBlockLen
 Error_t CFastConv::reset()
 {
     m_iLengthOfIr = 0;
-    m_iLengthOfIr = 0;
+    m_iBlockLength = 0;
+    //delete m_pfImpulseResponse;
+    m_pfImpulseResponse =0;
+    //delete m_pCRingBuffPrev;
+    m_pCRingBuffPrev =0;
+    //delete m_pCRingBuffCurr;
+    m_pCRingBuffCurr =0;
     return kNoError;
 }
 
@@ -111,6 +143,8 @@ Error_t CFastConv::flushBuffer(float *pfOutputBuffer, int iLengthOfBuffer)
     {
         if (i<m_iLengthOfIr)
             pfOutputBuffer[i]= m_pCRingBuffPrev->getPostInc();
+        else
+            pfOutputBuffer[i]=0;
     }
     
     return kNoError;

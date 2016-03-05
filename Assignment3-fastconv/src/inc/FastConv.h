@@ -25,6 +25,10 @@ public:
     */
     Error_t init (float *pfImpulseResponse, int iLengthOfIr, int iBlockLength = 8192);
     
+    static Error_t createInstance (CFastConv*& pCFastConv);
+    
+    static Error_t destroyInstance (CFastConv*& pCFastConv);
+        
     /*! resets all internal class members
     \return Error_t
     */
@@ -46,7 +50,7 @@ private:
     int m_iLengthOfIr;
     float *m_pfImpulseResponse;
     int m_iBlockLength;
-    int m_iLengthOfBuffers;
+    //int m_iLengthOfBuffers;
     CRingBuffer<float> *m_pCRingBuffCurr;
     CRingBuffer<float> *m_pCRingBuffPrev;
     //CRingBuffer<float> *m_pCRingBuffInput;
