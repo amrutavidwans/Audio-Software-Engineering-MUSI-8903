@@ -59,9 +59,9 @@ Error_t CFastConv::init(float *pfImpulseResponse, int iLengthOfIr, int iBlockLen
             m_pfImpulseResponse[i] = 0;
     }
     m_pCRingBuffCurr = new CRingBuffer<float> ((m_iBlockLength+m_iLengthOfIr-1)*2);
-    //m_pCRingBuffCurr->setWriteIdx(m_iBlockLength+m_iLengthOfIr);
+    //m_pCRingBuffCurr->setWriteIdx(1);
     m_pCRingBuffPrev = new CRingBuffer<float> ((m_iBlockLength+m_iLengthOfIr-1)*2);
-    //m_pCRingBuffPrev->setWriteIdx(m_iLengthOfIr+1);
+    m_pCRingBuffPrev->setWriteIdx(m_iLengthOfIr-1);
     
     return kNoError;
 }
@@ -118,7 +118,7 @@ Error_t CFastConv::processTimeDomain (float *pfInputBuffer, float *pfOutputBuffe
     // add the prev reverb tail with starting iLengthOfBuffers number of current output values
     for (int i=0; i<iLengthOfBuffers; i++)
     {
-        if (i < m_iLengthOfIr)
+        if (i < m_iLengthOfIr-1)
         {
             pfOutputBuffer[i]=m_pCRingBuffCurr->getPostInc()+m_pCRingBuffPrev->getPostInc();
         }
@@ -127,7 +127,7 @@ Error_t CFastConv::processTimeDomain (float *pfInputBuffer, float *pfOutputBuffe
             
     }
     
-    for (int i=0; i<m_iLengthOfIr; i++)
+    for (int i=0; i<m_iLengthOfIr-1; i++)
     {
         m_pCRingBuffPrev->putPostInc(m_pCRingBuffCurr->getPostInc());
     }
