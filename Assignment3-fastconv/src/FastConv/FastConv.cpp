@@ -2,6 +2,7 @@
 #include "Vector.h"
 #include "Util.h"
 #include "RingBuffer.h"
+#include <iostream>
 
 #include "FastConv.h"
 
@@ -49,7 +50,8 @@ Error_t CFastConv::init(float *pfImpulseResponse, int iLengthOfIr, int iBlockLen
 
     m_iLengthOfIr = iLengthOfIr;
     m_iBlockLength = iBlockLength;
-    m_pfImpulseResponse = new float[iLengthOfIr];
+    m_pfImpulseResponse = new float[m_iLengthOfIr+m_iBlockLength-1];
+    std::memset(m_pfImpulseResponse, 0, (m_iLengthOfIr+m_iBlockLength-1));
     
     for (int i=0; i<(m_iLengthOfIr+m_iBlockLength-1); i++)
     {
@@ -99,6 +101,7 @@ Error_t CFastConv::processTimeDomain (float *pfInputBuffer, float *pfOutputBuffe
             pftempBuff[i]=pfInputBuffer[i];
         else
             pftempBuff[i]=0;
+        //std::cout << pftempBuff[i] << std::endl;
     }
     
     // convolution loop
@@ -108,12 +111,20 @@ Error_t CFastConv::processTimeDomain (float *pfInputBuffer, float *pfOutputBuffe
         for (int j=0; j<iLengthOfBuffers; j++)
         {
             if ((i-j)>=0)
-            ftempVal += m_pfImpulseResponse [i-j] * pftempBuff[j];
+            {
+                ftempVal += m_pfImpulseResponse [i-j] * pftempBuff[j];
+                if (m_pfImpulseResponse[i-j]>0 && m_pfImpulseResponse[i-j]<1)
+                    std::cout << m_pfImpulseResponse[i-j] <<std::endl;
+                if (pftempBuff[j] > 1)
+                    std::cout << pftempBuff[j] <<std::endl;
+            }
         }
+        
         m_pCRingBuffCurr->putPostInc(ftempVal);
         //m_pCRingBuffCurr->getPostInc();    // dummy call just to increment the read index
         
     }
+     std::cout << "-----" << std::endl;
     
     // add the prev reverb tail with starting iLengthOfBuffers number of current output values
     for (int i=0; i<iLengthOfBuffers; i++)
@@ -140,7 +151,7 @@ Error_t CFastConv::processTimeDomain (float *pfInputBuffer, float *pfOutputBuffe
         m_pCRingBuffPrev->putPostInc(m_pCRingBuffCurr->getPostInc());
     }
     
-    delete [] pftempBuff;
+    //delete [] pftempBuff;
     
     return kNoError;
 }
@@ -149,7 +160,7 @@ Error_t CFastConv::flushBuffer(float *pfOutputBuffer, int iLengthOfBuffer)
 {// user should provide iLengthOfBuffer atleast equal to the impulse response length as that much will remain in the end
     for (int i=0; i<iLengthOfBuffer; i++)
     {
-        if (i<m_iLengthOfIr)
+        if (i<m_iLengthOfIr-1)
             pfOutputBuffer[i]= m_pCRingBuffPrev->getPostInc();
         else
             pfOutputBuffer[i]=0;

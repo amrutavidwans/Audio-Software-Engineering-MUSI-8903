@@ -59,7 +59,7 @@ SUITE(FastConv)
             while (iNumFramesRemaining > 0)
             {
                 int iNumFrames = std::min(iNumFramesRemaining, m_iBlockLen);
-                if (iNumFrames == iNumFramesRemaining)
+                if ((iNumFrames == iNumFramesRemaining) & (iNumFrames != m_iBlockLen))
                     iLenRemain = m_iBlockLen-iNumFrames+1;
                 
                 m_pfInputTmp    = &m_pfInputData[m_iDataLen - iNumFramesRemaining];
@@ -101,6 +101,208 @@ SUITE(FastConv)
 
         TestProcess();
         
+        /*
+        std::fstream            hOutputFile;
+        std::fstream            hInputFile;
+        std::string sOutputFilePath = "Test1Output.txt";
+        std::string sInputFilePath = "Test1Input.txt";
+        
+        hOutputFile.open (sOutputFilePath.c_str(), std::ios::out);
+        hInputFile.open (sInputFilePath.c_str(), std::ios::out);
+        
+        for (int i=0; i<m_iDataLen; i++)
+        {
+            hInputFile<< m_pfInputData[i] << " ";
+            //std::cout<< m_pfInputData[i] << std::endl;
+            hInputFile<< std::endl;
+        }
+        hInputFile.close();
+        
+        for (int i =0; i< m_iDataLen+m_iIRlen-1;i++)
+        {
+            hOutputFile<< m_pfOutputData[i] << " ";
+            //std::cout<< m_pfOutputData[i] << std::endl;
+            hOutputFile<< std::endl;
+        }
+        
+        hOutputFile.close();
+        */
+        
+        for (int i= 0; i < (m_iDataLen+m_iIRlen-1); i++)
+        {
+            if (i<idelaySample)
+                CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
+            else if (i >= idelaySample & i<(m_iDataLen+idelaySample))
+                CHECK_CLOSE(m_pfInputData[i-idelaySample], m_pfOutputData[i], 1e-3F);
+            else
+                CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
+        }
+        
+    }
+
+    TEST_FIXTURE(FastConvData, InputBlockLengthTest)
+    { 
+        //for an input signal of length 10000, run a similar test
+       // with a succession of different input/output block sizes (1, 13, 1023, 2048,1,17, 5000, 1897)
+        
+        // BlockSize input 1
+        m_iIRlen = 1;
+        std::memset(m_pfImpulseRespFCD, 0, m_iIRlen);
+        int idelaySample = 0;
+        m_pfImpulseRespFCD[idelaySample]=1;
+        m_iBlockLen = m_iIRlen;
+        
+        m_pCFastConv->init( m_pfImpulseRespFCD, m_iIRlen, m_iBlockLen);
+        
+        m_iDataLen = 10000; // 51sec test signal
+        float fFreqInHz=50;
+        CSynthesis::generateSine (m_pfInputData, fFreqInHz, m_fSamplingRate, m_iDataLen, 1.F, 0.F);
+        
+        TestProcess();
+        
+        for (int i= 0; i < (m_iDataLen+m_iIRlen-1); i++)
+        {
+            if (i<idelaySample)
+                CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
+            else if (i >= idelaySample & i<(m_iDataLen+idelaySample))
+                CHECK_CLOSE(m_pfInputData[i-idelaySample], m_pfOutputData[i], 1e-3F);
+            else
+                CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
+        }
+        
+       
+        ///////////////////////////////////////////////////////////////////////////////////////
+        m_pCFastConv->reset();
+        
+        // BlockSize output 1
+        m_iIRlen = 10000;
+        std::memset(m_pfImpulseRespFCD, 0, m_iIRlen);
+        idelaySample = 5;
+        m_pfImpulseRespFCD[idelaySample]=1;
+        m_iBlockLen = m_iIRlen;
+        
+        m_pCFastConv->init( m_pfImpulseRespFCD, m_iIRlen, m_iBlockLen);
+        
+        m_iDataLen = 1; // 51sec test signal
+        fFreqInHz=50;
+        CSynthesis::generateSine (m_pfInputData, fFreqInHz, m_fSamplingRate, m_iDataLen, 1.F, 0.F);
+        
+        TestProcess();
+        
+        for (int i= 0; i < (m_iDataLen+m_iIRlen-1); i++)
+        {
+            if (i<idelaySample)
+                CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
+            else if (i >= idelaySample & i<(m_iDataLen+idelaySample))
+                CHECK_CLOSE(m_pfInputData[i-idelaySample], m_pfOutputData[i], 1e-3F);
+            else
+                CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
+        }
+        
+        
+        ///////////////////////////////////////////////////////////////////////////////////////
+        m_pCFastConv->reset();
+        
+        // BlockSize input 13
+        m_iIRlen = 13;
+        std::memset(m_pfImpulseRespFCD, 0, m_iIRlen);
+        idelaySample = 5;
+        m_pfImpulseRespFCD[idelaySample]=1;
+        m_iBlockLen = m_iIRlen;
+        
+        m_pCFastConv->init( m_pfImpulseRespFCD, m_iIRlen, m_iBlockLen);
+        
+        m_iDataLen = 10000; // 51sec test signal
+        fFreqInHz=50;
+        CSynthesis::generateSine (m_pfInputData, fFreqInHz, m_fSamplingRate, m_iDataLen, 1.F, 0.F);
+        
+        TestProcess();
+        
+        for (int i= 0; i < (m_iDataLen+m_iIRlen-1); i++)
+        {
+            if (i<idelaySample)
+                CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
+            else if (i >= idelaySample & i<(m_iDataLen+idelaySample))
+                CHECK_CLOSE(m_pfInputData[i-idelaySample], m_pfOutputData[i], 1e-3F);
+            else
+                CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
+        }
+        
+        ///////////////////////////////////////////////////////////////////////////////////////
+        m_pCFastConv->reset();
+        
+        // BlockSize input 17
+        m_iIRlen = 17;
+        std::memset(m_pfImpulseRespFCD, 0, m_iIRlen);
+        idelaySample = 5;
+        m_pfImpulseRespFCD[idelaySample]=1;
+        m_iBlockLen = m_iIRlen;
+        
+        m_pCFastConv->init( m_pfImpulseRespFCD, m_iIRlen, m_iBlockLen);
+        
+        m_iDataLen = 10000; // 51sec test signal
+        fFreqInHz=50;
+        CSynthesis::generateSine (m_pfInputData, fFreqInHz, m_fSamplingRate, m_iDataLen, 1.F, 0.F);
+        
+        TestProcess();
+        
+        for (int i= 0; i < (m_iDataLen+m_iIRlen-1); i++)
+        {
+            if (i<idelaySample)
+                CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
+            else if (i >= idelaySample & i<(m_iDataLen+idelaySample))
+                CHECK_CLOSE(m_pfInputData[i-idelaySample], m_pfOutputData[i], 1e-3F);
+            else
+                CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
+        }
+      
+        ///////////////////////////////////////////////////////////////////////////////////////
+        m_pCFastConv->reset();
+        
+        // BlockSize input 1897
+        m_iIRlen = 1897;
+        std::memset(m_pfImpulseRespFCD, 0, m_iIRlen);
+        idelaySample = 5;
+        m_pfImpulseRespFCD[idelaySample]=1;
+        m_iBlockLen = m_iIRlen;
+        
+        m_pCFastConv->init( m_pfImpulseRespFCD, m_iIRlen, m_iBlockLen);
+        
+        m_iDataLen = 10000; // 51sec test signal
+        fFreqInHz=50;
+        CSynthesis::generateSine (m_pfInputData, fFreqInHz, m_fSamplingRate, m_iDataLen, 1.F, 0.F);
+        
+        TestProcess();
+        
+        for (int i= 0; i < (m_iDataLen+m_iIRlen-1); i++)
+        {
+            if (i<idelaySample)
+                CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
+            else if (i >= idelaySample & i<(m_iDataLen+idelaySample))
+                CHECK_CLOSE(m_pfInputData[i-idelaySample], m_pfOutputData[i], 1e-3F);
+            else
+                CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
+        }
+       
+       /*
+        ///////////////////////////////////////////////////////////////////////////////////////
+        m_pCFastConv->reset();
+        
+        // BlockSize input 5000
+        m_iIRlen = 5000;
+        std::memset(m_pfImpulseRespFCD, 0, m_iIRlen);
+        idelaySample = 5;
+        m_pfImpulseRespFCD[idelaySample]=1;
+        m_iBlockLen = m_iIRlen;
+        
+        m_pCFastConv->init( m_pfImpulseRespFCD, m_iIRlen, m_iBlockLen);
+        
+        m_iDataLen = 10000; // 51sec test signal
+        fFreqInHz=50;
+        CSynthesis::generateSine (m_pfInputData, fFreqInHz, m_fSamplingRate, m_iDataLen, 1.F, 0.F);
+        
+        TestProcess();
+        
         std::fstream            hOutputFile;
         std::fstream            hInputFile;
         std::string sOutputFilePath = "Test1Output.txt";
@@ -126,6 +328,35 @@ SUITE(FastConv)
         
         hOutputFile.close();
         
+        for (int i= 0; i < (m_iDataLen+m_iIRlen-1); i++)
+        {
+            if (i<idelaySample)
+                CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
+            else if (i >= idelaySample & i<(m_iDataLen+idelaySample))
+                CHECK_CLOSE(m_pfInputData[i-idelaySample], m_pfOutputData[i], 1e-3F);
+            else
+                CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
+        }
+        */
+        
+        
+        ///////////////////////////////////////////////////////////////////////////////////////
+        m_pCFastConv->reset();
+        
+        // BlockSize input 2048
+        m_iIRlen = 2048;
+        std::memset(m_pfImpulseRespFCD, 0, m_iIRlen);
+        idelaySample = 5;
+        m_pfImpulseRespFCD[idelaySample]=1;
+        m_iBlockLen = m_iIRlen;
+        
+        m_pCFastConv->init( m_pfImpulseRespFCD, m_iIRlen, m_iBlockLen);
+        
+        m_iDataLen = 10000; // 51sec test signal
+        fFreqInHz=50;
+        CSynthesis::generateSine (m_pfInputData, fFreqInHz, m_fSamplingRate, m_iDataLen, 1.F, 0.F);
+        
+        TestProcess();
         
         for (int i= 0; i < (m_iDataLen+m_iIRlen-1); i++)
         {
@@ -137,11 +368,36 @@ SUITE(FastConv)
                 CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
         }
         
+        ///////////////////////////////////////////////////////////////////////////////////////
+        m_pCFastConv->reset();
+        
+        // BlockSize input 1023
+        m_iIRlen = 1023;
+        std::memset(m_pfImpulseRespFCD, 0, m_iIRlen);
+        idelaySample = 5;
+        m_pfImpulseRespFCD[idelaySample]=1;
+        m_iBlockLen = m_iIRlen;
+        
+        m_pCFastConv->init( m_pfImpulseRespFCD, m_iIRlen, m_iBlockLen);
+        
+        m_iDataLen = 10000; // 51sec test signal
+        fFreqInHz=50;
+        CSynthesis::generateSine (m_pfInputData, fFreqInHz, m_fSamplingRate, m_iDataLen, 1.F, 0.F);
+        
+        TestProcess();
+        
+        for (int i= 0; i < (m_iDataLen+m_iIRlen-1); i++)
+        {
+            if (i<idelaySample)
+                CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
+            else if (i >= idelaySample & i<(m_iDataLen+idelaySample))
+                CHECK_CLOSE(m_pfInputData[i-idelaySample], m_pfOutputData[i], 1e-3F);
+            else
+                CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
+        }
+     
+        
     }
-
-    //TEST_FIXTURE(FastConvData, InputBlockLengthTest)
-    //{
-    //}
 
 }
 
