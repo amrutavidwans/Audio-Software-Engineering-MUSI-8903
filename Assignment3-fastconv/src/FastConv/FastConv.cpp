@@ -14,8 +14,8 @@ CFastConv::CFastConv( void )
 CFastConv::~CFastConv( void )
 {
     delete [] m_pfImpulseResponse;
-    delete [] m_pCRingBuffCurr;
-    delete [] m_pCRingBuffPrev;
+    //delete [] m_pCRingBuffCurr;
+    //delete [] m_pCRingBuffPrev;
     reset();
 }
 
@@ -123,8 +123,16 @@ Error_t CFastConv::processTimeDomain (float *pfInputBuffer, float *pfOutputBuffe
             pfOutputBuffer[i]=m_pCRingBuffCurr->getPostInc()+m_pCRingBuffPrev->getPostInc();
         }
         else
-            pfOutputBuffer[i]=m_pCRingBuffCurr->getPostInc();
+            pfOutputBuffer[i]=m_pCRingBuffCurr->getPostInc();  // when length of buffer is greater than length of IR
             
+    }
+    
+    if (iLengthOfBuffers < m_iLengthOfIr) // if length of buffer is less than length of IR
+    {
+        for (int i=0; i<(m_iLengthOfIr - iLengthOfBuffers-1); i++)
+        {
+            m_pCRingBuffPrev->putPostInc(m_pCRingBuffCurr->getPostInc()+m_pCRingBuffPrev->getPostInc());
+        }
     }
     
     for (int i=0; i<m_iLengthOfIr-1; i++)

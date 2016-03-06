@@ -47,17 +47,20 @@ SUITE(FastConv)
             delete [] m_pfImpulseRespFCD;
             delete [] m_pfInputData;
             delete [] m_pfOutputData;
-            delete [] m_pfInputTmp;
-            delete [] m_pfOutputTmp;
+            //delete [] m_pfInputTmp;
+            //delete [] m_pfOutputTmp;
             
         }
 
         void TestProcess()
         {
+            int iLenRemain = 0;
             int iNumFramesRemaining = m_iDataLen;
             while (iNumFramesRemaining > 0)
             {
                 int iNumFrames = std::min(iNumFramesRemaining, m_iBlockLen);
+                if (iNumFrames == iNumFramesRemaining)
+                    iLenRemain = m_iBlockLen-iNumFrames+1;
                 
                 m_pfInputTmp    = &m_pfInputData[m_iDataLen - iNumFramesRemaining];
                 m_pfOutputTmp   = &m_pfOutputData[m_iDataLen - iNumFramesRemaining];
@@ -66,8 +69,8 @@ SUITE(FastConv)
                 
                 iNumFramesRemaining -= iNumFrames;
             }
-            int iLenRemain = m_iIRlen-1;
-            m_pCFastConv->flushBuffer(&m_pfOutputData[m_iDataLen+1], iLenRemain);
+            int iLenFlush = iLenRemain+m_iIRlen-1;
+            m_pCFastConv->flushBuffer(&m_pfOutputData[m_iDataLen], iLenFlush);
         }
 
         CFastConv *m_pCFastConv;
@@ -136,9 +139,9 @@ SUITE(FastConv)
         
     }
 
-    TEST_FIXTURE(FastConvData, InputBlockLengthTest)
-    {
-    }
+    //TEST_FIXTURE(FastConvData, InputBlockLengthTest)
+    //{
+    //}
 
 }
 
