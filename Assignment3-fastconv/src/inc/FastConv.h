@@ -43,6 +43,7 @@ public:
     Error_t process (float *pfInputBuffer, float *pfOutputBuffer, int iLengthOfBuffers );
     
     Error_t processTimeDomain (float *pfInputBuffer, float *pfOutputBuffer, int iLengthOfBuffers );
+   // Error_t convTimeDomain (float *pfInputBuffer, float *pfOutputBuffer, int iLengthOfBuffers );
 
     Error_t flushBuffer(float *pfOutputBuffer, int iLengthOfBuffer);
     
@@ -54,6 +55,11 @@ private:
     CRingBuffer<float> *m_pCRingBuffCurr;
     CRingBuffer<float> *m_pCRingBuffPrev;
     //CRingBuffer<float> *m_pCRingBuffInput;
+    
+    int m_iNumIrBlcks;
+    CFft *m_pCFFT;
+    float *m_pfIRfft;
+    int m_iNxtPow2BlkLen;
 };
 
 

@@ -29,8 +29,8 @@ SUITE(FastConv)
         m_pfImpulseRespFCD(0),
         m_pfInputTmp(0),
         m_pfOutputTmp(0),
-        m_iIRlen(171),
-        m_iBlockLen(171),
+        m_iIRlen(1050),
+        m_iBlockLen(512),
         m_iDataLen(816000),
         m_fSamplingRate(16000)
         
@@ -54,13 +54,13 @@ SUITE(FastConv)
 
         void TestProcess()
         {
-            int iLenRemain = 0;
+            //int iLenRemain = 0;
             int iNumFramesRemaining = m_iDataLen;
             while (iNumFramesRemaining > 0)
             {
                 int iNumFrames = std::min(iNumFramesRemaining, m_iBlockLen);
-                if ((iNumFrames == iNumFramesRemaining) & (iNumFrames != m_iBlockLen))
-                    iLenRemain = m_iBlockLen-iNumFrames+1;
+                //if ((iNumFrames == iNumFramesRemaining) & (iNumFrames != m_iBlockLen))
+                  //  iLenRemain = m_iBlockLen-iNumFrames+1;
                 
                 m_pfInputTmp    = &m_pfInputData[m_iDataLen - iNumFramesRemaining];
                 m_pfOutputTmp   = &m_pfOutputData[m_iDataLen - iNumFramesRemaining];
@@ -69,7 +69,7 @@ SUITE(FastConv)
                 
                 iNumFramesRemaining -= iNumFrames;
             }
-            int iLenFlush = iLenRemain+m_iIRlen-1;
+            int iLenFlush = m_iIRlen-1;
             m_pCFastConv->flushBuffer(&m_pfOutputData[m_iDataLen], iLenFlush);
         }
 
@@ -101,7 +101,7 @@ SUITE(FastConv)
 
         TestProcess();
         
-        /*
+        
         std::fstream            hOutputFile;
         std::fstream            hInputFile;
         std::string sOutputFilePath = "Test1Output.txt";
@@ -126,7 +126,7 @@ SUITE(FastConv)
         }
         
         hOutputFile.close();
-        */
+        
         
         for (int i= 0; i < (m_iDataLen+m_iIRlen-1); i++)
         {
@@ -179,7 +179,7 @@ SUITE(FastConv)
         std::memset(m_pfImpulseRespFCD, 0, m_iIRlen);
         idelaySample = 5;
         m_pfImpulseRespFCD[idelaySample]=1;
-        m_iBlockLen = m_iIRlen;
+        m_iBlockLen = 1;
         
         m_pCFastConv->init( m_pfImpulseRespFCD, m_iIRlen, m_iBlockLen);
         
@@ -396,7 +396,7 @@ SUITE(FastConv)
                 CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
         }
      
-        
+    
     }
 
 }
