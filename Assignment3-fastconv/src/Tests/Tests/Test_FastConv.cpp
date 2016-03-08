@@ -39,16 +39,24 @@ SUITE(FastConv)
             m_pfImpulseRespFCD = new float [m_iIRlen];
             m_pfInputData = new float [m_iDataLen];
             m_pfOutputData = new float [m_iIRlen+m_iDataLen-1];
+            m_pfInputTmp = new float;
+            m_pfOutputTmp = new float;
         }
 
         ~FastConvData() 
         {
             m_pCFastConv-> ~CFastConv() ;
             delete [] m_pfImpulseRespFCD;
+            m_pfImpulseRespFCD = 0;
             delete [] m_pfInputData;
+            m_pfInputData = 0;
             delete [] m_pfOutputData;
-            //delete [] m_pfInputTmp;
-            //delete [] m_pfOutputTmp;
+            m_pfOutputData = 0;
+            
+            //delete m_pfInputTmp;
+            m_pfInputTmp = 0;
+            //delete m_pfOutputTmp;
+            m_pfOutputTmp = 0;
             
         }
 
@@ -137,11 +145,13 @@ SUITE(FastConv)
             else
                 CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
         }
+       // std::cout << "I was here 1"<< std::endl;
         
     }
 
     TEST_FIXTURE(FastConvData, InputBlockLengthTest)
-    { 
+    {
+        
         //for an input signal of length 10000, run a similar test
        // with a succession of different input/output block sizes (1, 13, 1023, 2048,1,17, 5000, 1897)
         
@@ -228,6 +238,8 @@ SUITE(FastConv)
                 CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
         }
         
+         
+        
         ///////////////////////////////////////////////////////////////////////////////////////
         m_pCFastConv->reset();
         
@@ -256,6 +268,7 @@ SUITE(FastConv)
                 CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
         }
       
+      /*
         ///////////////////////////////////////////////////////////////////////////////////////
         m_pCFastConv->reset();
         
@@ -284,21 +297,21 @@ SUITE(FastConv)
                 CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
         }
        
-       /*
+       
         ///////////////////////////////////////////////////////////////////////////////////////
-        m_pCFastConv->reset();
+        //m_pCFastConv->reset();
         
         // BlockSize input 5000
         m_iIRlen = 5000;
         std::memset(m_pfImpulseRespFCD, 0, m_iIRlen);
-        idelaySample = 5;
+        int idelaySample = 5;
         m_pfImpulseRespFCD[idelaySample]=1;
         m_iBlockLen = m_iIRlen;
         
         m_pCFastConv->init( m_pfImpulseRespFCD, m_iIRlen, m_iBlockLen);
         
         m_iDataLen = 10000; // 51sec test signal
-        fFreqInHz=50;
+        float fFreqInHz=50;
         CSynthesis::generateSine (m_pfInputData, fFreqInHz, m_fSamplingRate, m_iDataLen, 1.F, 0.F);
         
         TestProcess();
@@ -337,7 +350,7 @@ SUITE(FastConv)
             else
                 CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
         }
-        */
+        
         
         
         ///////////////////////////////////////////////////////////////////////////////////////
@@ -368,6 +381,7 @@ SUITE(FastConv)
                 CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
         }
         
+        
         ///////////////////////////////////////////////////////////////////////////////////////
         m_pCFastConv->reset();
         
@@ -395,6 +409,7 @@ SUITE(FastConv)
             else
                 CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
         }
+         */
      
     
     }

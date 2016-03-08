@@ -16,9 +16,9 @@ CFastConv::CFastConv( void )
 
 CFastConv::~CFastConv( void )
 {
-    delete [] m_pfImpulseResponse;
-    //delete [] m_pCRingBuffCurr;
-    //delete [] m_pCRingBuffPrev;
+    delete m_pfImpulseResponse;
+    delete m_pCRingBuffCurr;
+    delete m_pCRingBuffPrev;
     reset();
 }
 
@@ -76,7 +76,7 @@ Error_t CFastConv::init(float *pfImpulseResponse, int iLengthOfIr, int iBlockLen
     
     int iZPfactor = 1;
     CFft::create(m_pCFFT);
-    m_pCFFT->init( m_iBlockLength, iZPfactor); //, 2, 1); 
+    m_pCFFT->init( (2*m_iNxtPow2BlkLen), iZPfactor, CFft::WindowFunction_t::kWindowHann, CFft::Windowing_t::kNoWindow); //, 2, 1);
      //, WindowFunction_t eWindow = kWindowHann, Windowing_t eWindowing = kPreWindow );
     
     m_pfIRfft = new float[m_iLengthOfIr+m_iBlockLength-1];
@@ -92,20 +92,126 @@ Error_t CFastConv::reset()
     m_iBlockLength = 0;
     m_iNumIrBlcks = 0;
     m_iNxtPow2BlkLen = 0;
-    //delete m_pfImpulseResponse;
     m_pfImpulseResponse =0;
-    //delete m_pCRingBuffPrev;
-    m_pCRingBuffPrev =0;
-    //delete m_pCRingBuffCurr;
-    m_pCRingBuffCurr =0;
+    m_pCRingBuffPrev=0;
+    m_pCRingBuffCurr=0;
+    m_pCFFT = 0;
+    m_pfIRfft =0;
     return kNoError;
 }
 
 
 Error_t CFastConv::process (float *pfInputBuffer, float *pfOutputBuffer, int iLengthOfBuffers )
 {
-    processTimeDomain ( pfInputBuffer, pfOutputBuffer, iLengthOfBuffers );
+    //processTimeDomain ( pfInputBuffer, pfOutputBuffer, iLengthOfBuffers );
 
+    // zeropadding of input signal
+    float *pftempBuff= new float [(2*m_iNxtPow2BlkLen)];
+    std::memset(pftempBuff, 0, 2*m_iNxtPow2BlkLen);
+    for (int i=0;i<(2*m_iNxtPow2BlkLen); i++)
+    {
+        if (i<iLengthOfBuffers)
+            pftempBuff[i]=pfInputBuffer[i]*2*m_iNxtPow2BlkLen;
+        else
+            pftempBuff[i]=0;
+        // std::cout << i<<" "<<pftempBuff[i] << std::endl;
+    }
+    
+    //std::cout<<"---------" << std::endl;
+    
+    float *pftempOutput=new float [m_iNxtPow2BlkLen+ m_iNxtPow2BlkLen*(m_iNumIrBlcks)];
+    float *pfIRtemp = new float [2*m_iNxtPow2BlkLen];
+    std::memset(pftempOutput, 0, 2*m_iNxtPow2BlkLen);
+    std::memset(pfIRtemp, 0, 2*m_iNxtPow2BlkLen);
+    
+    for (int k =0; k<m_iNumIrBlcks; k++)
+    {
+        for (int i=0; i<(2*m_iNxtPow2BlkLen); i++)
+        {   if (((k*m_iNxtPow2BlkLen)+i)<m_iLengthOfIr && i< m_iNxtPow2BlkLen)
+            pfIRtemp[i]=m_pfImpulseResponse[(k*m_iNxtPow2BlkLen)+i];
+        else
+            pfIRtemp[i]=0;
+            
+            //std::cout<<pfIRtemp[i] << std::endl;
+        }
+        //std::cout<<"---------" << std::endl;
+        
+        
+        //pftempOutput array can be fed to fft and output can be obtained
+        float *pfSpectrumInput= new float [2*m_iNxtPow2BlkLen];
+        std::memset(pfSpectrumInput, 0, 2*m_iNxtPow2BlkLen);
+        m_pCFFT->doFft( pfSpectrumInput, pftempBuff);
+        
+        float *pfSpectrumIR= new float [2*m_iNxtPow2BlkLen];
+        std::memset(pfSpectrumIR, 0, 2*m_iNxtPow2BlkLen);
+        m_pCFFT->doFft( pfSpectrumIR, pfIRtemp);
+        /*for (int lmno = 0; lmno < (2*m_iNxtPow2BlkLen); lmno++) {
+            std::cout << pfSpectrumIR[lmno] << std::endl;
+        }*/
+        m_pCFFT->mulCompSpectrum(pfSpectrumInput, pfSpectrumIR);
+        
+        float *pfIFFTtemp= new float [2*m_iNxtPow2BlkLen];
+        std::memset(pfIFFTtemp, 0, 2*m_iNxtPow2BlkLen);
+        m_pCFFT->doInvFft (pfIFFTtemp, pfSpectrumInput);
+        
+        for (int i = 0; i< (2*m_iNxtPow2BlkLen)-1; i++)
+        {
+            pftempOutput[(k*m_iNxtPow2BlkLen)+i] += pfIFFTtemp[i];
+            //std::cout << (k*m_iNxtPow2BlkLen)+i << " " << pfSpectrumInput[i] << " " << pfSpectrumIR[i] << " " << pfIFFTtemp[i] << " " << pftempOutput[(k*m_iNxtPow2BlkLen)+i]<< std::endl;
+        }
+        
+        
+    }
+    
+    for (int iter=0; iter<(m_iLengthOfIr+iLengthOfBuffers-1); iter++)
+    {
+        m_pCRingBuffCurr->putPostInc(pftempOutput[iter]);
+        // std::cout << pftempOutput[iter] << std::endl;
+    }
+    //std::cout<<"---------" << std::endl;
+    //std::cout << "-----" << std::endl;
+    
+    // add the prev reverb tail with starting iLengthOfBuffers number of current output values
+    for (int i=0; i<iLengthOfBuffers; i++)
+    {
+        if (i < m_iLengthOfIr-1)
+        {
+            pfOutputBuffer[i]=m_pCRingBuffCurr->getPostInc()+m_pCRingBuffPrev->getPostInc();
+        }
+        else
+            pfOutputBuffer[i]=m_pCRingBuffCurr->getPostInc();  // when length of buffer is greater than length of IR
+        
+    }
+    
+    int iNewWrtPrev =(m_iLengthOfIr - iLengthOfBuffers-1);
+    
+    if (iLengthOfBuffers < m_iLengthOfIr) // if length of buffer is less than length of IR
+    {
+        for (int i=0; i<iNewWrtPrev; i++)
+        {
+            m_pCRingBuffPrev->putPostInc(m_pCRingBuffCurr->getPostInc()+m_pCRingBuffPrev->getPostInc());
+        }
+    }
+    
+    if (iNewWrtPrev < 0)
+    {
+        for (int i=0; i<(m_iLengthOfIr-1); i++)
+        {
+            m_pCRingBuffPrev->putPostInc(m_pCRingBuffCurr->getPostInc());
+        }
+    }
+    else
+    {
+        for (int i=0; i<(m_iLengthOfIr-iNewWrtPrev-1); i++)
+        {
+            m_pCRingBuffPrev->putPostInc(m_pCRingBuffCurr->getPostInc());
+        }
+        
+    }
+
+    delete[] pftempBuff;
+    pftempBuff = 0;
+    
     return kNoError;
 }
 
@@ -124,7 +230,7 @@ Error_t CFastConv::processTimeDomain (float *pfInputBuffer, float *pfOutputBuffe
        // std::cout << i<<" "<<pftempBuff[i] << std::endl;
     }
     
-    std::cout<<"---------" << std::endl;
+    //std::cout<<"---------" << std::endl;
     
     float *pftempOutput=new float [m_iNxtPow2BlkLen+ m_iNxtPow2BlkLen*(m_iNumIrBlcks)];
     float *pfIRtemp = new float [2*m_iNxtPow2BlkLen];
@@ -141,7 +247,7 @@ Error_t CFastConv::processTimeDomain (float *pfInputBuffer, float *pfOutputBuffe
             
             //std::cout<<pfIRtemp[i] << std::endl;
         }
-        std::cout<<"---------" << std::endl;
+        //std::cout<<"---------" << std::endl;
         
     // convolution loop
         for (int i = 0; i< (2*m_iNxtPow2BlkLen)-1; i++)
@@ -153,8 +259,8 @@ Error_t CFastConv::processTimeDomain (float *pfInputBuffer, float *pfOutputBuffe
                 {
                     ftempVal += pfIRtemp[(i-j)] * pftempBuff[j];
                 /*
-                if (m_pfImpulseResponse[i-j]>0 && m_pfImpulseResponse[i-j]<1)
-                    std::cout << m_pfImpulseResponse[i-j] <<std::endl;
+                if (pfIRtemp[i-j]>0 && pfIRtemp[i-j]<1)
+                    std::cout << pfIRtemp[i-j] <<std::endl;
                 if (pftempBuff[j] > 1)
                     std::cout << pftempBuff[j] <<std::endl;
                  */
@@ -175,7 +281,7 @@ Error_t CFastConv::processTimeDomain (float *pfInputBuffer, float *pfOutputBuffe
         m_pCRingBuffCurr->putPostInc(pftempOutput[iter]);
        // std::cout << pftempOutput[iter] << std::endl;
     }
-    std::cout<<"---------" << std::endl;
+    //std::cout<<"---------" << std::endl;
      //std::cout << "-----" << std::endl;
     
     // add the prev reverb tail with starting iLengthOfBuffers number of current output values
@@ -216,7 +322,8 @@ Error_t CFastConv::processTimeDomain (float *pfInputBuffer, float *pfOutputBuffe
         
     }
     
-    //delete [] pftempBuff;
+    delete[] pftempBuff;
+    pftempBuff = 0;
     
     return kNoError;
 }
