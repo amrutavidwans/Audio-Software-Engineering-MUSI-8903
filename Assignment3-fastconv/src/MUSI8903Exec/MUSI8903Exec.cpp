@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
     }
 
     //////////////////////////////////////////////////////////////////////////////
-    // open the input wave file
+    // open the input wave file-
     CAudioFileIf::create(phAudioFile);
     phAudioFile->openFile(sInputFilePath, CAudioFileIf::kFileRead);
     if (!phAudioFile->isOpen())
