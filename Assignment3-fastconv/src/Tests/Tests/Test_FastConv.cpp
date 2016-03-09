@@ -268,7 +268,7 @@ SUITE(FastConv)
                 CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
         }
       
-      /*
+      
         ///////////////////////////////////////////////////////////////////////////////////////
         m_pCFastConv->reset();
         
@@ -304,14 +304,14 @@ SUITE(FastConv)
         // BlockSize input 5000
         m_iIRlen = 5000;
         std::memset(m_pfImpulseRespFCD, 0, m_iIRlen);
-        int idelaySample = 5;
+        //int idelaySample = 5;
         m_pfImpulseRespFCD[idelaySample]=1;
         m_iBlockLen = m_iIRlen;
         
         m_pCFastConv->init( m_pfImpulseRespFCD, m_iIRlen, m_iBlockLen);
         
         m_iDataLen = 10000; // 51sec test signal
-        float fFreqInHz=50;
+       // float fFreqInHz=50;
         CSynthesis::generateSine (m_pfInputData, fFreqInHz, m_fSamplingRate, m_iDataLen, 1.F, 0.F);
         
         TestProcess();
@@ -409,7 +409,7 @@ SUITE(FastConv)
             else
                 CHECK_CLOSE(0.F, m_pfOutputData[i], 1e-3F);
         }
-         */
+         
      
     
     }
