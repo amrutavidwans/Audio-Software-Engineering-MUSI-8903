@@ -3,6 +3,7 @@
 #include <ctime>
 
 #include "MUSI8903Config.h"
+#include "FastConv.h"
 
 #include "AudioFileIf.h"
 
@@ -62,7 +63,25 @@ int main(int argc, char* argv[])
         cout << "Text file open error!";
         return -1;
     }
+    
 
+    ////////////////////////////////////////////////////////////////////////////
+    // object for fastconv
+    float *pfIRresp = new float;
+    int idelaySample = 5;
+    int iIRlen = 3000;
+    float *pfAudioPart = new float[kBlockSize];
+    float *pfOutputTmp = new float[kBlockSize];
+    CFastConv *pCFastConv;
+    pCFastConv = 0;
+    CFastConv::createInstance(pCFastConv);
+    
+    std::memset(pfIRresp, 0, iIRlen);
+    pfIRresp[idelaySample]=1;
+    
+    pCFastConv->init(pfIRresp, iIRlen, kBlockSize);
+    
+    
     //////////////////////////////////////////////////////////////////////////////
     // allocate memory
     ppfAudioData            = new float* [stFileSpec.iNumChannels];
@@ -70,23 +89,33 @@ int main(int argc, char* argv[])
         ppfAudioData[i] = new float [kBlockSize];
 
     time                    = clock();
+    
     //////////////////////////////////////////////////////////////////////////////
-    // get audio data and write it to the output file
+    // get processed and write it to the output file
     while (!phAudioFile->isEof())
     {
         long long iNumFrames = kBlockSize;
         phAudioFile->readData(ppfAudioData, iNumFrames);
+        pfAudioPart = ppfAudioData[0];
 
+        pCFastConv->process(pfAudioPart, pfOutputTmp, iNumFrames);
+        
         for (int i = 0; i < iNumFrames; i++)
         {
-            for (int c = 0; c < stFileSpec.iNumChannels; c++)
-            {
-                hOutputFile << ppfAudioData[c][i] << "\t";
-            }
+            hOutputFile << pfOutputTmp[i] << "\t";
             hOutputFile << endl;
         }
     }
-
+    
+    int iLenFlush = iIRlen-1;
+    float *pfOutputReverb = new float [iLenFlush];
+    pCFastConv->flushBuffer(pfOutputReverb, iLenFlush);
+    for (int i = 0; i < iLenFlush; i++)
+    {
+        hOutputFile << pfOutputReverb[i] << "\t";
+        hOutputFile << endl;
+    }
+    
     cout << "reading/writing done in: \t"    << (clock()-time)*1.F/CLOCKS_PER_SEC << " seconds." << endl;
 
     //////////////////////////////////////////////////////////////////////////////

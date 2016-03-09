@@ -1,11 +1,9 @@
 
-#include "Vector.h"
-#include "Util.h"
-#include "RingBuffer.h"
 #include <iostream>
-#include "Fft.h"
 #include <math.h>
 
+#include "Vector.h"
+#include "Util.h"
 #include "FastConv.h"
 
 CFastConv::CFastConv( void )
