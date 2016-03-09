@@ -5,6 +5,7 @@
 #include "MUSI8903Config.h"
 
 #include "AudioFileIf.h"
+#include "FastConv.h"
 
 using std::cout;
 using std::endl;
@@ -17,30 +18,45 @@ void    showClInfo ();
 int main(int argc, char* argv[])
 {
     std::string             sInputFilePath,                 //!< file paths
-                            sOutputFilePath;
+                            sOutputFilePath,
+                            sImpRespPath;
 
     static const int        kBlockSize          = 1024;
 
     clock_t                 time                = 0;
 
     float                   **ppfAudioData      = 0;
+    float                   **ppfImpRespData    = 0;
 
     CAudioFileIf            *phAudioFile        = 0;
-    std::fstream            hOutputFile;
+    
+    CAudioFileIf            *phImpRespFile      = 0;
+
+    std::fstream            hInputFile;
+    std::fstream            hImpResp;
+    std::fstream            hOuputFile;
+    
     CAudioFileIf::FileSpec_t stFileSpec;
+    CAudioFileIf::FileSpec_t stImpRespSpec;
+    
+    
+    
+    
+    
 
     showClInfo ();
 
     //////////////////////////////////////////////////////////////////////////////
     // parse command line arguments
-    if (argc < 2)
+    if (argc == 3)
     {
-        return -1;
+        sInputFilePath  = argv[1];
+        sImpRespPath    = argv[2];
+        sOutputFilePath = sInputFilePath + "Conv.txt";
     }
     else
     {
-        sInputFilePath  = argv[1];
-        sOutputFilePath = sInputFilePath + ".txt";
+        
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -53,7 +69,17 @@ int main(int argc, char* argv[])
         return -1;
     }
     phAudioFile->getFileSpec(stFileSpec);
-
+    
+    //////////////////////////////////////////////////////////////////////////////
+    //open the impulse response-
+    phImpRespFile->openFile(sImpRespPath, CAudioFileIf::kFileRead);
+    if (!phImpRespFile->isOpen())
+    {
+        cout << "Wave file open error!";
+        return -1;
+    }
+    phImpRespFile->getFileSpec(stImpRespSpec);
+    
     //////////////////////////////////////////////////////////////////////////////
     // open the output text file
     hOutputFile.open (sOutputFilePath.c_str(), std::ios::out);
@@ -64,12 +90,21 @@ int main(int argc, char* argv[])
     }
 
     //////////////////////////////////////////////////////////////////////////////
-    // allocate memory
+    // allocate memory for audio and then Imp Resp
     ppfAudioData            = new float* [stFileSpec.iNumChannels];
     for (int i = 0; i < stFileSpec.iNumChannels; i++)
         ppfAudioData[i] = new float [kBlockSize];
 
+    ppfImpRespData           = new float* [stImpRespSpec.iNumChannels];
+    for (int i = 0; i < stFileSpec.iNumChannels; i++)
+        ppfAudioData[i] = new float [kBlockSize];
+    
+    
     time                    = clock();
+    //////////////////////////////////////////////////////////////////////////////
+    //Initialize the FastConv object
+    
+    
     //////////////////////////////////////////////////////////////////////////////
     // get audio data and write it to the output file
     while (!phAudioFile->isEof())
