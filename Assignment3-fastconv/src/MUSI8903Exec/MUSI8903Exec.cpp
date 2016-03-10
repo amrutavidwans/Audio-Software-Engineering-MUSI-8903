@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
 
     std::fstream            hInputFile;
     std::fstream            hImpResp;
-    std::fstream            hOuputFile;
+    std::fstream            hOutputFile;
     
     CAudioFileIf::FileSpec_t stFileSpec;
     CAudioFileIf::FileSpec_t stImpRespSpec;
@@ -73,6 +73,7 @@ int main(int argc, char* argv[])
     
     //////////////////////////////////////////////////////////////////////////////
     //open the impulse response-
+    CAudioFileIf::create(phImpRespFile);
     phImpRespFile->openFile(sImpRespPath, CAudioFileIf::kFileRead);
     if (!phImpRespFile->isOpen())
     {
@@ -154,6 +155,7 @@ int main(int argc, char* argv[])
     //////////////////////////////////////////////////////////////////////////////
     // clean-up
     CAudioFileIf::destroy(phAudioFile);
+    CAudioFileIf::destroy(phImpRespFile);
     hOutputFile.close();
 
     for (int i = 0; i < stFileSpec.iNumChannels; i++)
