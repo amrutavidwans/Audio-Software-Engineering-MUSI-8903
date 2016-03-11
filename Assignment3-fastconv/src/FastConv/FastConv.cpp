@@ -223,10 +223,10 @@ Error_t CFastConv::processTimeDomain (float *pfInputBuffer, float *pfOutputBuffe
             pftempBuff[i]=pfInputBuffer[i];
         else
             pftempBuff[i]=0;
-       std::cout << i<<" "<<pftempBuff[i] << std::endl;
+       // std::cout << i<<" "<<pftempBuff[i] << std::endl;
     }
     
-    std::cout<<"---------" << std::endl;
+    //std::cout<<"---------" << std::endl;
     
     float *pftempOutput=new float [m_iNxtPow2BlkLen+ m_iNxtPow2BlkLen*(m_iNumIrBlcks)];
     float *pfIRtemp = new float [2*m_iNxtPow2BlkLen];
@@ -243,7 +243,7 @@ Error_t CFastConv::processTimeDomain (float *pfInputBuffer, float *pfOutputBuffe
             
             //std::cout<<pfIRtemp[i] << std::endl;
         }
-       
+        //std::cout<<"---------" << std::endl;
         
     // convolution loop
         for (int i = 0; i< (2*m_iNxtPow2BlkLen)-1; i++)
@@ -251,10 +251,9 @@ Error_t CFastConv::processTimeDomain (float *pfInputBuffer, float *pfOutputBuffe
             float ftempVal = 0;
             for (int j=0; j<m_iNxtPow2BlkLen; j++)
             {
-                if ((j-i)>=0)
+                if ((i-j)>=0)
                 {
-                    ftempVal += pfIRtemp[j-i] * pftempBuff[j];
-                   // std::cout << pfIRtemp[j]<< " "<<pftempBuff[j-i]<<" "<< ftempVal <<std::endl;
+                    ftempVal += pfIRtemp[(i-j)] * pftempBuff[j];
                 /*
                 if (pfIRtemp[i-j]>0 && pfIRtemp[i-j]<1)
                     std::cout << pfIRtemp[i-j] <<std::endl;
@@ -263,13 +262,12 @@ Error_t CFastConv::processTimeDomain (float *pfInputBuffer, float *pfOutputBuffe
                  */
                 }
                 else
-                    ftempVal += pfIRtemp[(i-j)%(2*m_iNxtPow2BlkLen)+(2*m_iNxtPow2BlkLen)]* pftempBuff[j];
-               // std::cout << pfIRtemp[j]<< " "<<pftempBuff[(i-j)%(2*m_iNxtPow2BlkLen)+(2*m_iNxtPow2BlkLen)]<<" "<< ftempVal <<std::endl;
+                    ftempVal += pfIRtemp[((i-j)%(2*m_iNxtPow2BlkLen))+(2*m_iNxtPow2BlkLen)] * pftempBuff[j];
             }
         
-            pftempOutput[i] += ftempVal;
-           // std::cout << pfIRtemp[(k*m_iNxtPow2BlkLen)+i] << " " << ftempVal << " " << pftempOutput[(k*m_iNxtPow2BlkLen)+i]<< std::endl;
-            //std::cout<<"---------" << std::endl;
+            pftempOutput[(k*m_iNxtPow2BlkLen)+i] += ftempVal;
+            //std::cout << (k*m_iNxtPow2BlkLen)+i << " " << ftempVal << " " << pftempOutput[(k*m_iNxtPow2BlkLen)+i]<< std::endl;
+            
          }
         
      }

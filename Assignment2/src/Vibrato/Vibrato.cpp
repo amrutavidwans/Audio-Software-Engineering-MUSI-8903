@@ -152,5 +152,3 @@ float Vibrato::getVibratoParam(VibratoParam eVibParam) const{
 
 
 
-=======
->>>>>>> f65f7a8b673924d88b6e0b3f77b59323eaa4abdb
