@@ -40,10 +40,6 @@ int main(int argc, char* argv[])
     CAudioFileIf::FileSpec_t stFileSpec;
     CAudioFileIf::FileSpec_t stImpRespSpec;
     
-    
-    
-    
-    
 
     showClInfo ();
 
@@ -94,20 +90,13 @@ int main(int argc, char* argv[])
 
     ////////////////////////////////////////////////////////////////////////////
     // object for fastconv
-    float *pfIRresp = new float;
-    int idelaySample = 5;
-    int iIRlen = 3000;
+    float *pfIRresp = 0;
+    long long iIRlen = 0;
     float *pfAudioPart = new float;
     float *pfOutputTmp = new float[kBlockSize];
     CFastConv *pCFastConv;
     pCFastConv = 0;
     CFastConv::createInstance(pCFastConv);
-    
-    std::memset(pfIRresp, 0, iIRlen);
-    pfIRresp[idelaySample]=1;
-    
-    pCFastConv->init(pfIRresp, iIRlen, kBlockSize);
-    
     
     //////////////////////////////////////////////////////////////////////////////
     // allocate memory for audio and then Imp Resp
@@ -117,11 +106,21 @@ int main(int argc, char* argv[])
 
     ppfImpRespData           = new float* [stImpRespSpec.iNumChannels];
     for (int i = 0; i < stFileSpec.iNumChannels; i++)
-        ppfAudioData[i] = new float [kBlockSize];
+        ppfImpRespData[i] = new float [kBlockSize];
     
     
     time                    = clock();
     
+    phImpRespFile->getLength(iIRlen);
+    
+    while (!phImpRespFile->isEof())
+    {
+        long long iNumFrames = kBlockSize;
+        phImpRespFile->readData(ppfImpRespData, iNumFrames);
+    }
+    
+    pfIRresp=ppfImpRespData[0];
+    pCFastConv->init(pfIRresp, iIRlen, kBlockSize);
     
     //////////////////////////////////////////////////////////////////////////////
     // get audio data and write it to the output file
@@ -171,7 +170,7 @@ int main(int argc, char* argv[])
 void     showClInfo()
 {
     cout << "GTCMT MUSI8903" << endl;
-    cout << "(c) 2016 by Alexander Lerch" << endl;
+    //cout << "(c) 2016 by Alexander Lerch" << endl;
     cout  << endl;
 
     return;

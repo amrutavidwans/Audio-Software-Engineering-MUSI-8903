@@ -143,9 +143,7 @@ Error_t CFastConv::process (float *pfInputBuffer, float *pfOutputBuffer, int iLe
         float *pfSpectrumIR= new float [2*m_iNxtPow2BlkLen];
         std::memset(pfSpectrumIR, 0, sizeof(float)*2*m_iNxtPow2BlkLen);
         m_pCFFT->doFft( pfSpectrumIR, pfIRtemp);
-        /*for (int lmno = 0; lmno < (2*m_iNxtPow2BlkLen); lmno++) {
-            std::cout << pfSpectrumIR[lmno] << std::endl;
-        }*/
+        
         m_pCFFT->mulCompSpectrum(pfSpectrumInput, pfSpectrumIR);
         
         float *pfIFFTtemp= new float [2*m_iNxtPow2BlkLen];
@@ -334,6 +332,7 @@ Error_t CFastConv::flushBuffer(float *pfOutputBuffer, int iLengthOfBuffer)
             pfOutputBuffer[i]= m_pCRingBuffPrev->getPostInc();
         else
             pfOutputBuffer[i]=0;
+        //std::cout << pfOutputBuffer[i]<<std::endl;
     }
     
     return kNoError;
