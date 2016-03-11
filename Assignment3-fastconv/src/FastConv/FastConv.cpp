@@ -14,7 +14,7 @@ CFastConv::CFastConv( void )
 
 CFastConv::~CFastConv( void )
 {
-    delete m_pfImpulseResponse;
+    delete[] m_pfImpulseResponse;
     delete m_pCRingBuffCurr;
     delete m_pCRingBuffPrev;
     reset();
@@ -36,9 +36,9 @@ Error_t CFastConv::destroyInstance (CFastConv*& pCFastConv)
     if (!pCFastConv)
         return kUnknownError;
     
+    delete pCFastConv;
     pCFastConv->reset();
     
-    delete pCFastConv;
     pCFastConv = 0;
     
     return kNoError;
@@ -60,7 +60,7 @@ Error_t CFastConv::init(float *pfImpulseResponse, int iLengthOfIr, int iBlockLen
     
     m_pfImpulseResponse = new float[m_iNxtPow2BlkLen];
     
-    std::memset(m_pfImpulseResponse, 0, m_iNxtPow2BlkLen);
+    std::memset(m_pfImpulseResponse, 0, sizeof(float)*m_iNxtPow2BlkLen);
     
     for (int i=0; i<(m_iLengthOfIr); i++)
     {
@@ -105,22 +105,22 @@ Error_t CFastConv::process (float *pfInputBuffer, float *pfOutputBuffer, int iLe
 
     // zeropadding of input signal
     float *pftempBuff= new float [(2*m_iNxtPow2BlkLen)];
-    std::memset(pftempBuff, 0, 2*m_iNxtPow2BlkLen);
+    std::memset(pftempBuff, 0, sizeof(float)*2*m_iNxtPow2BlkLen);
     for (int i=0;i<(2*m_iNxtPow2BlkLen); i++)
     {
         if (i<iLengthOfBuffers)
             pftempBuff[i]=pfInputBuffer[i]*2*m_iNxtPow2BlkLen;
         else
             pftempBuff[i]=0;
-        // std::cout << i<<" "<<pftempBuff[i] << std::endl;
+         //std::cout << i<<" "<<pftempBuff[i] << std::endl;
     }
     
     //std::cout<<"---------" << std::endl;
     
     float *pftempOutput=new float [m_iNxtPow2BlkLen+ m_iNxtPow2BlkLen*(m_iNumIrBlcks)];
     float *pfIRtemp = new float [2*m_iNxtPow2BlkLen];
-    std::memset(pftempOutput, 0, 2*m_iNxtPow2BlkLen);
-    std::memset(pfIRtemp, 0, 2*m_iNxtPow2BlkLen);
+    std::memset(pftempOutput, 0, sizeof(float)*2*m_iNxtPow2BlkLen);
+    std::memset(pfIRtemp, 0, sizeof(float)*2*m_iNxtPow2BlkLen);
     
     for (int k =0; k<m_iNumIrBlcks; k++)
     {
@@ -137,11 +137,11 @@ Error_t CFastConv::process (float *pfInputBuffer, float *pfOutputBuffer, int iLe
         
         //pftempOutput array can be fed to fft and output can be obtained
         float *pfSpectrumInput= new float [2*m_iNxtPow2BlkLen];
-        std::memset(pfSpectrumInput, 0, 2*m_iNxtPow2BlkLen);
+        std::memset(pfSpectrumInput, 0, sizeof(float)*2*m_iNxtPow2BlkLen);
         m_pCFFT->doFft( pfSpectrumInput, pftempBuff);
         
         float *pfSpectrumIR= new float [2*m_iNxtPow2BlkLen];
-        std::memset(pfSpectrumIR, 0, 2*m_iNxtPow2BlkLen);
+        std::memset(pfSpectrumIR, 0, sizeof(float)*2*m_iNxtPow2BlkLen);
         m_pCFFT->doFft( pfSpectrumIR, pfIRtemp);
         /*for (int lmno = 0; lmno < (2*m_iNxtPow2BlkLen); lmno++) {
             std::cout << pfSpectrumIR[lmno] << std::endl;
@@ -149,7 +149,7 @@ Error_t CFastConv::process (float *pfInputBuffer, float *pfOutputBuffer, int iLe
         m_pCFFT->mulCompSpectrum(pfSpectrumInput, pfSpectrumIR);
         
         float *pfIFFTtemp= new float [2*m_iNxtPow2BlkLen];
-        std::memset(pfIFFTtemp, 0, 2*m_iNxtPow2BlkLen);
+        std::memset(pfIFFTtemp, 0, sizeof(float)*2*m_iNxtPow2BlkLen);
         m_pCFFT->doInvFft (pfIFFTtemp, pfSpectrumInput);
         
         for (int i = 0; i< (2*m_iNxtPow2BlkLen)-1; i++)
@@ -218,7 +218,7 @@ Error_t CFastConv::processTimeDomain (float *pfInputBuffer, float *pfOutputBuffe
 {
     // zeropadding of input signal
     float *pftempBuff= new float [(2*m_iNxtPow2BlkLen)];
-    std::memset(pftempBuff, 0, 2*m_iNxtPow2BlkLen);
+    std::memset(pftempBuff, 0, sizeof(float)*2*m_iNxtPow2BlkLen);
     for (int i=0;i<(2*m_iNxtPow2BlkLen); i++)
     {
         if (i<iLengthOfBuffers)
@@ -232,8 +232,8 @@ Error_t CFastConv::processTimeDomain (float *pfInputBuffer, float *pfOutputBuffe
     
     float *pftempOutput=new float [m_iNxtPow2BlkLen+ m_iNxtPow2BlkLen*(m_iNumIrBlcks)];
     float *pfIRtemp = new float [2*m_iNxtPow2BlkLen];
-    std::memset(pftempOutput, 0, 2*m_iNxtPow2BlkLen);
-    std::memset(pfIRtemp, 0, 2*m_iNxtPow2BlkLen);
+    std::memset(pftempOutput, 0, sizeof(float)*2*m_iNxtPow2BlkLen);
+    std::memset(pfIRtemp, 0, sizeof(float)*2*m_iNxtPow2BlkLen);
     
     for (int k =0; k<m_iNumIrBlcks; k++)
     {

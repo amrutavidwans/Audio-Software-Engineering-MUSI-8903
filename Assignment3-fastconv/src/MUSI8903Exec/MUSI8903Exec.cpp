@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
     float *pfIRresp = new float;
     int idelaySample = 5;
     int iIRlen = 3000;
-    float *pfAudioPart = new float[kBlockSize];
+    float *pfAudioPart = new float;
     float *pfOutputTmp = new float[kBlockSize];
     CFastConv *pCFastConv;
     pCFastConv = 0;
