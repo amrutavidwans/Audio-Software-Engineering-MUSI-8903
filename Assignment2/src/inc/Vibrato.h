@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include "RingBuffer.h"
+<<<<<<< HEAD
 #include "LFO.h"
 #include "ErrorDef.h"
 
@@ -41,6 +42,26 @@ public:
     
     Vibrato(float fVParam[3], int UserNumChannels,float UserSamplingRate, int iMaxDelayInSec);
     virtual ~Vibrato();
+=======
+
+class Vibrato{
+    
+public:
+    void process(CRingBuffer<float> **tRingBuff,float **fOutbuff);
+    void addParam(float Modfreq);
+    void create();
+    void destroy();
+protected:
+    
+
+private:
+
+
+
+
+
+
+>>>>>>> f65f7a8b673924d88b6e0b3f77b59323eaa4abdb
 };
 
 #endif /* Vibrato_h */
