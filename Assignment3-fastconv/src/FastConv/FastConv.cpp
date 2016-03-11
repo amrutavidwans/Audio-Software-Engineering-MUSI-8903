@@ -56,7 +56,7 @@ Error_t CFastConv::init(float *pfImpulseResponse, int iLengthOfIr, int iBlockLen
     else
         m_iNxtPow2BlkLen = iBlockLength;
     
-    m_iNumIrBlcks = ceil(m_iLengthOfIr / (double)m_iNxtPow2BlkLen);
+    m_iNumIrBlcks = ceil(m_iLengthOfIr / (double)m_iNxtPow2BlkLen); // number of blocks of IR
     
     m_pfImpulseResponse = new float[m_iNxtPow2BlkLen];
     
@@ -158,7 +158,7 @@ Error_t CFastConv::process (float *pfInputBuffer, float *pfOutputBuffer, int iLe
         
         
     }
-    
+    // update the Current buffer with the blocked convolution output
     for (int iter=0; iter<(m_iLengthOfIr+iLengthOfBuffers-1); iter++)
     {
         m_pCRingBuffCurr->putPostInc(pftempOutput[iter]);
@@ -188,7 +188,7 @@ Error_t CFastConv::process (float *pfInputBuffer, float *pfOutputBuffer, int iLe
             m_pCRingBuffPrev->putPostInc(m_pCRingBuffCurr->getPostInc()+m_pCRingBuffPrev->getPostInc());
         }
     }
-    
+    // the reverb tail stored in RingBuffPrev will be either LengthOfIr-1 or less than that depending on the Buffer length provided by the user
     if (iNewWrtPrev < 0)
     {
         for (int i=0; i<(m_iLengthOfIr-1); i++)
