@@ -56,6 +56,30 @@
         <MODULEPATH id="juce_audio_plugin_client" path="JuceLibraryCode/modules/juce_audio_plugin_client"/>
       </MODULEPATHS>
     </XCODE_MAC>
+    <VS2015 targetFolder="Builds/VisualStudio2015" vstFolder="">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       isDebug="1" optimisation="1" targetName="VibratoPlugin"/>
+        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       isDebug="0" optimisation="3" targetName="VibratoPlugin"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_video" path="JuceLibraryCode/modules/juce_video"/>
+        <MODULEPATH id="juce_opengl" path="JuceLibraryCode/modules/juce_opengl"/>
+        <MODULEPATH id="juce_gui_extra" path="JuceLibraryCode/modules/juce_gui_extra"/>
+        <MODULEPATH id="juce_gui_basics" path="JuceLibraryCode/modules/juce_gui_basics"/>
+        <MODULEPATH id="juce_graphics" path="JuceLibraryCode/modules/juce_graphics"/>
+        <MODULEPATH id="juce_events" path="JuceLibraryCode/modules/juce_events"/>
+        <MODULEPATH id="juce_data_structures" path="JuceLibraryCode/modules/juce_data_structures"/>
+        <MODULEPATH id="juce_cryptography" path="JuceLibraryCode/modules/juce_cryptography"/>
+        <MODULEPATH id="juce_core" path="JuceLibraryCode/modules/juce_core"/>
+        <MODULEPATH id="juce_audio_processors" path="JuceLibraryCode/modules/juce_audio_processors"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="JuceLibraryCode/modules/juce_audio_plugin_client"/>
+        <MODULEPATH id="juce_audio_formats" path="JuceLibraryCode/modules/juce_audio_formats"/>
+        <MODULEPATH id="juce_audio_devices" path="JuceLibraryCode/modules/juce_audio_devices"/>
+        <MODULEPATH id="juce_audio_basics" path="JuceLibraryCode/modules/juce_audio_basics"/>
+      </MODULEPATHS>
+    </VS2015>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="1" overwriteOnSave="0"/>
