@@ -36,3 +36,14 @@
 /doc/latex
 /lib/debug/*.lastcodeanalysissucceeded
 /lib/release/*.exp
+
+#System Related Files
+.DS_Store
+
+#Project Files
+*.xcodeproj
+*.component
+*.plist
+*.nib
+
+
