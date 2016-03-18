@@ -40,10 +40,10 @@
 #System Related Files
 .DS_Store
 
-#Project Files
+#Project Files / Build files
 *.xcodeproj
 *.component
 *.plist
 *.nib
-
+*.xcuserstate
 
