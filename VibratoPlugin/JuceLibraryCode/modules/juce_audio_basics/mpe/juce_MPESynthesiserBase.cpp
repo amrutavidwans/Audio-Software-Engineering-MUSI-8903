@@ -103,7 +103,7 @@ void MPESynthesiserBase::renderNextBlock (AudioBuffer<floatType>& outputAudio,
     int midiEventPos;
     MidiMessage m;
 
-    const ScopedLock sl (noteStateLock);
+    const ScopedLock sl (renderAudioLock);
 
     while (numSamples > 0)
     {
@@ -147,7 +147,7 @@ void MPESynthesiserBase::setCurrentPlaybackSampleRate (const double newRate)
 {
     if (sampleRate != newRate)
     {
-        const ScopedLock sl (noteStateLock);
+        const ScopedLock sl (renderAudioLock);
         instrument->releaseAllNotes();
         sampleRate = newRate;
     }

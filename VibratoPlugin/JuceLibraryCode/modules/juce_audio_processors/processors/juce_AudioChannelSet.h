@@ -145,10 +145,10 @@ public:
     };
 
     /** Returns the name of a given channel type. For example, this method may return "Surround Left". */
-    static String getChannelTypeName (ChannelType);
+    static const char* getChannelTypeName (ChannelType) noexcept;
 
     /** Returns the abbreviated name of a channel type. For example, this method may return "Ls". */
-    static String getAbbreviatedChannelTypeName (ChannelType);
+    static const char* getAbbreviatedChannelTypeName (ChannelType) noexcept;
 
     //==============================================================================
     /** Adds a channel to the set. */
@@ -165,10 +165,6 @@ public:
 
     /** Returns the type of one of the channels in the set, by index. */
     ChannelType getTypeOfChannel (int channelIndex) const noexcept;
-
-    /** Returns the index for a particular channel-type.
-        Will return -1 if the this set does not contain a channel of this type. */
-    int getChannelIndexForType (ChannelType type) const noexcept;
 
     /** Returns a string containing a whitespace-separated list of speaker types
         corresponding to each channel. For example in a 5.1 arrangement,

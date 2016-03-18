@@ -12,15 +12,15 @@
               pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.1.0">
   <MAINGROUP id="LmlyFG" name="VibratoPlugin">
     <GROUP id="{9A361365-5C2A-D2FD-678D-72268F4DD6EE}" name="Source">
-      <FILE id="mQeNIA" name="MUSI8903Config.h" compile="0" resource="0"
+      <FILE id="yudXJA" name="ErrorDef.h" compile="0" resource="0" file="Source/ErrorDef.h"/>
+      <FILE id="pBRB32" name="Lfo.h" compile="0" resource="0" file="Source/Lfo.h"/>
+      <FILE id="IWc8Ms" name="MUSI8903Config.h" compile="0" resource="0"
             file="Source/MUSI8903Config.h"/>
-      <FILE id="nchbnR" name="ErrorDef.h" compile="0" resource="0" file="Source/ErrorDef.h"/>
-      <FILE id="fg3V4O" name="Util.h" compile="0" resource="0" file="Source/Util.h"/>
-      <FILE id="BI2Pzs" name="Synthesis.h" compile="0" resource="0" file="Source/Synthesis.h"/>
-      <FILE id="fhmek0" name="Vibrato.cpp" compile="1" resource="0" file="Source/Vibrato.cpp"/>
-      <FILE id="HLPWBs" name="Vibrato.h" compile="0" resource="0" file="Source/Vibrato.h"/>
-      <FILE id="XdKtt4" name="RingBuffer.h" compile="0" resource="0" file="Source/RingBuffer.h"/>
-      <FILE id="Qehw04" name="Lfo.h" compile="0" resource="0" file="Source/Lfo.h"/>
+      <FILE id="OZ2CmX" name="RingBuffer.h" compile="0" resource="0" file="Source/RingBuffer.h"/>
+      <FILE id="jHyNl3" name="Synthesis.h" compile="0" resource="0" file="Source/Synthesis.h"/>
+      <FILE id="EFu1rP" name="Util.h" compile="0" resource="0" file="Source/Util.h"/>
+      <FILE id="xiU07p" name="Vibrato.cpp" compile="1" resource="0" file="Source/Vibrato.cpp"/>
+      <FILE id="Dselc1" name="Vibrato.h" compile="0" resource="0" file="Source/Vibrato.h"/>
       <FILE id="LTu17H" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="FvuBhA" name="PluginProcessor.h" compile="0" resource="0"
@@ -39,20 +39,20 @@
                        isDebug="0" optimisation="3" targetName="VibratoPlugin"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_core" path="../../JUCE/modules/juce_core"/>
-        <MODULEPATH id="juce_events" path="../../JUCE/modules/juce_events"/>
-        <MODULEPATH id="juce_graphics" path="../../JUCE/modules/juce_graphics"/>
-        <MODULEPATH id="juce_data_structures" path="../../JUCE/modules/juce_data_structures"/>
-        <MODULEPATH id="juce_gui_basics" path="../../JUCE/modules/juce_gui_basics"/>
-        <MODULEPATH id="juce_gui_extra" path="../../JUCE/modules/juce_gui_extra"/>
-        <MODULEPATH id="juce_cryptography" path="../../JUCE/modules/juce_cryptography"/>
-        <MODULEPATH id="juce_video" path="../../JUCE/modules/juce_video"/>
-        <MODULEPATH id="juce_opengl" path="../../JUCE/modules/juce_opengl"/>
-        <MODULEPATH id="juce_audio_basics" path="../../JUCE/modules/juce_audio_basics"/>
-        <MODULEPATH id="juce_audio_devices" path="../../JUCE/modules/juce_audio_devices"/>
-        <MODULEPATH id="juce_audio_formats" path="../../JUCE/modules/juce_audio_formats"/>
-        <MODULEPATH id="juce_audio_processors" path="../../JUCE/modules/juce_audio_processors"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="../../JUCE/modules/juce_audio_plugin_client"/>
+        <MODULEPATH id="juce_core" path="../../../../../../../../Applications/juce-grapefruit-osx/modules"/>
+        <MODULEPATH id="juce_events" path="../../../../../../../../Applications/juce-grapefruit-osx/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../../../../../../Applications/juce-grapefruit-osx/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../../../../../Applications/juce-grapefruit-osx/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../../../../../../Applications/juce-grapefruit-osx/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../../../../../Applications/juce-grapefruit-osx/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../../../../../../../Applications/juce-grapefruit-osx/modules"/>
+        <MODULEPATH id="juce_video" path="../../../../../../../../Applications/juce-grapefruit-osx/modules"/>
+        <MODULEPATH id="juce_opengl" path="../../../../../../../../Applications/juce-grapefruit-osx/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../../../../../../../Applications/juce-grapefruit-osx/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../../../../../Applications/juce-grapefruit-osx/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../../../../../Applications/juce-grapefruit-osx/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../../../../../Applications/juce-grapefruit-osx/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../../../../../../Applications/juce-grapefruit-osx/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
@@ -73,4 +73,7 @@
     <MODULE id="juce_video" showAllCode="1" useLocalCopy="1"/>
   </MODULES>
   <JUCEOPTIONS JUCE_QUICKTIME="disabled"/>
+  <LIVE_SETTINGS>
+    <OSX/>
+  </LIVE_SETTINGS>
 </JUCERPROJECT>

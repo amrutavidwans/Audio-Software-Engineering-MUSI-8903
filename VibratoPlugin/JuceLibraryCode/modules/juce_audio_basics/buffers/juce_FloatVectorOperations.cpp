@@ -29,6 +29,17 @@ namespace FloatVectorHelpers
     #define JUCE_INCREMENT_DEST             dest += (16 / sizeof (*dest));
 
    #if JUCE_USE_SSE_INTRINSICS
+    static bool sse2Present = false;
+
+    static bool isSSE2Available() noexcept
+    {
+        if (sse2Present)
+            return true;
+
+        sse2Present = SystemStats::hasSSE2();
+        return sse2Present;
+    }
+
     inline static bool isAligned (const void* p) noexcept
     {
         return (((pointer_sized_int) p) & 15) == 0;
@@ -102,6 +113,7 @@ namespace FloatVectorHelpers
 
     #define JUCE_BEGIN_VEC_OP \
         typedef FloatVectorHelpers::ModeType<sizeof(*dest)>::Mode Mode; \
+        if (FloatVectorHelpers::isSSE2Available()) \
         { \
             const int numLongOps = num / Mode::numParallel;
 
@@ -360,7 +372,11 @@ namespace FloatVectorHelpers
         {
             int numLongOps = num / Mode::numParallel;
 
+           #if JUCE_USE_SSE_INTRINSICS
+            if (numLongOps > 1 && isSSE2Available())
+           #else
             if (numLongOps > 1)
+           #endif
             {
                 ParallelType val;
 
@@ -430,7 +446,11 @@ namespace FloatVectorHelpers
         {
             int numLongOps = num / Mode::numParallel;
 
+           #if JUCE_USE_SSE_INTRINSICS
+            if (numLongOps > 1 && isSSE2Available())
+           #else
             if (numLongOps > 1)
+           #endif
             {
                 ParallelType mn, mx;
 
@@ -478,17 +498,6 @@ namespace FloatVectorHelpers
             return Range<Type>::findMinAndMax (src, num);
         }
     };
-   #endif
-}
-
-//==============================================================================
-namespace
-{
-   #if JUCE_USE_VDSP_FRAMEWORK
-    // This casts away constness to account for slightly different vDSP function signatures
-    // in OSX 10.8 SDK and below. Can be safely removed once those SDKs are obsolete.
-    template <typename ValueType>
-    ValueType* osx108sdkCompatibilityCast (const ValueType* arg) noexcept { return const_cast<ValueType*> (arg); }
    #endif
 }
 
@@ -579,10 +588,10 @@ void JUCE_CALLTYPE FloatVectorOperations::add (double* dest, double amount, int 
                               const Mode::ParallelType amountToAdd = Mode::load1 (amount);)
 }
 
-void JUCE_CALLTYPE FloatVectorOperations::add (float* dest, const float* src, float amount, int num) noexcept
+void JUCE_CALLTYPE FloatVectorOperations::add (float* dest, float* src, float amount, int num) noexcept
 {
    #if JUCE_USE_VDSP_FRAMEWORK
-    vDSP_vsadd (osx108sdkCompatibilityCast (src), 1, &amount, dest, 1, (vDSP_Length) num);
+    vDSP_vsadd (src, 1, &amount, dest, 1, (vDSP_Length) num);
    #else
     JUCE_PERFORM_VEC_OP_SRC_DEST (dest[i] = src[i] + amount, Mode::add (am, s),
                                   JUCE_LOAD_SRC, JUCE_INCREMENT_SRC_DEST,
@@ -590,10 +599,10 @@ void JUCE_CALLTYPE FloatVectorOperations::add (float* dest, const float* src, fl
    #endif
 }
 
-void JUCE_CALLTYPE FloatVectorOperations::add (double* dest, const double* src, double amount, int num) noexcept
+void JUCE_CALLTYPE FloatVectorOperations::add (double* dest, double* src, double amount, int num) noexcept
 {
    #if JUCE_USE_VDSP_FRAMEWORK
-    vDSP_vsaddD (osx108sdkCompatibilityCast (src), 1, &amount, dest, 1, (vDSP_Length) num);
+    vDSP_vsaddD (src, 1, &amount, dest, 1, (vDSP_Length) num);
    #else
     JUCE_PERFORM_VEC_OP_SRC_DEST (dest[i] = src[i] + amount, Mode::add (am, s),
                                   JUCE_LOAD_SRC, JUCE_INCREMENT_SRC_DEST,
@@ -993,17 +1002,10 @@ double JUCE_CALLTYPE FloatVectorOperations::findMaximum (const double* src, int 
 void JUCE_CALLTYPE FloatVectorOperations::enableFlushToZeroMode (bool shouldEnable) noexcept
 {
    #if JUCE_USE_SSE_INTRINSICS
-    _MM_SET_FLUSH_ZERO_MODE (shouldEnable ? _MM_FLUSH_ZERO_ON : _MM_FLUSH_ZERO_OFF);
+    if (FloatVectorHelpers::isSSE2Available())
+        _MM_SET_FLUSH_ZERO_MODE (shouldEnable ? _MM_FLUSH_ZERO_ON : _MM_FLUSH_ZERO_OFF);
    #endif
-    ignoreUnused (shouldEnable);
-}
-
-void JUCE_CALLTYPE FloatVectorOperations::disableDenormalisedNumberSupport() noexcept
-{
-   #if JUCE_USE_SSE_INTRINSICS
-    const unsigned int mxcsr = _mm_getcsr();
-    _mm_setcsr (mxcsr | 0x8040); // add the DAZ and FZ bits
-   #endif
+    (void) shouldEnable;
 }
 
 //==============================================================================
