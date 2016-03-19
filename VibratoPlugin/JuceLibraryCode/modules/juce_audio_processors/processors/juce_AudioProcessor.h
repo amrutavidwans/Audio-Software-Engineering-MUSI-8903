@@ -147,8 +147,7 @@ public:
         @see AudioBusArrangement::getBusBuffer
     */
 
-    virtual void processBlock (AudioBuffer<float>& buffer,
-                               MidiBuffer& midiMessages) = 0;
+    virtual void processBlock (AudioBuffer<float>& buffer) = 0;
 
     /** Renders the next block.
 
@@ -212,8 +211,7 @@ public:
 
         @see AudioBusArrangement::getBusBuffer
     */
-    virtual void processBlock (AudioBuffer<double>& buffer,
-                               MidiBuffer& midiMessages);
+    virtual void processBlock (AudioBuffer<double>& buffer);
 
     /** Renders the next block when the processor is being bypassed.
         The default implementation of this method will pass-through any incoming audio, but
@@ -223,8 +221,7 @@ public:
         Another use for this method would be to cross-fade or morph between the wet (not bypassed)
         and dry (bypassed) signals.
     */
-    virtual void processBlockBypassed (AudioBuffer<float>& buffer,
-                                       MidiBuffer& midiMessages);
+    virtual void processBlockBypassed (AudioBuffer<float>& buffer);
 
     /** Renders the next block when the processor is being bypassed.
         The default implementation of this method will pass-through any incoming audio, but
@@ -234,8 +231,7 @@ public:
         Another use for this method would be to cross-fade or morph between the wet (not bypassed)
         and dry (bypassed) signals.
     */
-    virtual void processBlockBypassed (AudioBuffer<double>& buffer,
-                                       MidiBuffer& midiMessages);
+    virtual void processBlockBypassed (AudioBuffer<double>& buffer);
 
     //==============================================================================
     /** Describes the layout and properties of an audio bus.
@@ -465,10 +461,10 @@ public:
     virtual double getTailLengthSeconds() const = 0;
 
     /** Returns true if the processor wants midi messages. */
-    virtual bool acceptsMidi() const = 0;
+    //virtual bool acceptsMidi() const = 0;
 
     /** Returns true if the processor produces midi messages. */
-    virtual bool producesMidi() const = 0;
+    //virtual bool producesMidi() const = 0;
 
     /** Returns true if the processor supports MPE. */
     virtual bool supportsMPE() const                            { return false; }
@@ -803,13 +799,13 @@ public:
     virtual int getCurrentProgram() = 0;
 
     /** Called by the host to change the current program. */
-    virtual void setCurrentProgram (int index) = 0;
+    //virtual void setCurrentProgram (int index) = 0;
 
     /** Must return the name of a given program. */
     virtual const String getProgramName (int index) = 0;
 
     /** Called by the host to rename a program. */
-    virtual void changeProgramName (int index, const String& newName) = 0;
+    //virtual void changeProgramName (int index, const String& newName) = 0;
 
     //==============================================================================
     /** The host will call this method when it wants to save the filter's internal state.
@@ -1000,7 +996,7 @@ private:
     void updateSpeakerFormatStrings();
 
     // This method is no longer used - you can delete it from your AudioProcessor classes.
-    JUCE_DEPRECATED_WITH_BODY (virtual bool silenceInProducesSilenceOut() const, { return false; });
+    //JUCE_DEPRECATED_WITH_BODY (virtual bool silenceInProducesSilenceOut() const, { return false; });
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioProcessor)
 };

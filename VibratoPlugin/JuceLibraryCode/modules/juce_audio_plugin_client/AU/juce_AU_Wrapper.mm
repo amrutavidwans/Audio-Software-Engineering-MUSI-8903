@@ -1081,11 +1081,11 @@ public:
             }
             else if (isBypassed)
             {
-                juceFilter->processBlockBypassed (buffer, midiEvents);
+                juceFilter->processBlockBypassed (buffer); //juceFilter->processBlockBypassed (buffer, midiEvents);
             }
             else
             {
-                juceFilter->processBlock (buffer, midiEvents);
+                juceFilter->processBlock (buffer);  //juceFilter->processBlock (buffer, midiEvents);
             }
         }
 
@@ -1267,7 +1267,7 @@ public:
         chosenPreset.presetNumber = chosenPresetNumber;
         chosenPreset.presetName = juceFilter->getProgramName (chosenPresetNumber).toCFString();
 
-        juceFilter->setCurrentProgram (chosenPresetNumber);
+        //juceFilter->setCurrentProgram (chosenPresetNumber);
         SetAFactoryPresetAsCurrent (chosenPreset);
 
         return noErr;

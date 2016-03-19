@@ -313,22 +313,22 @@ public:
         void fillInPluginDescription (PluginDescription&) const override;
         void prepareToPlay (double newSampleRate, int estimatedSamplesPerBlock) override;
         void releaseResources() override;
-        void processBlock (AudioBuffer<float>& , MidiBuffer&) override;
-        void processBlock (AudioBuffer<double>&, MidiBuffer&) override;
+        void processBlock (AudioBuffer<float>& ) override;
+        void processBlock (AudioBuffer<double>&) override;
         bool supportsDoublePrecisionProcessing() const override;
 
         double getTailLengthSeconds() const override;
-        bool acceptsMidi() const override;
-        bool producesMidi() const override;
+        //bool acceptsMidi() const override;
+        //bool producesMidi() const override;
 
         bool hasEditor() const override;
         AudioProcessorEditor* createEditor() override;
 
         int getNumPrograms() override;
         int getCurrentProgram() override;
-        void setCurrentProgram (int) override;
+        //void setCurrentProgram (int) override;
         const String getProgramName (int) override;
-        void changeProgramName (int, const String&) override;
+        //void changeProgramName (int, const String&) override;
 
         void getStateInformation (juce::MemoryBlock& destData) override;
         void setStateInformation (const void* data, int sizeInBytes) override;
@@ -351,8 +351,8 @@ public:
     const String getName() const override;
     void prepareToPlay (double, int) override;
     void releaseResources() override;
-    void processBlock (AudioBuffer<float>&,  MidiBuffer&) override;
-    void processBlock (AudioBuffer<double>&, MidiBuffer&) override;
+    void processBlock (AudioBuffer<float>&,  MidiBuffer&);
+    void processBlock (AudioBuffer<double>&, MidiBuffer&);
     bool supportsDoublePrecisionProcessing() const override;
 
     void reset() override;
@@ -360,16 +360,16 @@ public:
     void setPlayHead (AudioPlayHead*) override;
 
     double getTailLengthSeconds() const override;
-    bool acceptsMidi() const override;
-    bool producesMidi() const override;
+    bool acceptsMidi() const ;
+    bool producesMidi() const ;
 
     bool hasEditor() const override                         { return false; }
     AudioProcessorEditor* createEditor() override           { return nullptr; }
     int getNumPrograms() override                           { return 0; }
     int getCurrentProgram() override                        { return 0; }
-    void setCurrentProgram (int) override                   { }
+    void setCurrentProgram (int)                        { }
     const String getProgramName (int) override              { return String(); }
-    void changeProgramName (int, const String&) override    { }
+    void changeProgramName (int, const String&)         { }
     void getStateInformation (juce::MemoryBlock&) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 

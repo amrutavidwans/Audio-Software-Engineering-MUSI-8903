@@ -12,7 +12,7 @@
 #define PLUGINPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
-
+#include "Vibrato.h"
 
 //==============================================================================
 /**
@@ -28,34 +28,34 @@ public:
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
 
-    void processBlock (AudioSampleBuffer&, MidiBuffer&) override;
+    void processBlock (AudioSampleBuffer& buffer) override;
+    void processBlockBypassed (AudioBuffer<float>& buffer) override;
 
     //==============================================================================
     AudioProcessorEditor* createEditor() override;
     bool hasEditor() const override;
-
+    double getTailLengthSeconds() const override;
+    
     //==============================================================================
     const String getName() const override;
-
-    bool acceptsMidi() const override;
-    bool producesMidi() const override;
-    bool silenceInProducesSilenceOut() const override;
-    double getTailLengthSeconds() const override;
 
     //==============================================================================
     int getNumPrograms() override;
     int getCurrentProgram() override;
-    void setCurrentProgram (int index) override;
     const String getProgramName (int index) override;
-    void changeProgramName (int index, const String& newName) override;
 
     //==============================================================================
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
+    
+    //==============================================================================
+    void setParameter (int parameterIndex, float newValue) override;
+    float getParameter (int parameterIndex) override;
 
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VibratoPluginAudioProcessor)
+    CVibrato *m_pCVib;
 };
 
 

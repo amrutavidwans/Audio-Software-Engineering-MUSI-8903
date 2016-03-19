@@ -19,7 +19,7 @@ CVibrato::CVibrato () :
     m_pCLfo(0),
     m_ppCRingBuff(0),
     m_fSampleRate(44100),
-    m_iNumChannels(0)
+    m_iNumChannels(2)
 {
 
     // this never hurts

@@ -374,12 +374,12 @@ void AudioProcessor::suspendProcessing (const bool shouldBeSuspended)
 }
 
 void AudioProcessor::reset() {}
-void AudioProcessor::processBlockBypassed (AudioBuffer<float>&, MidiBuffer&) {}
-void AudioProcessor::processBlockBypassed (AudioBuffer<double>&, MidiBuffer&) {}
+void AudioProcessor::processBlockBypassed (AudioBuffer<float>&) {}
+void AudioProcessor::processBlockBypassed (AudioBuffer<double>&) {}
 
-void AudioProcessor::processBlock (AudioBuffer<double>& buffer, MidiBuffer& midiMessages)
+void AudioProcessor::processBlock (AudioBuffer<double>& buffer)
 {
-    ignoreUnused (buffer, midiMessages);
+    ignoreUnused (buffer);
 
     // If you hit this assertion then either the caller called the double
     // precision version of processBlock on a processor which does not support it
