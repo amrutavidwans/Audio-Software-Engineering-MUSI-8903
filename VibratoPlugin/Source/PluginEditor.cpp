@@ -21,19 +21,21 @@ VibratoPluginAudioProcessorEditor::VibratoPluginAudioProcessorEditor (VibratoPlu
     setSize (400, 300);
     //define parameters for slider object for Mod. Freq
     sModFreqinHz.setSliderStyle(Slider::LinearBarVertical);
-    sModFreqinHz.setRange(0.0, 10.0);
-    sModFreqinHz.setTextBoxStyle(Slider::TextBoxBelow, true, 90, 0);
+    sModFreqinHz.setRange(0.0, 20.0);  // ModFreq can actually go from 0 to samplingRate/2 but limit it here to 20Hz to keep the slider resolution
+    sModFreqinHz.setTextBoxStyle(Slider::TextBoxBelow, true, 90, 10);
+    sModFreqinHz.setPopupDisplayEnabled(true, this);
     sModFreqinHz.setTextValueSuffix("Modulation Frequency (Hz)");
-    sModFreqinHz.setValue(1.0);
+    sModFreqinHz.setValue(5.0);
     addAndMakeVisible(&sModFreqinHz);
     sModFreqinHz.addListener(this);
     
     //define parameters for slider for Width
     sModWidthinSecs.setSliderStyle(Slider::LinearBarVertical);
-    sModWidthinSecs.setRange(0.0, 10.0);
+    sModWidthinSecs.setRange(0.0, 0.5);   // MaxModFreqInSec is set in the init in PluginProcessor to be 0.5 hence range set here to be 0-0.5
     sModWidthinSecs.setTextBoxStyle(Slider::TextBoxBelow, true, 90, 0);
-    sModWidthinSecs.setTextValueSuffix("Modulation Frequency (Hz)");
-    sModWidthinSecs.setValue(1.0);
+    sModWidthinSecs.setPopupDisplayEnabled(true, this);
+    sModWidthinSecs.setTextValueSuffix("Modulation Width (sec)");
+    sModWidthinSecs.setValue(0.0);
     addAndMakeVisible(&sModWidthinSecs);
     sModFreqinHz.addListener(this);
     
@@ -60,12 +62,12 @@ void VibratoPluginAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
     sModFreqinHz.setBounds(40, 30, 20, getHeight()-60);
-    sModWidthinSecs.setBounds(70, 30, 20, getHeight()-60);
+    sModWidthinSecs.setBounds(100, 30, 20, getHeight()-60);
 }
 
 void VibratoPluginAudioProcessorEditor::sliderValueChanged (Slider* slider)
 {
-    processor.fModFreqInHz = sModFreqinHz.getValue();
-    processor.fModWidthInSec = sModWidthinSecs.getValue();
+    processor.setParameter(0, sModFreqinHz.getValue());
+    processor.setParameter(1, sModWidthinSecs.getValue());
 
 }

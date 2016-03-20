@@ -52,10 +52,10 @@ void VibratoPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesP
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-    float fModFreqInSec = 0.5;
+    float fMaxModFreqInSec = 0.5;
     // gets the sampling rate and number of channels from the host and initialises the vibrato object
-    CVibrato::createInstance(m_pCVib);
-    m_pCVib->initInstance(fModFreqInSec, sampleRate, getTotalNumInputChannels());
+    m_pCVib->initInstance(fMaxModFreqInSec, sampleRate, getTotalNumInputChannels());
+    m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, 5.0);
     
 }
 

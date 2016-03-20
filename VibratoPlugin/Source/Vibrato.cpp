@@ -23,7 +23,7 @@ CVibrato::CVibrato () :
 {
 
     // this never hurts
-    this->resetInstance ();
+    //this->resetInstance ();
 }
 
 
