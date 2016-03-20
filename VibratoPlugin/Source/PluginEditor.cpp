@@ -67,7 +67,8 @@ void VibratoPluginAudioProcessorEditor::resized()
 
 void VibratoPluginAudioProcessorEditor::sliderValueChanged (Slider* slider)
 {
-    processor.setParameter(0, sModFreqinHz.getValue());
-    processor.setParameter(1, sModWidthinSecs.getValue());
-
+    processor.VibratoPluginAudioProcessor::setParameter(CVibrato::VibratoParam_t::kParamModFreqInHz, sModFreqinHz.getValue());
+    std::cout<< sModFreqinHz.getValue()<<std::endl;
+    processor.VibratoPluginAudioProcessor::setParameter(CVibrato::VibratoParam_t::kParamModWidthInS, sModWidthinSecs.getValue());
+    std::cout<<sModWidthinSecs.getValue()<<std::endl;
 }

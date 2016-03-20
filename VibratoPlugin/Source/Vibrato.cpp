@@ -3,7 +3,7 @@
 
 // project headers
 #include "MUSI8903Config.h"
-
+#include <iostream>
 #include "ErrorDef.h"
 
 #include "RingBuffer.h"
@@ -136,7 +136,7 @@ Error_t CVibrato::setParam( VibratoParam_t eParam, float fParamValue )
         return kNotInitializedError;
     if (!isInParamRange(eParam, fParamValue))
         return kFunctionInvalidArgsError;
-
+    std::cout<< eParam <<std::endl;
     switch (eParam)
     {
     case kParamModFreqInHz:

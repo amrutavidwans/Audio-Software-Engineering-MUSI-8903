@@ -148,6 +148,7 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 
 void VibratoPluginAudioProcessor::setParameter (int parameterIndex, float newValue)
 {
+    std::cout<<static_cast<CVibrato::VibratoParam_t>(parameterIndex)<<"enumval"<<std::endl;
     m_pCVib->setParam(static_cast<CVibrato::VibratoParam_t>(parameterIndex), newValue);
 }
 
