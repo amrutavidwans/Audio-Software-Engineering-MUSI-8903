@@ -23,7 +23,7 @@ public:
     //==============================================================================
     VibratoPluginAudioProcessor();
     ~VibratoPluginAudioProcessor();
-
+    
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
@@ -51,6 +51,10 @@ public:
     //==============================================================================
     void setParameter (int parameterIndex, float newValue) override;
     float getParameter (int parameterIndex) override;
+    
+    //======= variable
+    float fModFreqInHz=0.F;
+    float fModWidthInSec = 0.F;
 
 private:
     //==============================================================================

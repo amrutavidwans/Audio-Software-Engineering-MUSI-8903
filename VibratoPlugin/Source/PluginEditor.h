@@ -18,7 +18,8 @@
 //==============================================================================
 /**
 */
-class VibratoPluginAudioProcessorEditor  : public AudioProcessorEditor
+class VibratoPluginAudioProcessorEditor  : public AudioProcessorEditor,
+                                           private Slider::Listener
 {
 public:
     VibratoPluginAudioProcessorEditor (VibratoPluginAudioProcessor&);
@@ -27,6 +28,7 @@ public:
     //==============================================================================
     void paint (Graphics&) override;
     void resized() override;
+    void sliderValueChanged (Slider* slider) override;
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -34,6 +36,12 @@ private:
     VibratoPluginAudioProcessor& processor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VibratoPluginAudioProcessorEditor)
+    
+    //Slider references
+    Slider sModFreqinHz;
+    Slider sModWidthinSecs;
+    
+    
 };
 
 

@@ -19,6 +19,26 @@ VibratoPluginAudioProcessorEditor::VibratoPluginAudioProcessorEditor (VibratoPlu
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (400, 300);
+    //define parameters for slider object for Mod. Freq
+    sModFreqinHz.setSliderStyle(Slider::LinearBarVertical);
+    sModFreqinHz.setRange(0.0, 10.0);
+    sModFreqinHz.setTextBoxStyle(Slider::TextBoxBelow, true, 90, 0);
+    sModFreqinHz.setTextValueSuffix("Modulation Frequency (Hz)");
+    sModFreqinHz.setValue(1.0);
+    addAndMakeVisible(&sModFreqinHz);
+    sModFreqinHz.addListener(this);
+    
+    //define parameters for slider for Width
+    sModWidthinSecs.setSliderStyle(Slider::LinearBarVertical);
+    sModWidthinSecs.setRange(0.0, 10.0);
+    sModWidthinSecs.setTextBoxStyle(Slider::TextBoxBelow, true, 90, 0);
+    sModWidthinSecs.setTextValueSuffix("Modulation Frequency (Hz)");
+    sModWidthinSecs.setValue(1.0);
+    addAndMakeVisible(&sModWidthinSecs);
+    sModFreqinHz.addListener(this);
+    
+    
+    
 }
 
 VibratoPluginAudioProcessorEditor::~VibratoPluginAudioProcessorEditor()
@@ -32,11 +52,20 @@ void VibratoPluginAudioProcessorEditor::paint (Graphics& g)
 
     g.setColour (Colours::black);
     g.setFont (15.0f);
-    g.drawFittedText ("Hello World!", getLocalBounds(), Justification::centred, 1);
+    g.drawFittedText ("Vibrato Effect", 0, 0, getWidth(), 30, Justification::centred, 1);
 }
 
 void VibratoPluginAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
+    sModFreqinHz.setBounds(40, 30, 20, getHeight()-60);
+    sModWidthinSecs.setBounds(70, 30, 20, getHeight()-60);
+}
+
+void VibratoPluginAudioProcessorEditor::sliderValueChanged (Slider* slider)
+{
+    processor.fModFreqInHz = sModFreqinHz.getValue();
+    processor.fModWidthInSec = sModWidthinSecs.getValue();
+
 }
