@@ -39,7 +39,9 @@ private:
     
     //Slider references
     Slider sModFreqinHz;
+    Label lModFreqInHz;
     Slider sModWidthinSecs;
+    Label lModWidthInSec;
     
     
 };

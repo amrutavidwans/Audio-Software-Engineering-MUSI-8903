@@ -18,28 +18,38 @@ VibratoPluginAudioProcessorEditor::VibratoPluginAudioProcessorEditor (VibratoPlu
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (400, 300);
+    setSize (400, 170);
+    
     //define parameters for slider object for Mod. Freq
-    sModFreqinHz.setSliderStyle(Slider::LinearBarVertical);
-    sModFreqinHz.setRange(0.0, 20.0);  // ModFreq can actually go from 0 to samplingRate/2 but limit it here to 20Hz to keep the slider resolution
-    sModFreqinHz.setTextBoxStyle(Slider::TextBoxBelow, true, 90, 10);
-    sModFreqinHz.setPopupDisplayEnabled(true, this);
-    sModFreqinHz.setTextValueSuffix("Modulation Frequency (Hz)");
-    sModFreqinHz.setValue(5.0);
     addAndMakeVisible(sModFreqinHz);
+    
+    //sModFreqinHz.setSliderStyle(Slider::LinearBarVertical);
+    sModFreqinHz.setRange(5.0, 15.0);  // ModFreq can actually go from 0 to samplingRate/2 but limit it here to 5-15Hz to keep the vibrato effect
+                                       // meaningful (as per DAFx book) and for slider resolution
+    //sModFreqinHz.setTextBoxStyle(Slider::TextBoxBelow, true, 90, 10);
+    sModFreqinHz.setPopupDisplayEnabled(true, this);
+    sModFreqinHz.setTextValueSuffix("Hz");
+    sModFreqinHz.setValue(5.0);
     sModFreqinHz.addListener(this);
     
+    addAndMakeVisible(lModFreqInHz);
+    lModFreqInHz.setText("Modulation Frequency", dontSendNotification);
+    lModFreqInHz.attachToComponent(&sModFreqinHz, false);
+    
     //define parameters for slider for Width
-    sModWidthinSecs.setSliderStyle(Slider::LinearBarVertical);
-    sModWidthinSecs.setRange(0.0, 0.5);   // MaxModFreqInSec is set in the init in PluginProcessor to be 0.5 hence range set here to be 0-0.5
-    sModWidthinSecs.setTextBoxStyle(Slider::TextBoxBelow, true, 90, 0);
-    sModWidthinSecs.setPopupDisplayEnabled(true, this);
-    sModWidthinSecs.setTextValueSuffix("Modulation Width (sec)");
-    sModWidthinSecs.setValue(0.0);
     addAndMakeVisible(sModWidthinSecs);
+    //sModWidthinSecs.setSliderStyle(Slider::LinearBarVertical);
+    sModWidthinSecs.setRange(0.005, 0.01);   // MaxModFreqInSec is set in the init in PluginProcessor to be 0.01 hence range set here to be 0.005-0.01
+                                            //(as per DAFx book typical values for vibrato effect)
+    //sModWidthinSecs.setTextBoxStyle(Slider::TextBoxBelow, true, 90, 0);
+    sModWidthinSecs.setPopupDisplayEnabled(true, this);
+    sModWidthinSecs.setTextValueSuffix("sec");
+    sModWidthinSecs.setValue(0.005);
     sModWidthinSecs.addListener(this);
     
-    
+    addAndMakeVisible(lModWidthInSec);
+    lModWidthInSec.setText("Modulation Width", dontSendNotification);
+    lModWidthInSec.attachToComponent(&sModWidthinSecs, false);
     
 }
 
@@ -61,8 +71,11 @@ void VibratoPluginAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
-    sModFreqinHz.setBounds(40, 30, 20, getHeight()-60);
-    sModWidthinSecs.setBounds(100, 30, 20, getHeight()-60);
+    const int sliderLeft = 20;
+    sModFreqinHz.setBounds(sliderLeft, 60, getWidth()-sliderLeft-10, 20);
+    sModWidthinSecs.setBounds(sliderLeft, 120, getWidth()-sliderLeft-10, 20);
+    //sModFreqinHz.setBounds(40, 30, 20, getHeight()-90);
+    //sModWidthinSecs.setBounds(100, 30, 20, getHeight()-90);
 }
 
 void VibratoPluginAudioProcessorEditor::sliderValueChanged (Slider* slider)
