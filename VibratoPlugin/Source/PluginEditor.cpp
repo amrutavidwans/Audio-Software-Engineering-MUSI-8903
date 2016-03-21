@@ -29,7 +29,8 @@ VibratoPluginAudioProcessorEditor::VibratoPluginAudioProcessorEditor (VibratoPlu
     //sModFreqinHz.setTextBoxStyle(Slider::TextBoxBelow, true, 90, 10);
     sModFreqinHz.setPopupDisplayEnabled(true, this);
     sModFreqinHz.setTextValueSuffix("Hz");
-    sModFreqinHz.setValue(5.0);
+    sModFreqinHz.setValue(processor.getParameter(CVibrato::VibratoParam_t::kParamModFreqInHz)); //though the editor is closed we need the changed slider values to
+                                                                                                // display when the user opens the editor again
     sModFreqinHz.addListener(this);
     
     addAndMakeVisible(lModFreqInHz);
@@ -44,7 +45,8 @@ VibratoPluginAudioProcessorEditor::VibratoPluginAudioProcessorEditor (VibratoPlu
     //sModWidthinSecs.setTextBoxStyle(Slider::TextBoxBelow, true, 90, 0);
     sModWidthinSecs.setPopupDisplayEnabled(true, this);
     sModWidthinSecs.setTextValueSuffix("sec");
-    sModWidthinSecs.setValue(0.005);
+    sModWidthinSecs.setValue(processor.getParameter(CVibrato::VibratoParam_t::kParamModWidthInS));  //though the editor is closed we need the changed slider values to
+                                                                                                    // display when the user opens the editor again
     sModWidthinSecs.addListener(this);
     
     addAndMakeVisible(lModWidthInSec);
