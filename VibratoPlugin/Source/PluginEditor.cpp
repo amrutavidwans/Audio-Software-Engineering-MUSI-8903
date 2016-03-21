@@ -26,7 +26,7 @@ VibratoPluginAudioProcessorEditor::VibratoPluginAudioProcessorEditor (VibratoPlu
     sModFreqinHz.setPopupDisplayEnabled(true, this);
     sModFreqinHz.setTextValueSuffix("Modulation Frequency (Hz)");
     sModFreqinHz.setValue(5.0);
-    addAndMakeVisible(&sModFreqinHz);
+    addAndMakeVisible(sModFreqinHz);
     sModFreqinHz.addListener(this);
     
     //define parameters for slider for Width
@@ -36,8 +36,8 @@ VibratoPluginAudioProcessorEditor::VibratoPluginAudioProcessorEditor (VibratoPlu
     sModWidthinSecs.setPopupDisplayEnabled(true, this);
     sModWidthinSecs.setTextValueSuffix("Modulation Width (sec)");
     sModWidthinSecs.setValue(0.0);
-    addAndMakeVisible(&sModWidthinSecs);
-    sModFreqinHz.addListener(this);
+    addAndMakeVisible(sModWidthinSecs);
+    sModWidthinSecs.addListener(this);
     
     
     
@@ -67,8 +67,12 @@ void VibratoPluginAudioProcessorEditor::resized()
 
 void VibratoPluginAudioProcessorEditor::sliderValueChanged (Slider* slider)
 {
-    processor.VibratoPluginAudioProcessor::setParameter(CVibrato::VibratoParam_t::kParamModFreqInHz, sModFreqinHz.getValue());
-    std::cout<< sModFreqinHz.getValue()<<std::endl;
-    processor.VibratoPluginAudioProcessor::setParameter(CVibrato::VibratoParam_t::kParamModWidthInS, sModWidthinSecs.getValue());
-    std::cout<<sModWidthinSecs.getValue()<<std::endl;
+    if (slider== &sModFreqinHz)
+    {   processor.VibratoPluginAudioProcessor::setParameter(CVibrato::VibratoParam_t::kParamModFreqInHz, sModFreqinHz.getValue());
+        //std::cout<< sModFreqinHz.getValue()<<std::endl;
+    }
+    else if (slider == &sModWidthinSecs)
+    {    processor.VibratoPluginAudioProcessor::setParameter(CVibrato::VibratoParam_t::kParamModWidthInS, sModWidthinSecs.getValue());
+        //std::cout<<sModWidthinSecs.getValue()<<std::endl;
+    }
 }

@@ -95,18 +95,15 @@ void VibratoPluginAudioProcessor::processBlockBypassed (AudioBuffer<float>& buff
     for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
     
-    for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
-    
-    float **channelData = buffer.getArrayOfWritePointers();
+    //float **channelData = buffer.getArrayOfWritePointers();
     
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
-    /*for (int channel = 0; channel < getTotalNumInputChannels(); ++channel)
+    for (int channel = 0; channel < getTotalNumInputChannels(); ++channel)
     {
         float* channelData = buffer.getWritePointer (channel);
         
-    }*/
+    }
 
     
 }
@@ -148,7 +145,7 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 
 void VibratoPluginAudioProcessor::setParameter (int parameterIndex, float newValue)
 {
-    std::cout<<static_cast<CVibrato::VibratoParam_t>(parameterIndex)<<"enumval"<<std::endl;
+    //std::cout<<static_cast<CVibrato::VibratoParam_t>(parameterIndex)<<"enumval"<<std::endl;
     m_pCVib->setParam(static_cast<CVibrato::VibratoParam_t>(parameterIndex), newValue);
 }
 
