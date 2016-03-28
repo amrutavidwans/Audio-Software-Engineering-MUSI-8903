@@ -53,8 +53,11 @@ public:
     float getParameter (int parameterIndex) override;
     
     //======= variable
-    //float fModFreqInHz=0.F;
-    //float fModWidthInSec = 0.F;
+    float m_fModFreqInHzVPAP=0.F;
+    float m_fModWidthInSecVPAP = 0.F;
+    bool m_bSliderValueChangeModFreq = 0;
+    bool m_bSliderValueChangeModWidth = 0;
+    bool m_bProcessByPass = 0;
 
 private:
     //==============================================================================

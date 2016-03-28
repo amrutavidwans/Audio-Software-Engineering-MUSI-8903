@@ -18,8 +18,7 @@
 //==============================================================================
 /**
 */
-class VibratoPluginAudioProcessorEditor  : public AudioProcessorEditor,
-                                           private Slider::Listener
+class VibratoPluginAudioProcessorEditor  : public AudioProcessorEditor, private SliderListener, public ButtonListener
 {
 public:
     VibratoPluginAudioProcessorEditor (VibratoPluginAudioProcessor&);
@@ -29,6 +28,8 @@ public:
     void paint (Graphics&) override;
     void resized() override;
     void sliderValueChanged (Slider* slider) override;
+    
+    void buttonClicked (Button* buttonThatWasClicked) override;
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -42,7 +43,8 @@ private:
     Label lModFreqInHz;
     Slider sModWidthinSecs;
     Label lModWidthInSec;
-    
+    ToggleButton tProcessByPass;
+    Label lProcessByPass;
     
 };
 

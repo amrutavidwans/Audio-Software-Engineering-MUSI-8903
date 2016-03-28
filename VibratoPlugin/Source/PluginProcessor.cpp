@@ -22,6 +22,10 @@ VibratoPluginAudioProcessor::VibratoPluginAudioProcessor()
 VibratoPluginAudioProcessor::~VibratoPluginAudioProcessor()
 {
     CVibrato::destroyInstance(m_pCVib);
+    m_fModFreqInHzVPAP = 0;
+    m_fModWidthInSecVPAP = 0;
+    m_bSliderValueChangeModFreq = 0;
+    m_bSliderValueChangeModWidth = 0;
 }
 
 //==============================================================================
@@ -64,7 +68,7 @@ void VibratoPluginAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
-    CVibrato::destroyInstance(m_pCVib);
+    //CVibrato::destroyInstance(m_pCVib);
 }
 
 double VibratoPluginAudioProcessor::getTailLengthSeconds() const
@@ -80,14 +84,37 @@ void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer)
     // I've added this to avoid people getting screaming feedback
     // when they first compile the plugin, but obviously you don't need to
     // this code if your algorithm already fills all the output channels.
-    for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
-
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    float **channelData = buffer.getArrayOfWritePointers();
     
-    m_pCVib->process(channelData, channelData, buffer.getNumSamples());
+    if (m_bProcessByPass)
+    {
+        processBlockBypassed(buffer);
+    }
+    
+    else
+    {
+        for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
+            buffer.clear (i, 0, buffer.getNumSamples());
+        
+        // This is the place where you'd normally do the guts of your plugin's
+        // audio processing...
+        float **channelData = buffer.getArrayOfWritePointers();
+        
+        if (m_bSliderValueChangeModFreq)
+        {
+            m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, m_fModFreqInHzVPAP);
+            m_bSliderValueChangeModFreq = 0;
+            
+        }
+        if (m_bSliderValueChangeModWidth)
+        {
+            m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModWidthInS, m_fModWidthInSecVPAP);
+            m_bSliderValueChangeModWidth = 0;
+        }
+        
+        m_pCVib->process(channelData, channelData, buffer.getNumSamples());
+        
+    }
+    
 
 }
 
