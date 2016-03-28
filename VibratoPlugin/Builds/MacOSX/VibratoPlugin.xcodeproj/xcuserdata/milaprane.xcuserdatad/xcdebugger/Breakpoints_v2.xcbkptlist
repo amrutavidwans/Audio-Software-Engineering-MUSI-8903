@@ -123,7 +123,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "70"
             endingLineNumber = "70"
-            landmarkName = "VibratoPluginAudioProcessorEditor::sliderValueChanged (Slider* slider)"
+            landmarkName = "VibratoPluginAudioProcessorEditor::paint (Graphics&amp; g)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -139,7 +139,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "72"
             endingLineNumber = "72"
-            landmarkName = "VibratoPluginAudioProcessorEditor::sliderValueChanged (Slider* slider)"
+            landmarkName = "VibratoPluginAudioProcessorEditor::resized()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -248,9 +248,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "71"
-            endingLineNumber = "71"
-            landmarkName = "VibratoPluginAudioProcessorEditor::sliderValueChanged (Slider* slider)"
-            landmarkType = "5">
+            endingLineNumber = "71">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
