@@ -34,10 +34,43 @@ const String VibratoPluginAudioProcessor::getName() const
     return JucePlugin_Name;
 }
 
+bool VibratoPluginAudioProcessor::acceptsMidi() const
+{
+    #if JucePlugin_WantsMidiInput
+        return true;
+    #else
+        return false;
+    #endif
+}
+
+bool VibratoPluginAudioProcessor::producesMidi() const
+{
+    #if JucePlugin_ProducesMidiOutput
+        return true;
+    #else
+        return false;
+    #endif
+}
+
+bool VibratoPluginAudioProcessor::silenceInProducesSilenceOut() const
+{
+    return false;
+}
+
+double VibratoPluginAudioProcessor::getTailLengthSeconds() const
+{
+    return 0.0;
+}
+
 int VibratoPluginAudioProcessor::getNumPrograms()
 {
     return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
                 // so this should be at least 1, even if you're not really implementing programs.
+}
+
+void VibratoPluginAudioProcessor::setCurrentProgram (int index)
+{
+    
 }
 
 int VibratoPluginAudioProcessor::getCurrentProgram()
@@ -50,6 +83,10 @@ const String VibratoPluginAudioProcessor::getProgramName (int index)
     return String();
 }
 
+void VibratoPluginAudioProcessor::changeProgramName (int index, const String& newName)
+{
+    
+}
 
 //==============================================================================
 void VibratoPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
@@ -71,12 +108,8 @@ void VibratoPluginAudioProcessor::releaseResources()
     //CVibrato::destroyInstance(m_pCVib);
 }
 
-double VibratoPluginAudioProcessor::getTailLengthSeconds() const
-{
-    return 0.0;
-}
 
-void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer)
+void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
@@ -87,7 +120,7 @@ void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer)
     
     if (m_bProcessByPass)
     {
-        processBlockBypassed(buffer);
+        processBlockBypassed(buffer, midiMessages);
     }
     
     else
@@ -118,7 +151,7 @@ void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer)
 
 }
 
-void VibratoPluginAudioProcessor::processBlockBypassed (AudioBuffer<float>& buffer)
+void VibratoPluginAudioProcessor::processBlockBypassed (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
     for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
         buffer.clear (i, 0, buffer.getNumSamples());

@@ -269,14 +269,14 @@ struct ProcessBufferOp   : public AudioGraphRenderingOp<ProcessBufferOp>
 
     void callProcess (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
     {
-        processor->processBlock (buffer); //processor->processBlock (buffer, midiMessages);
+        processor->processBlock (buffer, midiMessages);
     }
 
     void callProcess (AudioBuffer<double>& buffer, MidiBuffer& midiMessages)
     {
         if (processor->isUsingDoublePrecision())
         {
-            processor->processBlock (buffer); //processor->processBlock (buffer, midiMessages);
+            processor->processBlock (buffer, midiMessages);
         }
         else
         {
@@ -285,7 +285,7 @@ struct ProcessBufferOp   : public AudioGraphRenderingOp<ProcessBufferOp>
             // this will only happen if the processor does not support double
             // precision processing.
             tempBuffer.makeCopyOf (buffer);
-            processor->processBlock (tempBuffer); //processor->processBlock (tempBuffer, midiMessages);
+            processor->processBlock (tempBuffer, midiMessages);
             buffer.makeCopyOf (tempBuffer);
         }
     }
@@ -583,8 +583,8 @@ private:
             // No midi inputs..
             midiBufferToUse = getFreeBuffer (true); // need to pick a buffer even if the processor doesn't use midi
 
-            //if (processor.acceptsMidi() || processor.producesMidi())
-              //  renderingOps.add (new ClearMidiBufferOp (midiBufferToUse));
+            if (processor.acceptsMidi() || processor.producesMidi())
+                renderingOps.add (new ClearMidiBufferOp (midiBufferToUse));
         }
         else if (midiSourceNodes.size() == 1)
         {
@@ -663,9 +663,9 @@ private:
             }
         }
 
-        //if (processor.producesMidi())
-        //    markBufferAsContaining (midiBufferToUse, node.nodeId,
-        //                            AudioProcessorGraph::midiChannelIndex);
+        if (processor.producesMidi())
+            markBufferAsContaining (midiBufferToUse, node.nodeId,
+                                    AudioProcessorGraph::midiChannelIndex);
 
         setNodeDelay (node.nodeId, maxLatency + processor.getLatencySamples());
 
@@ -1178,14 +1178,14 @@ bool AudioProcessorGraph::canConnect (const uint32 sourceNodeId,
 
     if (source == nullptr
          || (sourceChannelIndex != midiChannelIndex && sourceChannelIndex >= source->processor->getMainBusNumOutputChannels())
-         || (sourceChannelIndex == midiChannelIndex )) //&& ! source->processor->producesMidi()
+         || (sourceChannelIndex == midiChannelIndex && ! source->processor->producesMidi()))
         return false;
 
     const Node* const dest = getNodeForId (destNodeId);
 
     if (dest == nullptr
          || (destChannelIndex != midiChannelIndex && destChannelIndex >= dest->processor->getMainBusNumInputChannels())
-         || (destChannelIndex == midiChannelIndex ))  //&& ! dest->processor->acceptsMidi()
+         || (destChannelIndex == midiChannelIndex && ! dest->processor->acceptsMidi()))
         return false;
 
     return getConnectionBetween (sourceNodeId, sourceChannelIndex,
@@ -1262,10 +1262,10 @@ bool AudioProcessorGraph::isConnectionLegal (const Connection* const c) const
 
     return source != nullptr
         && dest != nullptr
-        && isPositiveAndBelow (c->sourceChannelIndex, source->processor->getMainBusNumOutputChannels())
-                                                      //(c->sourceChannelIndex != midiChannelIndex ? : source->processor->producesMidi())
-    &&  isPositiveAndBelow (c->destChannelIndex, dest->processor->getMainBusNumInputChannels());
-                                                      // (c->destChannelIndex   != midiChannelIndex ? : dest->processor->acceptsMidi());
+        && (c->sourceChannelIndex != midiChannelIndex ? isPositiveAndBelow (c->sourceChannelIndex, source->processor->getMainBusNumOutputChannels())
+                                                      : source->processor->producesMidi())
+        && (c->destChannelIndex   != midiChannelIndex ? isPositiveAndBelow (c->destChannelIndex, dest->processor->getMainBusNumInputChannels())
+                                                      : dest->processor->acceptsMidi());
 }
 
 bool AudioProcessorGraph::removeIllegalConnections()
@@ -1597,25 +1597,23 @@ void AudioProcessorGraph::AudioGraphIOProcessor::processAudio (AudioBuffer<Float
     }
 }
 
-void AudioProcessorGraph::AudioGraphIOProcessor::processBlock (AudioBuffer<float>& buffer)
-                                                               //MidiBuffer& midiMessages)
+void AudioProcessorGraph::AudioGraphIOProcessor::processBlock (AudioBuffer<float>& buffer,
+                                                               MidiBuffer& midiMessages)
 {
-    MidiBuffer *midiMessages=0;
-    processAudio (buffer, *midiMessages); //processAudio (buffer, midiMessages);
+    processAudio (buffer, midiMessages);
 }
 
-void AudioProcessorGraph::AudioGraphIOProcessor::processBlock (AudioBuffer<double>& buffer)
-                                                               //MidiBuffer& midiMessages)
+void AudioProcessorGraph::AudioGraphIOProcessor::processBlock (AudioBuffer<double>& buffer,
+                                                               MidiBuffer& midiMessages)
 {
-    MidiBuffer *midiMessages=0;
-    processAudio (buffer, *midiMessages); //processAudio (buffer, midiMessages);
+    processAudio (buffer, midiMessages);
 }
 
 double AudioProcessorGraph::AudioGraphIOProcessor::getTailLengthSeconds() const
 {
     return 0;
 }
-/*
+
 bool AudioProcessorGraph::AudioGraphIOProcessor::acceptsMidi() const
 {
     return type == midiOutputNode;
@@ -1624,7 +1622,7 @@ bool AudioProcessorGraph::AudioGraphIOProcessor::acceptsMidi() const
 bool AudioProcessorGraph::AudioGraphIOProcessor::producesMidi() const
 {
     return type == midiInputNode;
-}*/
+}
 
 bool AudioProcessorGraph::AudioGraphIOProcessor::isInput() const noexcept           { return type == audioInputNode  || type == midiInputNode; }
 bool AudioProcessorGraph::AudioGraphIOProcessor::isOutput() const noexcept          { return type == audioOutputNode || type == midiOutputNode; }
@@ -1634,10 +1632,10 @@ AudioProcessorEditor* AudioProcessorGraph::AudioGraphIOProcessor::createEditor()
 
 int AudioProcessorGraph::AudioGraphIOProcessor::getNumPrograms()                    { return 0; }
 int AudioProcessorGraph::AudioGraphIOProcessor::getCurrentProgram()                 { return 0; }
-//void AudioProcessorGraph::AudioGraphIOProcessor::setCurrentProgram (int)            { }
+void AudioProcessorGraph::AudioGraphIOProcessor::setCurrentProgram (int)            { }
 
 const String AudioProcessorGraph::AudioGraphIOProcessor::getProgramName (int)       { return String(); }
-//void AudioProcessorGraph::AudioGraphIOProcessor::changeProgramName (int, const String&) {}
+void AudioProcessorGraph::AudioGraphIOProcessor::changeProgramName (int, const String&) {}
 
 void AudioProcessorGraph::AudioGraphIOProcessor::getStateInformation (juce::MemoryBlock&) {}
 void AudioProcessorGraph::AudioGraphIOProcessor::setStateInformation (const void*, int) {}

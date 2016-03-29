@@ -580,9 +580,9 @@ public:
                     AudioBuffer<FloatType> chans (tmpBuffers.channels, numChannels, numSamples);
 
                     if (isBypassed)
-                        filter->processBlockBypassed (chans); //filter->processBlockBypassed (chans, midiEvents);
+                        filter->processBlockBypassed (chans, midiEvents);
                     else
-                        filter->processBlock (chans); //filter->processBlock (chans, midiEvents);
+                        filter->processBlock (chans, midiEvents);
                 }
 
                 // copy back any temp channels that may have been used..
@@ -806,13 +806,13 @@ public:
     void setProgram (VstInt32 program) override
     {
         if (filter != nullptr)
-            ;//filter->setCurrentProgram (program);
+            filter->setCurrentProgram (program);
     }
 
     void setProgramName (char* name) override
     {
         if (filter != nullptr)
-        ;//filter->changeProgramName (filter->getCurrentProgram(), name);
+            filter->changeProgramName (filter->getCurrentProgram(), name);
     }
 
     void getProgramName (char* name) override
