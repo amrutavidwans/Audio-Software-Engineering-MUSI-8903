@@ -44,7 +44,6 @@ private:
     Slider sModWidthinSecs;
     Label lModWidthInSec;
     ToggleButton tProcessByPass;
-    Label lProcessByPass;
     
 };
 

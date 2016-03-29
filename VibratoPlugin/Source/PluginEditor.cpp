@@ -58,10 +58,6 @@ VibratoPluginAudioProcessorEditor::VibratoPluginAudioProcessorEditor (VibratoPlu
     
     tProcessByPass.setButtonText("Bypass the plugin");
     
-//    addAndMakeVisible(lProcessByPass);
-//    lProcessByPass.setText("Bypass the plugin", dontSendNotification);
-//    lProcessByPass.attachToComponent(&tProcessByPass, false);
-    
 }
 
 VibratoPluginAudioProcessorEditor::~VibratoPluginAudioProcessorEditor()
@@ -95,8 +91,6 @@ void VibratoPluginAudioProcessorEditor::resized()
     
     tProcessByPass.setBounds(200, 200, 150, 30);
     
-    //sModFreqinHz.setBounds(40, 30, 20, getHeight()-90);
-    //sModWidthinSecs.setBounds(100, 30, 20, getHeight()-90);
 }
 
 void VibratoPluginAudioProcessorEditor::sliderValueChanged (Slider* slider)
