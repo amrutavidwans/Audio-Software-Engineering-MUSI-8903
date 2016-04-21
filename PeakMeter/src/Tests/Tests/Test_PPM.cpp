@@ -94,8 +94,30 @@ SUITE(PPM)
         float *m_pfPreviousVPPM;
         
     };
- 
+
+    TEST_FIXTURE(PPM, ZeroInput)
+    {
+        for (int c = 0; c < m_iNumChannels; c++)
+            CVector::setZero(m_ppfInputData[c], m_iBlockLength);
+        
+        process();
+       
+        for (int c = 0; c < m_iNumChannels; c++)
+            CHECK_ARRAY_CLOSE(m_ppfInputData[c], &m_pfOutputData[c], m_iBlockLength, 1e-3F);
+    }
+
+    TEST_FIXTURE(PPM, DCInput)
+    {
+        for (int c = 0; c < m_iNumChannels; c++)
+            CSynthesis::generateDc(m_ppfInputData[c], m_iBlockLength);
+        process();
+        
+        for (int c = 0; c < m_iNumChannels; c++)
+            CHECK_ARRAY_CLOSE(m_ppfInputData[c], &m_pfOutputData[c], m_iBlockLength, 1e-3F);
+    }
     
+    
+
     
 }
 
