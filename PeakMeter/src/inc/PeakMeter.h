@@ -6,9 +6,9 @@ public:
     void initPeakMeter(float fSamplingFreq, int iBlockLen, int iHopLength, int iNumChannels);
     void process(float **ppfAudioData, float *pfPeakValue);
     void resetPeakMeterValues();
-protected:
     CPeakMeter();
     virtual ~CPeakMeter();
+protected:
 private:
     float m_fSamplingFreq;
     int m_iNumChannels;
