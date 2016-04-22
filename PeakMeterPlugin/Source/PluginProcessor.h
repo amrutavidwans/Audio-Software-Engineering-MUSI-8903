@@ -13,6 +13,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Vibrato.h"
+#include "PeakMeter.h"
 
 //==============================================================================
 /**
@@ -69,6 +70,8 @@ private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VibratoPluginAudioProcessor)
     CVibrato *m_pCVib;
+    CPeakMeter *m_pCPM;
+    float *m_pfPeakVal;
 };
 
 

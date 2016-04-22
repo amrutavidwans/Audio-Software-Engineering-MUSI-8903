@@ -17,11 +17,13 @@ VibratoPluginAudioProcessor::VibratoPluginAudioProcessor()
 {
     // allocate memory to the vibrato object and initialize it with No. of Channels as 2 and sampling freq as 44100
     CVibrato::createInstance(m_pCVib);
+    m_pCPM = new CPeakMeter();
 }
 
 VibratoPluginAudioProcessor::~VibratoPluginAudioProcessor()
 {
     CVibrato::destroyInstance(m_pCVib);
+    m_pCPM->~CPeakMeter();
     m_fModFreqInHzVPAP = 0;
     m_fModWidthInSecVPAP = 0;
     m_bSliderValueChangeModFreq = 0;
@@ -98,6 +100,7 @@ void VibratoPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesP
     m_pCVib->initInstance(fMaxModFreqInSec, sampleRate, getTotalNumInputChannels());
     m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, 5.0);
     m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModWidthInS, 0.005);
+    m_pCPM->initPeakMeter(sampleRate, getTotalNumInputChannels());
     
 }
 
@@ -118,6 +121,11 @@ void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
     // when they first compile the plugin, but obviously you don't need to
     // this code if your algorithm already fills all the output channels.
     
+    float **channelData = buffer.getArrayOfWritePointers();
+    
+    m_pCPM->process(channelData, buffer.getNumSamples(), m_pfPeakVal);
+    //maax value?
+    
     if (m_bProcessByPass)
     {
         processBlockBypassed(buffer, midiMessages);
@@ -130,7 +138,6 @@ void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
         
         // This is the place where you'd normally do the guts of your plugin's
         // audio processing...
-        float **channelData = buffer.getArrayOfWritePointers();
         
         if (m_bSliderValueChangeModFreq)
         {
