@@ -121,9 +121,9 @@ void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
     // when they first compile the plugin, but obviously you don't need to
     // this code if your algorithm already fills all the output channels.
     
-    float **channelData = buffer.getArrayOfWritePointers();
     
-    m_pCPM->process(channelData, buffer.getNumSamples(), m_pfPeakVal);
+    
+    
     //maax value?
     
     if (m_bProcessByPass)
@@ -133,11 +133,10 @@ void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
     
     else
     {
-        for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
-            buffer.clear (i, 0, buffer.getNumSamples());
-        
-        // This is the place where you'd normally do the guts of your plugin's
-        // audio processing...
+        if (m_fModFreqInHzVPAP == 0.F)
+        {
+            m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, 5.0);
+        }
         
         if (m_bSliderValueChangeModFreq)
         {
@@ -150,29 +149,39 @@ void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
             m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModWidthInS, m_fModWidthInSecVPAP);
             m_bSliderValueChangeModWidth = 0;
         }
-        
-        m_pCVib->process(channelData, channelData, buffer.getNumSamples());
-        
     }
+      
+    
+    for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
+    {
+        buffer.clear (i, 0, buffer.getNumSamples());
+    }
+    
+    // This is the place where you'd normally do the guts of your plugin's
+    // audio processing...
+    float **channelData = buffer.getArrayOfWritePointers();
+    
+    // call peak meter
+    //m_pCPM->process(channelData, buffer.getNumSamples(), m_pfPeakVal);
+    m_pCVib->process(channelData, channelData, buffer.getNumSamples());
     
 
 }
 
 void VibratoPluginAudioProcessor::processBlockBypassed (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-    for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
+//    for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
+//        buffer.clear (i, 0, buffer.getNumSamples());
+//    
+//    float **channelData = buffer.getArrayOfWritePointers();
+//    
+//    // This is the place where you'd normally do the guts of your plugin's
+//    // audio processing...
+//    // call peak meter
+//    m_pCPM->process(channelData, buffer.getNumSamples(), m_pfPeakVal);
     
-    //float **channelData = buffer.getArrayOfWritePointers();
-    
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    for (int channel = 0; channel < getTotalNumInputChannels(); ++channel)
-    {
-        float* channelData = buffer.getWritePointer (channel);
-        
-    }
-
+    m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModWidthInS, 0.005);
+    m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, 0.F);
     
 }
 
