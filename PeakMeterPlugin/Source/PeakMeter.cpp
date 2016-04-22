@@ -11,8 +11,8 @@ CPeakMeter::CPeakMeter ()
 
 CPeakMeter::~CPeakMeter(){
     
-    delete m_pfPreviousVPPM;
-    delete m_pfVPPM;
+    delete [] m_pfPreviousVPPM;
+    delete [] m_pfVPPM;
     this->resetPeakMeterValues();
 
 }
@@ -38,6 +38,11 @@ void CPeakMeter::initPeakMeter(float fSamplingFreq, int iNumChannels){
 
 
 void CPeakMeter::process(float **ppfAudioData, int iNumOfFrames, float *pfPeakValue){
+    
+    for (int k=0; k<m_iNumChannels; k++){
+        pfPeakValue[k]=0;
+    }
+    
     for (int j=0; j<iNumOfFrames; j++) {
         for (int i = 0; i<m_iNumChannels; i++){
 
@@ -53,14 +58,10 @@ void CPeakMeter::process(float **ppfAudioData, int iNumOfFrames, float *pfPeakVa
            }
             
             m_pfPreviousVPPM[i] = m_pfVPPM[i];
-            pfPeakValue[i] = m_pfVPPM[i];
             
-            //convert to dB
-            if(pfPeakValue[i]<0.00001){
-                pfPeakValue[i]=0.00001;
-            }
-            else{
-                pfPeakValue[i]=20*log10f(pfPeakValue[i]);
+            if (pfPeakValue[i]<m_pfVPPM[i])
+            {
+                pfPeakValue[i] = m_pfVPPM[i];
             }
             
         }

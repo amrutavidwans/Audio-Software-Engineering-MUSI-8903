@@ -18,6 +18,7 @@ VibratoPluginAudioProcessor::VibratoPluginAudioProcessor()
     // allocate memory to the vibrato object and initialize it with No. of Channels as 2 and sampling freq as 44100
     CVibrato::createInstance(m_pCVib);
     m_pCPM = new CPeakMeter();
+
 }
 
 VibratoPluginAudioProcessor::~VibratoPluginAudioProcessor()
@@ -26,8 +27,10 @@ VibratoPluginAudioProcessor::~VibratoPluginAudioProcessor()
     m_pCPM->~CPeakMeter();
     m_fModFreqInHzVPAP = 0;
     m_fModWidthInSecVPAP = 0;
-    m_bSliderValueChangeModFreq = 0;
-    m_bSliderValueChangeModWidth = 0;
+    delete [] m_pfPeakVal;
+    m_pfPeakVal = 0;
+    //m_bSliderValueChangeModFreq = 0;
+    //m_bSliderValueChangeModWidth = 0;
 }
 
 //==============================================================================
@@ -100,6 +103,8 @@ void VibratoPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesP
     m_pCVib->initInstance(fMaxModFreqInSec, sampleRate, getTotalNumInputChannels());
     m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, 5.0);
     m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModWidthInS, 0.005);
+    
+    m_pfPeakVal = new float [getTotalNumInputChannels()];
     m_pCPM->initPeakMeter(sampleRate, getTotalNumInputChannels());
     
 }
@@ -133,11 +138,6 @@ void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
     
     else
     {
-        if (m_fModFreqInHzVPAP == 0.F)
-        {
-            m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, 5.0);
-        }
-        
         if (m_bSliderValueChangeModFreq)
         {
             m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, m_fModFreqInHzVPAP);
@@ -148,6 +148,12 @@ void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
         {
             m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModWidthInS, m_fModWidthInSecVPAP);
             m_bSliderValueChangeModWidth = 0;
+        }
+        
+        if (m_fModFreqInHzVPAP == 0.F)
+        {
+            m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, m_fModFreqInHzVPAP);
+            m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModWidthInS, m_fModWidthInSecVPAP);
         }
     }
       
@@ -162,7 +168,8 @@ void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
     float **channelData = buffer.getArrayOfWritePointers();
     
     // call peak meter
-    //m_pCPM->process(channelData, buffer.getNumSamples(), m_pfPeakVal);
+    m_pCPM->process(channelData, buffer.getNumSamples(), m_pfPeakVal);
+    //call vibrato
     m_pCVib->process(channelData, channelData, buffer.getNumSamples());
     
 
@@ -180,7 +187,7 @@ void VibratoPluginAudioProcessor::processBlockBypassed (AudioBuffer<float>& buff
 //    // call peak meter
 //    m_pCPM->process(channelData, buffer.getNumSamples(), m_pfPeakVal);
     
-    m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModWidthInS, 0.005);
+    m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModWidthInS, 0.F);
     m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, 0.F);
     
 }
@@ -229,4 +236,12 @@ void VibratoPluginAudioProcessor::setParameter (int parameterIndex, float newVal
 float VibratoPluginAudioProcessor::getParameter (int parameterIndex)
 {
     return m_pCVib->getParam(static_cast<CVibrato::VibratoParam_t>(parameterIndex));
+}
+
+bool VibratoPluginAudioProcessor::getProcessByPassState (){
+    return m_bProcessByPass;
+}
+
+void VibratoPluginAudioProcessor::setProcessByPassState(bool flag){
+    m_bProcessByPass=flag;
 }

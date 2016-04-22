@@ -58,10 +58,15 @@ public:
     //==============================================================================
     void setParameter (int parameterIndex, float newValue) override;
     float getParameter (int parameterIndex) override;
+    bool getProcessByPassState ();
+    void setProcessByPassState(bool flag);
     
     //======= variable
     float m_fModFreqInHzVPAP=0.F;
+    float m_fModFreqBypass=0.F;
+    
     float m_fModWidthInSecVPAP = 0.F;
+    float m_fModWidthBypass = 0.F;
     bool m_bSliderValueChangeModFreq = 0;
     bool m_bSliderValueChangeModWidth = 0;
     bool m_bProcessByPass = 0;

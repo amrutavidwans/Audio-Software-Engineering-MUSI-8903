@@ -18,7 +18,7 @@ VibratoPluginAudioProcessorEditor::VibratoPluginAudioProcessorEditor (VibratoPlu
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (480, 260);
+    setSize (600, 260);
     
     //define parameters for slider object for Mod. Freq
     addAndMakeVisible(sModFreqinHz);
@@ -47,6 +47,7 @@ VibratoPluginAudioProcessorEditor::VibratoPluginAudioProcessorEditor (VibratoPlu
     sModWidthinSecs.setTextValueSuffix("ms");
     sModWidthinSecs.setValue(processor.getParameter(CVibrato::VibratoParam_t::kParamModWidthInS));  //though the editor is closed we need the changed slider values to
                                                                                                     // display when the user opens the editor again
+    
     sModWidthinSecs.addListener(this);
     
     addAndMakeVisible(lModWidthInSec);
@@ -57,6 +58,9 @@ VibratoPluginAudioProcessorEditor::VibratoPluginAudioProcessorEditor (VibratoPlu
     tProcessByPass.addListener(this);
     
     tProcessByPass.setButtonText("Bypass the plugin");
+    //tProcessByPass.setVisible(processor.getParameter(tProcessByPass));
+
+    tProcessByPass.setToggleState(processor.getProcessByPassState(), juce::dontSendNotification);
     
 }
 
@@ -78,6 +82,7 @@ void VibratoPluginAudioProcessorEditor::paint (Graphics& g)
     g.drawFittedText ("15Hz", getWidth()-40, 80, 40, 20, Justification::left, 1);
     g.drawFittedText ("5ms", positionLeft, 170, 50, 20, Justification::left, 1);
     g.drawFittedText ("10ms", getWidth()-50, 170, 50, 20, Justification::left, 1);
+    
 
 }
 
@@ -85,7 +90,7 @@ void VibratoPluginAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
-    const int sliderLeft = 20;
+    const int sliderLeft = 100;  //20
     sModFreqinHz.setBounds(sliderLeft, 60, getWidth()-sliderLeft-10, 20);
     sModWidthinSecs.setBounds(sliderLeft, 150, getWidth()-sliderLeft-10, 20);
     
