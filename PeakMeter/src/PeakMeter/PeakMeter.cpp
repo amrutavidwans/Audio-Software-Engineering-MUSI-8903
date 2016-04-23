@@ -1,25 +1,35 @@
+//using namespace std;
 #include "PeakMeter.h"
+#include <iostream>
 #include <stdlib.h>
 #include <math.h>
+using std::cout;
+using std::endl;
 
 CPeakMeter::CPeakMeter ()
 {
     this->resetPeakMeterValues();
-    m_pfPreviousVPPM = 0;
-    m_pfVPPM = 0;
+   
 }
 
 CPeakMeter::~CPeakMeter(){
     
-    delete m_pfPreviousVPPM;
-    delete m_pfVPPM;
-    this->resetPeakMeterValues();
+    delete [] m_pfPreviousVPPM;
+    delete [] m_pfVPPM;
+    m_pfPreviousVPPM=0;
+    m_pfVPPM=0;
     
 }
 
+void CPeakMeter::createInstance(CPeakMeter*& pcPM){
+    pcPM = new CPeakMeter();
+}
 
 
-
+void CPeakMeter::destroyInstance(CPeakMeter*& pcPM){
+    delete pcPM;
+    pcPM = 0;
+}
 
 void CPeakMeter::resetPeakMeterValues(){
     m_fSamplingFreq = 0;
@@ -33,10 +43,15 @@ void CPeakMeter::initPeakMeter(float fSamplingFreq, int iNumChannels){
     m_iNumChannels = iNumChannels;
     
     m_fAlphaRT = 1- exp(-2.2/(m_fSamplingFreq* 1.5));
-    m_fAlphaAT = 1- exp(-2.2/(m_fSamplingFreq* 0.5));
+    m_fAlphaAT = 1- exp(-2.2/(m_fSamplingFreq* 0.01));
     
     m_pfPreviousVPPM = new float [m_iNumChannels];
     m_pfVPPM = new float [m_iNumChannels];
+    
+    for (int i=0; i<m_iNumChannels; i++){
+        m_pfVPPM[i] = 0;
+        m_pfPreviousVPPM[i] = 0;
+    }
     
 }
 
@@ -60,7 +75,12 @@ float CPeakMeter::getAlphaRT(){
 
 
 
-void CPeakMeter::process(float **ppfAudioData, int iNumOfFrames, float **pfPeakValue){
+void CPeakMeter::process(float **ppfAudioData, int iNumOfFrames, float *pfPeakValue){
+    for(int k=0;k<m_iNumChannels;k++){
+        pfPeakValue[k]=0;
+    }
+    
+    
     for (int j=0; j<iNumOfFrames; j++) {
         for (int i = 0; i<m_iNumChannels; i++){
             
@@ -76,15 +96,13 @@ void CPeakMeter::process(float **ppfAudioData, int iNumOfFrames, float **pfPeakV
             }
             
             m_pfPreviousVPPM[i] = m_pfVPPM[i];
-            pfPeakValue[i] = m_pfVPPM[i];
+            if (pfPeakValue[i]<m_pfVPPM[i])
+            {
+                pfPeakValue[i] = m_pfVPPM[i];
+            }
+            std::cout<< ppfAudioData[i][j] <<" "<<pfPeakValue[i]<<std::endl;
             
-            //convert to dB
-            if(pfPeakValue[i]<0.00001){
-                pfPeakValue[i]=0.00001;
-            }
-            else{
-                pfPeakValue[i]=20*log10f(pfPeakValue[i]);
-            }
+            
             
         }
         
