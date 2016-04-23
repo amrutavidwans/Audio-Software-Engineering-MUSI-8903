@@ -18,7 +18,7 @@ VibratoPluginAudioProcessorEditor::VibratoPluginAudioProcessorEditor (VibratoPlu
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (600, 260);
+    setSize (800, 260);
     
     //define parameters for slider object for Mod. Freq
     addAndMakeVisible(sModFreqinHz);
@@ -61,6 +61,9 @@ VibratoPluginAudioProcessorEditor::VibratoPluginAudioProcessorEditor (VibratoPlu
     //tProcessByPass.setVisible(processor.getParameter(tProcessByPass));
 
     tProcessByPass.setToggleState(processor.getProcessByPassState(), juce::dontSendNotification);
+    addAndMakeVisible(cMeter);
+    cMeter.setName("Peak Value");
+    //addComponentListener(cMeter);
     
 }
 
@@ -79,23 +82,23 @@ void VibratoPluginAudioProcessorEditor::paint (Graphics& g)
     
     const int positionLeft=100;
     g.drawFittedText ("5Hz", positionLeft, 80, 20, 20, Justification::left, 1);
-    g.drawFittedText ("15Hz", getWidth()-40, 80, 40, 20, Justification::left, 1);
+    g.drawFittedText ("15Hz", getWidth()-400-40, 80, 40, 20, Justification::left, 1);
     g.drawFittedText ("5ms", positionLeft, 170, 50, 20, Justification::left, 1);
-    g.drawFittedText ("10ms", getWidth()-50, 170, 50, 20, Justification::left, 1);
+    g.drawFittedText ("10ms", getWidth()-400-50, 170, 50, 20, Justification::left, 1);
     
-
+    g.drawFittedText("Peak Meter", 500, 200, 50, 20, Justification::left, 1);
 }
 
 void VibratoPluginAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
-    const int sliderLeft = 100;  //20
-    sModFreqinHz.setBounds(sliderLeft, 60, getWidth()-sliderLeft-10, 20);
-    sModWidthinSecs.setBounds(sliderLeft, 150, getWidth()-sliderLeft-10, 20);
+    const int sliderLeft = 20;  //20
+    sModFreqinHz.setBounds(sliderLeft, 60, getWidth()-sliderLeft-400, 20);
+    sModWidthinSecs.setBounds(sliderLeft, 150, getWidth()-sliderLeft-400, 20);
     
     tProcessByPass.setBounds(200, 200, 150, 30);
-    
+    cMeter.setBounds(500, 30, 20, 170);
 }
 
 void VibratoPluginAudioProcessorEditor::sliderValueChanged (Slider* slider)
@@ -122,4 +125,8 @@ void VibratoPluginAudioProcessorEditor::buttonClicked (Button* buttonThatWasClic
     {
         processor.m_bProcessByPass = tProcessByPass.getToggleState();
     }
+}
+
+void Timer::timerCallback(){
+    
 }

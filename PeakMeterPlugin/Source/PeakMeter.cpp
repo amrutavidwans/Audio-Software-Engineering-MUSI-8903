@@ -5,16 +5,26 @@
 CPeakMeter::CPeakMeter ()
 {
     this->resetPeakMeterValues();
-    m_pfPreviousVPPM = 0;
-    m_pfVPPM = 0;
+    
 }
 
 CPeakMeter::~CPeakMeter(){
     
     delete [] m_pfPreviousVPPM;
     delete [] m_pfVPPM;
-    this->resetPeakMeterValues();
+    m_pfPreviousVPPM = 0;
+    m_pfVPPM = 0;
 
+}
+
+ void CPeakMeter::createInstance(CPeakMeter*& pcPM){
+    
+    pcPM = new CPeakMeter();
+}
+
+ void CPeakMeter::destroyInstance(CPeakMeter*& pcPM){
+    delete pcPM;
+    pcPM = 0;
 }
 
 void CPeakMeter::resetPeakMeterValues(){
@@ -33,9 +43,28 @@ void CPeakMeter::initPeakMeter(float fSamplingFreq, int iNumChannels){
     
     m_pfPreviousVPPM = new float [m_iNumChannels];
     m_pfVPPM = new float [m_iNumChannels];
+    for (int i = 0; i< m_iNumChannels; i++){
+        m_pfVPPM[i] = 0;
+        m_pfPreviousVPPM[i] = 0;
+    }
     
 }
 
+void CPeakMeter::setAlphaAT(float fAttTime){
+    m_fAlphaAT = 1 - exp(-2.2/(m_fSamplingFreq*fAttTime));
+}
+
+void CPeakMeter::setAlphaRT(float fRelTime){
+    m_fAlphaRT = 1 - exp(-2.2/(m_fSamplingFreq*fRelTime));
+}
+
+float CPeakMeter::getAlphaAT(){
+    return m_fAlphaAT;
+}
+
+float CPeakMeter::getAlphaRT(){
+    return m_fAlphaRT;
+}
 
 void CPeakMeter::process(float **ppfAudioData, int iNumOfFrames, float *pfPeakValue){
     

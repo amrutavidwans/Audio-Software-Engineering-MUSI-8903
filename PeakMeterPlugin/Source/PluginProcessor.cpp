@@ -17,20 +17,21 @@ VibratoPluginAudioProcessor::VibratoPluginAudioProcessor()
 {
     // allocate memory to the vibrato object and initialize it with No. of Channels as 2 and sampling freq as 44100
     CVibrato::createInstance(m_pCVib);
-    m_pCPM = new CPeakMeter();
+    CPeakMeter::createInstance(m_pCPM);
 
 }
 
 VibratoPluginAudioProcessor::~VibratoPluginAudioProcessor()
 {
     CVibrato::destroyInstance(m_pCVib);
-    m_pCPM->~CPeakMeter();
+    CPeakMeter::destroyInstance(m_pCPM);
+    m_pCPM = 0;
     m_fModFreqInHzVPAP = 0;
     m_fModWidthInSecVPAP = 0;
     delete [] m_pfPeakVal;
     m_pfPeakVal = 0;
-    //m_bSliderValueChangeModFreq = 0;
-    //m_bSliderValueChangeModWidth = 0;
+    m_bSliderValueChangeModFreq = 0;
+    m_bSliderValueChangeModWidth = 0;
 }
 
 //==============================================================================
@@ -167,11 +168,10 @@ void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
     // audio processing...
     float **channelData = buffer.getArrayOfWritePointers();
     
-    // call peak meter
-    m_pCPM->process(channelData, buffer.getNumSamples(), m_pfPeakVal);
     //call vibrato
     m_pCVib->process(channelData, channelData, buffer.getNumSamples());
-    
+    // call peak meter
+    m_pCPM->process(channelData, buffer.getNumSamples(), m_pfPeakVal);
 
 }
 

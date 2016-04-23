@@ -13,12 +13,14 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
+#include "MeterComponent.h"
+
 
 
 //==============================================================================
 /**
 */
-class VibratoPluginAudioProcessorEditor  : public AudioProcessorEditor, private SliderListener, public ButtonListener
+class VibratoPluginAudioProcessorEditor  : public AudioProcessorEditor, private SliderListener, public ButtonListener //, public Timer
 {
 public:
     VibratoPluginAudioProcessorEditor (VibratoPluginAudioProcessor&);
@@ -44,7 +46,9 @@ private:
     Slider sModWidthinSecs;
     Label lModWidthInSec;
     ToggleButton tProcessByPass;
-    
+    MeterComponent cMeter;
+    //Timer cTime;
+
 };
 
 
