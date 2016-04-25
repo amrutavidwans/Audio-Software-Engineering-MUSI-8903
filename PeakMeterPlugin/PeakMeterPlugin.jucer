@@ -12,6 +12,12 @@
               pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.1.0">
   <MAINGROUP id="LmlyFG" name="VibratoPlugin">
     <GROUP id="{9A361365-5C2A-D2FD-678D-72268F4DD6EE}" name="Source">
+      <FILE id="q6zF8F" name="PeakMeter.cpp" compile="1" resource="0" file="Source/PeakMeter.cpp"/>
+      <FILE id="rTwcen" name="PeakMeter.h" compile="0" resource="0" file="Source/PeakMeter.h"/>
+      <FILE id="qdEov7" name="MeterComponent.cpp" compile="1" resource="0"
+            file="Source/MeterComponent.cpp"/>
+      <FILE id="H39Uge" name="MeterComponent.h" compile="0" resource="0"
+            file="Source/MeterComponent.h"/>
       <FILE id="yudXJA" name="ErrorDef.h" compile="0" resource="0" file="Source/ErrorDef.h"/>
       <FILE id="pBRB32" name="Lfo.h" compile="0" resource="0" file="Source/Lfo.h"/>
       <FILE id="IWc8Ms" name="MUSI8903Config.h" compile="0" resource="0"

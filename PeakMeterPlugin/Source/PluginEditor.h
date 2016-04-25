@@ -20,7 +20,7 @@
 //==============================================================================
 /**
 */
-class VibratoPluginAudioProcessorEditor  : public AudioProcessorEditor, private SliderListener, public ButtonListener //, public Timer
+class VibratoPluginAudioProcessorEditor  : public AudioProcessorEditor, private SliderListener, public ButtonListener , public Timer
 {
 public:
     VibratoPluginAudioProcessorEditor (VibratoPluginAudioProcessor&);
@@ -30,8 +30,8 @@ public:
     void paint (Graphics&) override;
     void resized() override;
     void sliderValueChanged (Slider* slider) override;
-    
     void buttonClicked (Button* buttonThatWasClicked) override;
+    void timerCallback() override;
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -47,7 +47,6 @@ private:
     Label lModWidthInSec;
     ToggleButton tProcessByPass;
     MeterComponent cMeter;
-    //Timer cTime;
 
 };
 

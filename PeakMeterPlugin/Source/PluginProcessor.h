@@ -60,6 +60,7 @@ public:
     float getParameter (int parameterIndex) override;
     bool getProcessByPassState ();
     void setProcessByPassState(bool flag);
+    float getPeakMeterValue();
     
     //======= variable
     float m_fModFreqInHzVPAP=0.F;
@@ -70,13 +71,14 @@ public:
     bool m_bSliderValueChangeModFreq = 0;
     bool m_bSliderValueChangeModWidth = 0;
     bool m_bProcessByPass = 0;
+    float *m_pfPeakVal;
 
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VibratoPluginAudioProcessor)
     CVibrato *m_pCVib;
     CPeakMeter *m_pCPM;
-    float *m_pfPeakVal;
+    
 };
 
 

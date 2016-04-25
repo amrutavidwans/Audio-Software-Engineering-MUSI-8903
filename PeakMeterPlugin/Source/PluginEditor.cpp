@@ -65,10 +65,12 @@ VibratoPluginAudioProcessorEditor::VibratoPluginAudioProcessorEditor (VibratoPlu
     cMeter.setName("Peak Value");
     //addComponentListener(cMeter);
     
+    Timer::startTimer(10);
 }
 
 VibratoPluginAudioProcessorEditor::~VibratoPluginAudioProcessorEditor()
 {
+    Timer::stopTimer();
 }
 
 //==============================================================================
@@ -127,6 +129,9 @@ void VibratoPluginAudioProcessorEditor::buttonClicked (Button* buttonThatWasClic
     }
 }
 
-void Timer::timerCallback(){
+void VibratoPluginAudioProcessorEditor::timerCallback(){
+    cMeter.setValue(processor.getPeakMeterValue());
+    cMeter.repaint();
+   //std::cout<< cMeter.getPeakValue()<<" "<<processor.getPeakMeterValue()<< " "<<std::endl;
     
 }

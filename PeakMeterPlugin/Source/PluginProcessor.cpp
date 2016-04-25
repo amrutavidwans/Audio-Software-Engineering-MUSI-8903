@@ -177,18 +177,21 @@ void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 
 void VibratoPluginAudioProcessor::processBlockBypassed (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-//    for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
-//        buffer.clear (i, 0, buffer.getNumSamples());
-//    
-//    float **channelData = buffer.getArrayOfWritePointers();
-//    
-//    // This is the place where you'd normally do the guts of your plugin's
-//    // audio processing...
-//    // call peak meter
-//    m_pCPM->process(channelData, buffer.getNumSamples(), m_pfPeakVal);
+    //    for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
+    //        buffer.clear (i, 0, buffer.getNumSamples());
+    //
+    //    float **channelData = buffer.getArrayOfWritePointers();
+    //
+    //    // This is the place where you'd normally do the guts of your plugin's
+    //    // audio processing...
+    //    // call peak meter
+    //    m_pCPM->process(channelData, buffer.getNumSamples(), m_pfPeakVal);
     
     m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModWidthInS, 0.F);
     m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, 0.F);
+    
+
+    
     
 }
 
@@ -244,4 +247,8 @@ bool VibratoPluginAudioProcessor::getProcessByPassState (){
 
 void VibratoPluginAudioProcessor::setProcessByPassState(bool flag){
     m_bProcessByPass=flag;
+}
+
+float VibratoPluginAudioProcessor::getPeakMeterValue(){
+    return *m_pfPeakVal;
 }

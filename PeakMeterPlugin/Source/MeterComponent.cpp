@@ -23,11 +23,10 @@ MeterComponent::~MeterComponent(){
 
 void MeterComponent::paint(Graphics& g){
     g.fillAll(juce::Colours::black);
-
-    float temp = (getPeakValue()*getHeight());
+    float temp = (getPeakValue());
     g.setColour(juce::Colours::green);
-    g.fillRect(0.F, 0.F, float(getWidth()), temp);
-    
+    g.fillRect(0.F, getHeight()*(1-temp),float(getWidth()), float(getHeight()));
+    //std::cout<< temp<<std::endl;
     
 }
 
@@ -44,21 +43,23 @@ float MeterComponent::getMaxValue(){
     return m_fMaxPeakVal;
 }
 
-void MeterComponent::setValue(float &val){
-    //convert to dB
-    if(val<0.00001){
-        val=0.00001;
+void MeterComponent::setValue(float val){
+    if (val>=0.00001)
+    val= 20*log10f(val);
+    else
+    {
+      val=20*log10f(0.00001);
     }
-    else{
-        val=20*log10f(val);
-    }
-    
-    // values less than 12 dB are not to be displayed
-    if (val < -12.0){
-        val = -12.0;
-    }
-    
+    //std::cout<< val<<std::endl;
+    // values less than -12 dB are not to be displayed
+ 
     // convert 0-1 RANGE
-    val = (val+12.0)/12.0;
+    val = (-val)/100;
+    m_fPeakVal=val;
+    std::cout<< m_fPeakVal<<std::endl;
+    repaint();
+    
+    if (m_fPeakVal> m_fMaxPeakVal)
+        m_fMaxPeakVal=m_fPeakVal;
 }
 

@@ -14,7 +14,7 @@ class MeterComponent: public Component
 {
 public:
     void paint(Graphics& g);
-    void setValue(float &val);
+    void setValue(float val);
     float getPeakValue();
     float getMaxValue();
     MeterComponent();
