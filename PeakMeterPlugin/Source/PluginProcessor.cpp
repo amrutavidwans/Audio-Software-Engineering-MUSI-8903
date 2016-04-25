@@ -172,6 +172,7 @@ void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
     m_pCVib->process(channelData, channelData, buffer.getNumSamples());
     // call peak meter
     m_pCPM->process(channelData, buffer.getNumSamples(), m_pfPeakVal);
+    
 
 }
 

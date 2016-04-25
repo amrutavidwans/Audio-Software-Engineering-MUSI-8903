@@ -1,6 +1,9 @@
 #include "PeakMeter.h"
 #include <stdlib.h>
 #include <math.h>
+#include <iostream>
+#include <stdio.h>
+
 
 CPeakMeter::CPeakMeter ()
 {
@@ -38,8 +41,8 @@ void CPeakMeter::initPeakMeter(float fSamplingFreq, int iNumChannels){
     m_fSamplingFreq = fSamplingFreq;
     m_iNumChannels = iNumChannels;
     
-    m_fAlphaRT = 1- exp(-2.2/(m_fSamplingFreq* 1.5));
-    m_fAlphaAT = 1- exp(-2.2/(m_fSamplingFreq* 0.5));
+    m_fAlphaRT = 1- exp(-2.2/(m_fSamplingFreq* 0.01));
+    m_fAlphaAT = 1- exp(-2.2/(m_fSamplingFreq* 0.01));
     
     m_pfPreviousVPPM = new float [m_iNumChannels];
     m_pfVPPM = new float [m_iNumChannels];
@@ -88,9 +91,10 @@ void CPeakMeter::process(float **ppfAudioData, int iNumOfFrames, float *pfPeakVa
             
             m_pfPreviousVPPM[i] = m_pfVPPM[i];
             
-            if (pfPeakValue[i]<m_pfVPPM[i])
+           if (pfPeakValue[i]<fabs(m_pfVPPM[i]))
             {
-                pfPeakValue[i] = m_pfVPPM[i];
+            pfPeakValue[i] = m_pfVPPM[i];
+           // std::cout<< pfPeakValue[i]<<std::endl;
             }
             
         }

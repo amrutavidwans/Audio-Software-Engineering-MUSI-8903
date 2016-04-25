@@ -50,14 +50,12 @@ void MeterComponent::setValue(float val){
     {
       val=20*log10f(0.00001);
     }
-    //std::cout<< val<<std::endl;
-    // values less than -12 dB are not to be displayed
- 
-    // convert 0-1 RANGE
-    val = (-val)/100;
+    
+    val = -val/100;
+        
     m_fPeakVal=val;
     std::cout<< m_fPeakVal<<std::endl;
-    repaint();
+    //repaint();
     
     if (m_fPeakVal> m_fMaxPeakVal)
         m_fMaxPeakVal=m_fPeakVal;

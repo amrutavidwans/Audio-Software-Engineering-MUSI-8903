@@ -3,8 +3,8 @@
 #include <iostream>
 #include <stdlib.h>
 #include <math.h>
-using std::cout;
-using std::endl;
+//using std::cout;
+//using std::endl;
 
 CPeakMeter::CPeakMeter ()
 {
@@ -96,11 +96,11 @@ void CPeakMeter::process(float **ppfAudioData, int iNumOfFrames, float *pfPeakVa
             }
             
             m_pfPreviousVPPM[i] = m_pfVPPM[i];
-            if (pfPeakValue[i]<m_pfVPPM[i])
+            if (pfPeakValue[i]<(m_pfVPPM[i]))
             {
                 pfPeakValue[i] = m_pfVPPM[i];
             }
-            std::cout<< ppfAudioData[i][j] <<" "<<pfPeakValue[i]<<std::endl;
+           //std::cout<< ppfAudioData[i][j] <<" "<<pfPeakValue[i]<<std::endl;
             
             
             
