@@ -7,7 +7,7 @@ set (DtwLIB Dtw)
 set (VibratoLIB Vibrato)
 set (AudioLIB AudioFileIO)
 set (SndLIB sndlib)
-set (PPMLIB ppm)
+set (PPMLIB PeakMeter)
 
 ##############################################################
 ## unitTest++

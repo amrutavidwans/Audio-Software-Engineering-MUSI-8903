@@ -18,7 +18,6 @@
 
 #include "PeakMeter.h"
 
-#include <math.h>
 
 #include <iostream>
 
