@@ -32,6 +32,8 @@ VibratoPluginAudioProcessor::~VibratoPluginAudioProcessor()
     m_pfPeakVal = 0;
     m_bSliderValueChangeModFreq = 0;
     m_bSliderValueChangeModWidth = 0;
+    m_iNumChan = 0;
+    m_bBypassFlag = false;
 }
 
 //==============================================================================
@@ -135,12 +137,16 @@ void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
     if (m_bProcessByPass)
     {
         processBlockBypassed(buffer, midiMessages);
+        m_bBypassFlag = true;
     }
     
     else
     {
-        m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, m_fModFreqBypass);
-        m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModWidthInS, m_fModWidthBypass);
+        if (m_bBypassFlag) {
+            m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, m_fModFreqBypass);
+            m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModWidthInS, m_fModWidthBypass);
+            m_bBypassFlag = false;
+        }
         
         if (m_bSliderValueChangeModFreq)
         {
@@ -190,8 +196,8 @@ void VibratoPluginAudioProcessor::processBlockBypassed (AudioBuffer<float>& buff
     //    // audio processing...
     //    // call peak meter
     //    m_pCPM->process(channelData, buffer.getNumSamples(), m_pfPeakVal);
-   // m_fModWidthBypass = m_fModWidthInSecVPAP;
-  //m_fModFreqBypass = m_fModFreqInHzVPAP;
+   m_fModWidthBypass = m_fModWidthInSecVPAP;
+  m_fModFreqBypass = m_fModFreqInHzVPAP;
     m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModWidthInS, 0.F);
     m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, 0.F);
     

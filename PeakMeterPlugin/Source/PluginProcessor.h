@@ -73,6 +73,7 @@ public:
     bool m_bProcessByPass = 0;
     float *m_pfPeakVal;
     int m_iNumChan;
+    bool m_bBypassFlag = false;
 
 private:
     //==============================================================================
