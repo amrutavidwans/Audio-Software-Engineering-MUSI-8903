@@ -11,6 +11,7 @@
 #include "PeakMeter.h"
 #include <iostream>
 #include <fstream>
+#include <string.h>
 
 
 SUITE(PPM)
@@ -143,6 +144,7 @@ SUITE(PPM)
         float *m_pfPreviousVPPM;
         int f_iBlockLength;
         int m_iDataLength;
+        std::string Address = "../../src/Tests/Tests/";
         
     };
     
@@ -174,7 +176,7 @@ SUITE(PPM)
         process();
         
         std::ifstream myfile;
-        myfile.open("/Users/milaprane/Documents/Milap/Spring 2016/Audio-Software-Engineering-MUSI-8903/PeakMeter/src/Tests/Tests/DCVPPM.txt");
+        myfile.open(Address+"DCVPPM.txt");
         
             for (int i = 0; i<m_iNumChannels; i++)
             {
@@ -223,7 +225,7 @@ SUITE(PPM)
         
         std::ifstream myfile;
         
-        myfile.open("/Users/milaprane/Documents/Milap/Spring 2016/Audio-Software-Engineering-MUSI-8903/PeakMeter/src/Tests/Tests/AlphaATVPPM.txt");
+        myfile.open(Address+"AlphaATVPPM.txt");
         
         for (int i = 0; i<m_iNumChannels; i++)
         {
@@ -263,7 +265,7 @@ SUITE(PPM)
         process();
         std::ifstream myfile;
         
-        myfile.open("/Users/milaprane/Documents/Milap/Spring 2016/Audio-Software-Engineering-MUSI-8903/PeakMeter/src/Tests/Tests/AlphaRTVPPM.txt");
+        myfile.open(Address+"AlphaRTVPPM.txt");
         
         for (int i = 0; i<m_iNumChannels; i++)
         {
@@ -308,7 +310,7 @@ SUITE(PPM)
         process();
     
         std::ifstream myfile;
-        myfile.open("/Users/milaprane/Documents/Milap/Spring 2016/Audio-Software-Engineering-MUSI-8903/PeakMeter/src/Tests/Tests/AlphaSampChange.txt");
+        myfile.open(Address+"AlphaSampChange.txt");
         
         for (int i = 0; i<m_iNumChannels; i++)
         {
@@ -354,7 +356,7 @@ SUITE(PPM)
         
         std::ifstream myfile;
         
-        myfile.open("/Users/milaprane/Documents/Milap/Spring 2016/Audio-Software-Engineering-MUSI-8903/PeakMeter/src/Tests/Tests/DelayedImpulse.txt");
+        myfile.open(Address+"DelayedImpulse.txt");
         
         for (int i = 0; i<m_iNumChannels; i++)
         {
