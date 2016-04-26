@@ -60,7 +60,7 @@ public:
     float getParameter (int parameterIndex) override;
     bool getProcessByPassState ();
     void setProcessByPassState(bool flag);
-    float getPeakMeterValue();
+    float getPeakMeterValue(int channel);
     
     //======= variable
     float m_fModFreqInHzVPAP=0.F;
@@ -72,6 +72,7 @@ public:
     bool m_bSliderValueChangeModWidth = 0;
     bool m_bProcessByPass = 0;
     float *m_pfPeakVal;
+    int m_iNumChan;
 
 private:
     //==============================================================================

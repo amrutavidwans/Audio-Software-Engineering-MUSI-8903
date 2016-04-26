@@ -134,7 +134,7 @@ void VibratoPluginAudioProcessorEditor::buttonClicked (Button* buttonThatWasClic
 
 void VibratoPluginAudioProcessorEditor::timerCallback(){
     cMeter.setPeakValue(0.F);
-    cMeter.setValue(processor.getPeakMeterValue());
+    cMeter.setValue(processor.getPeakMeterValue(0));
     cMeter.repaint();
    //std::cout<< cMeter.getPeakValue()<<" "<<processor.getPeakMeterValue()<< " "<<std::endl;
     

@@ -107,7 +107,7 @@ void VibratoPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesP
     
     m_pfPeakVal = new float [getTotalNumInputChannels()];
     m_pCPM->initPeakMeter(sampleRate, getTotalNumInputChannels());
-    
+    m_iNumChan = getTotalNumInputChannels();
 }
 
 void VibratoPluginAudioProcessor::releaseResources()
@@ -162,7 +162,7 @@ void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
     }
       
     
-    for (int i = getTotalNumInputChannels(); i < getTotalNumOutputChannels(); ++i)
+    for (int i = getTotalNumOutputChannels(); i < getTotalNumOutputChannels(); ++i)
     {
         buffer.clear (i, 0, buffer.getNumSamples());
     }
@@ -254,6 +254,6 @@ void VibratoPluginAudioProcessor::setProcessByPassState(bool flag){
     m_bProcessByPass=flag;
 }
 
-float VibratoPluginAudioProcessor::getPeakMeterValue(){
-    return *m_pfPeakVal;
+float VibratoPluginAudioProcessor::getPeakMeterValue(int channel){
+    return m_pfPeakVal[channel];
 }
