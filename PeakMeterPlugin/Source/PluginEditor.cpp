@@ -89,8 +89,13 @@ void VibratoPluginAudioProcessorEditor::paint (Graphics& g)
     g.drawFittedText ("5ms", positionLeft, 170, 50, 20, Justification::left, 1);
     g.drawFittedText ("10ms", getWidth()-400-50, 170, 50, 20, Justification::left, 1);
     
-    g.drawFittedText("Peak Meter 1", 500, 200, 50, 20, Justification::left, 1);
-    g.drawFittedText("Peak Meter 2", 550, 200, 50, 20, Justification::left, 1);
+    g.drawFittedText("Peak Meter 1", 500, 210, 50, 10, Justification::left, 2);
+    g.drawFittedText("Peak Meter 2", 550, 210, 30, 10, Justification::left, 2);
+    g.drawFittedText("0 dB", getWidth()-200-20, 20, 20, 20, Justification::left, 1);
+    g.drawFittedText("0 dB", getWidth()-310-20, 20, 20, 20, Justification::left, 1);
+    g.drawFittedText("-12 dB", getWidth()-200-20, 190, 20, 20, Justification::left, 2);
+    g.drawFittedText("-12 dB", getWidth()-310-20, 190, 20, 20, Justification::left, 2);
+    
 }
 
 void VibratoPluginAudioProcessorEditor::resized()
@@ -104,6 +109,7 @@ void VibratoPluginAudioProcessorEditor::resized()
     tProcessByPass.setBounds(200, 200, 150, 30);
     cMeter.setBounds(500, 30, 20, 170);
     cMeter2.setBounds(550, 30, 20, 170);
+    
 }
 
 void VibratoPluginAudioProcessorEditor::sliderValueChanged (Slider* slider)
