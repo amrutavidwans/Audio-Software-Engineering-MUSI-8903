@@ -139,6 +139,9 @@ void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
     
     else
     {
+        m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, m_fModFreqBypass);
+        m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModWidthInS, m_fModWidthBypass);
+        
         if (m_bSliderValueChangeModFreq)
         {
             m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, m_fModFreqInHzVPAP);
@@ -187,7 +190,8 @@ void VibratoPluginAudioProcessor::processBlockBypassed (AudioBuffer<float>& buff
     //    // audio processing...
     //    // call peak meter
     //    m_pCPM->process(channelData, buffer.getNumSamples(), m_pfPeakVal);
-    
+    m_fModWidthBypass = m_fModWidthInSecVPAP;
+    m_fModFreqBypass = m_fModFreqInHzVPAP;
     m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModWidthInS, 0.F);
     m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, 0.F);
     

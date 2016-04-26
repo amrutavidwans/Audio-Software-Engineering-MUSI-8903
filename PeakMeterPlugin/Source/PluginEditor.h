@@ -47,6 +47,7 @@ private:
     Label lModWidthInSec;
     ToggleButton tProcessByPass;
     MeterComponent cMeter;
+    MeterComponent cMeter2;
 
 };
 

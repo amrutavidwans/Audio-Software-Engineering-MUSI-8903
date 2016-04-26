@@ -20,12 +20,15 @@ MeterComponent::~MeterComponent(){
     m_fPeakVal = 0;
 }
 
+void MeterComponent::setPeakValue(float val){
+    m_fMaxPeakVal = val;
+}
 
 void MeterComponent::paint(Graphics& g){
     g.fillAll(juce::Colours::black);
     float temp = (getPeakValue());
     g.setColour(juce::Colours::green);
-    g.fillRect(0.F, getHeight()*(1-temp),float(getWidth()), float(getHeight()));
+    g.fillRect(0.F, getHeight()*(temp),float(getWidth()), (1-temp)*float(getHeight()));
     //std::cout<< temp<<std::endl;
     
 }
@@ -35,28 +38,25 @@ void MeterComponent::paint(Graphics& g){
 //}
 
 float MeterComponent::getPeakValue(){
-    setValue(m_fPeakVal);
-    return m_fPeakVal;
-}
-float MeterComponent::getMaxValue(){
-    setValue(m_fMaxPeakVal);
+
     return m_fMaxPeakVal;
 }
 
+
 void MeterComponent::setValue(float val){
-    if (val>=0.00001)
-    val= 20*log10f(val);
-    else
+    val = 20*log10f(val);
+    
+    // check for values below -12dB... ignore them i.e. make them -12dB
+    if (val < -12.0)
     {
-      val=20*log10f(0.00001);
+        val = -12.0;
     }
     
-    val = -val/100;
-        
+    // scale the value from 0-1
+    val = - val / 12;
     m_fPeakVal=val;
-    std::cout<< m_fPeakVal<<std::endl;
-    //repaint();
     
+    // max value since last poll
     if (m_fPeakVal> m_fMaxPeakVal)
         m_fMaxPeakVal=m_fPeakVal;
 }

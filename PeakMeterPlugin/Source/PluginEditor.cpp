@@ -62,6 +62,7 @@ VibratoPluginAudioProcessorEditor::VibratoPluginAudioProcessorEditor (VibratoPlu
 
     tProcessByPass.setToggleState(processor.getProcessByPassState(), juce::dontSendNotification);
     addAndMakeVisible(cMeter);
+    addAndMakeVisible(cMeter2);
     cMeter.setName("Peak Value");
     //addComponentListener(cMeter);
     
@@ -88,7 +89,8 @@ void VibratoPluginAudioProcessorEditor::paint (Graphics& g)
     g.drawFittedText ("5ms", positionLeft, 170, 50, 20, Justification::left, 1);
     g.drawFittedText ("10ms", getWidth()-400-50, 170, 50, 20, Justification::left, 1);
     
-    g.drawFittedText("Peak Meter", 500, 200, 50, 20, Justification::left, 1);
+    g.drawFittedText("Peak Meter 1", 500, 200, 50, 20, Justification::left, 1);
+    g.drawFittedText("Peak Meter 2", 550, 200, 50, 20, Justification::left, 1);
 }
 
 void VibratoPluginAudioProcessorEditor::resized()
@@ -101,6 +103,7 @@ void VibratoPluginAudioProcessorEditor::resized()
     
     tProcessByPass.setBounds(200, 200, 150, 30);
     cMeter.setBounds(500, 30, 20, 170);
+    cMeter2.setBounds(550, 30, 20, 170);
 }
 
 void VibratoPluginAudioProcessorEditor::sliderValueChanged (Slider* slider)
@@ -130,6 +133,7 @@ void VibratoPluginAudioProcessorEditor::buttonClicked (Button* buttonThatWasClic
 }
 
 void VibratoPluginAudioProcessorEditor::timerCallback(){
+    cMeter.setPeakValue(0.F);
     cMeter.setValue(processor.getPeakMeterValue());
     cMeter.repaint();
    //std::cout<< cMeter.getPeakValue()<<" "<<processor.getPeakMeterValue()<< " "<<std::endl;

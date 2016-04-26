@@ -16,7 +16,7 @@ public:
     void paint(Graphics& g);
     void setValue(float val);
     float getPeakValue();
-    float getMaxValue();
+    void setPeakValue(float val);
     MeterComponent();
     ~MeterComponent();
     

@@ -41,7 +41,7 @@ void CPeakMeter::initPeakMeter(float fSamplingFreq, int iNumChannels){
     m_fSamplingFreq = fSamplingFreq;
     m_iNumChannels = iNumChannels;
     
-    m_fAlphaRT = 1- exp(-2.2/(m_fSamplingFreq* 0.01));
+    m_fAlphaRT = 1- exp(-2.2/(m_fSamplingFreq* 1.5));
     m_fAlphaAT = 1- exp(-2.2/(m_fSamplingFreq* 0.01));
     
     m_pfPreviousVPPM = new float [m_iNumChannels];
@@ -94,7 +94,7 @@ void CPeakMeter::process(float **ppfAudioData, int iNumOfFrames, float *pfPeakVa
            if (pfPeakValue[i]<fabs(m_pfVPPM[i]))
             {
             pfPeakValue[i] = m_pfVPPM[i];
-           // std::cout<< pfPeakValue[i]<<std::endl;
+            //std::cout<< pfPeakValue[i]<<std::endl;
             }
             
         }
