@@ -142,7 +142,7 @@ void VibratoPluginAudioProcessorEditor::timerCallback(){
     cMeter.setPeakValue(0.F);
     cMeter.setValue(processor.getPeakMeterValue(0));
     //This is a try...
-    cMeter.setValue(cMeter.getPeakValue());
+    cMeter.setPeakValue(cMeter.getPeakValue());
     cMeter.repaint();
     cMeter2.setPeakValue(0.F);
     cMeter2.setValue(processor.getPeakMeterValue(1));

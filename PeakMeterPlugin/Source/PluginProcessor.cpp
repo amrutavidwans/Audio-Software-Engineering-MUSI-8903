@@ -161,11 +161,11 @@ void VibratoPluginAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
             m_bSliderValueChangeModWidth = 0;
         }
         
-        if (m_fModFreqInHzVPAP == 0.F)
-        {
-            m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, m_fModFreqInHzVPAP);
-            m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModWidthInS, m_fModWidthInSecVPAP);
-        }
+//        if (m_fModFreqInHzVPAP == 0.F)
+//        {
+//            m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, m_fModFreqInHzVPAP);
+//            m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModWidthInS, m_fModWidthInSecVPAP);
+//        }
     }
       
     
