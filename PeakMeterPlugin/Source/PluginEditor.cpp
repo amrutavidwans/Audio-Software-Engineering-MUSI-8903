@@ -112,7 +112,7 @@ void VibratoPluginAudioProcessorEditor::resized()
     
 }
 
-void VibratoPluginAudioProcessorEditor::sliderValueChanged (Slider* slider)
+void VibratoPluginAudioProcessorEditor::sliderValueChanged(Slider* slider)
 {
     if (slider== &sModFreqinHz)
     {
@@ -141,9 +141,12 @@ void VibratoPluginAudioProcessorEditor::buttonClicked (Button* buttonThatWasClic
 void VibratoPluginAudioProcessorEditor::timerCallback(){
     cMeter.setPeakValue(0.F);
     cMeter.setValue(processor.getPeakMeterValue(0));
+    //This is a try...
+    cMeter.setValue(cMeter.getPeakValue());
     cMeter.repaint();
     cMeter2.setPeakValue(0.F);
     cMeter2.setValue(processor.getPeakMeterValue(1));
+    cMeter2.setPeakValue(cMeter2.getPeakValue());
     cMeter2.repaint();
    //std::cout<< cMeter.getPeakValue()<<" "<<processor.getPeakMeterValue()<< " "<<std::endl;
     

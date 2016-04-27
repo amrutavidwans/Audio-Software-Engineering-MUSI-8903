@@ -104,13 +104,13 @@ void VibratoPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesP
     float fMaxModFreqInSec = 0.01;
     // gets the sampling rate and number of channels from the host and initialises the vibrato object
     m_pCVib->initInstance(fMaxModFreqInSec, sampleRate, getTotalNumInputChannels());
-    m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, 15.0);
+    m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModFreqInHz, 5.0);
     m_pCVib->setParam(CVibrato::VibratoParam_t::kParamModWidthInS, 0.01);
     
     m_pfPeakVal = new float [getTotalNumInputChannels()];
     m_pCPM->initPeakMeter(sampleRate, getTotalNumInputChannels());
     m_iNumChan = getTotalNumInputChannels();
-    //m_bBypassFlag=1; //When the plug in is opened
+    m_bBypassFlag=1; //When the plug in is opened
 }
 
 void VibratoPluginAudioProcessor::releaseResources()
