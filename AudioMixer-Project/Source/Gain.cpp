@@ -10,17 +10,47 @@
 
 #include "Gain.h"
 
-class Gain
-{   
-    float fGainIndB;
+CGain::CGain():
+iNumChannels(2), 
+iSampFreq(44100),
+fGainIndB(0)
+{
+//Left empty
+}
+
+
+CGain::~CGain()
+{
+
+    this->resetInstance();
+}
+
+void CGain::createInstance (CGain*& pCCgain)
+{
+ pCCgain = new CGain ();
+}
+
+
+
+void CGain::destroyInstance (CGain*& pCCGain)
+{
     
-    public:
-    Gain();
-    virtual ~Gain();
-    void setGain(float inGainIndB);
-    float getGain();
+    delete pCCGain;
+    pCCGain = 0;
     
-    
+}
+
+void CGain::resetInstance(){
+    iNumChannels=0;
+    iSampFreq=0;
+    fGainIndB=0;
+
+}
+
+void CGain::setGain(float fGainIndB){
+ 
+
+}
 
 
 
@@ -32,6 +62,3 @@ class Gain
 
 
 
-
-
-};
