@@ -1,0 +1,26 @@
+clear all;
+close all
+clc;
+
+DATA_PATH = '../../Auto mixing Dataset/Mixed Audio/';
+folderInfo = dir(DATA_PATH);
+
+iBlockLength = 2048;
+iHopLength = iBlockLength;
+
+
+
+
+for i = 4:size(folderInfo)
+    subfolderInfo = dir([DATA_PATH folderInfo(i).name]);
+    for j = 3:size(subfolderInfo,1)
+        [audio,fs] = audioread([DATA_PATH folderInfo(i).name '/' subfolderInfo(j).name]);
+        [pathstr,name,ext]=fileparts([DATA_PATH folderInfo(i).name '/' subfolderInfo(j).name]);
+        for k = 1:size(audio,2)
+            [vppm, t] = FeatureTimePeakEnvelope(audio(:,k), iBlockLength, iHopLength, fs);
+            
+            % write the vppm in a txt file
+            dlmwrite([pathstr '/' name '.txt'],vppm(2,:),'delimiter','\n');
+        end
+    end
+end
