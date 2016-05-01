@@ -9,6 +9,7 @@
 */
 
 #include "Gain.h"
+#include <math.h>
 
 CGain::CGain():
 iNumChannels(2), 
@@ -47,12 +48,48 @@ void CGain::resetInstance(){
 
 }
 
-void CGain::setGain(float fGainIndB){
- 
+void CGain::setGain(float fSetGain){
+    fGainIndB=valtodB(fSetGain);
+}
+
+float CGain::valtodB(float val){
+    val = 20* log10f(val);
+
+    if (val < -100)
+        val = -100;
+
+    return val;
 
 }
 
 
+
+void CGain::process(float **InputBuf, float **OutputBuf, int iBlockLength)
+{
+    for(int i=0;i<iNumChannels;i++)
+    {
+        for(int j=0;j<iBlockLength;j++)
+        {
+            OutputBuf[i][j]=dBtoval(fGainIndB)* InputBuf[i][j] ;
+        
+        }
+
+    
+    }
+    
+}
+
+float CGain::dBtoval(float dB)
+{  int val;
+    val= val/20;
+    val=10^val;
+    return val;
+}
+
+float CGain::getGain()
+{
+    return fGainIndB;
+}
 
 
 

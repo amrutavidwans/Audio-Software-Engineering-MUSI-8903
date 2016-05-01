@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../Source/Gain.cpp"
-            timestampString = "483652927.538657"
+            timestampString = "483805812.534771"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "29"
-            endingLineNumber = "29"
+            startingLineNumber = "30"
+            endingLineNumber = "30"
             landmarkName = "CGain::createInstance (CGain*&amp; pCCgain)"
             landmarkType = "5">
          </BreakpointContent>
@@ -26,12 +26,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../Source/Gain.cpp"
-            timestampString = "483752759.142725"
+            timestampString = "483805812.534771"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "50"
-            endingLineNumber = "50"
-            landmarkName = "CGain::setGain(&lt;#float iGainIndB#&gt;)"
+            startingLineNumber = "51"
+            endingLineNumber = "51"
+            landmarkName = "CGain::setGain(float fSetGain)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Pan.cpp"
+            timestampString = "483805812.534771"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "67"
+            endingLineNumber = "67"
+            landmarkName = "CPan::process(float **InputBuf, float **OutputBuf, int iBlockLength)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

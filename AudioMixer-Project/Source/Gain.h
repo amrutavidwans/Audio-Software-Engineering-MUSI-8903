@@ -20,6 +20,8 @@ public:
     float getGain();
     void createInstance(CGain*& pCGain);
     void destroyInstance(CGain*& pCGain);
+    float valtodB(float val);
+    float dBtoval(float dB);
     void resetInstance();
     void process(float **Inputbuf, float **Outputbuf, int iBlockLength);
     
