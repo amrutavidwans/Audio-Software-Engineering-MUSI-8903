@@ -26,4 +26,4 @@ for i = 4:size(folderInfo)
     end
 end
 fclose all;
-save('NumFolds.mat','NUM_F0LDS');
+save([pwd '/NumFolds.mat'],'NUM_FOLDS');

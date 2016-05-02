@@ -29,8 +29,8 @@ for i = 4:size(LABELfolderInfo)
         [audio,fs] = audioread ([DATA_PATH folderName{end} '/' name '.wav']);
         
         for k = 1:size(audio,2)
-            [vrms, t] = FeatureTimeRms(audio, iBlockLength, iHopLength, fs);
-            [X,f,t]     = spectrogram(  audio,...
+            [vrms, t] = FeatureTimeRms(audio(:,k), iBlockLength, iHopLength, fs);
+            [X,f,t]     = spectrogram(  audio(:,k),...
                                     afWindow,...
                                     iBlockLength-iHopLength,...
                                     iBlockLength,...
@@ -45,12 +45,13 @@ for i = 4:size(LABELfolderInfo)
             intermlabel(:,k) = intermlabel1(1:length(vsc),k);
         end
         
-        features=[features;[reqdvsc(:),reqdvppm()]];
+        features=[features;[reqdvsc(:),reqdvppm(:)]];
         labels = [labels;intermlabel(:)];
         clear reqdvppm reqdvsc intermlabel;
     end
 end
 fclose all;
 
-[Rsq, S, p, r, predictions] = CrossValidation(labels, features, NUM_FOLDS);
+save([pwd '/Features.mat']);
+% [Rsq, S, p, r, predictions] = CrossValidation(labels, features, NUM_FOLDS);
  
