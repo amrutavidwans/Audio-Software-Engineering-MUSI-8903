@@ -33,6 +33,9 @@ public:
     TextButton openButton;
     TextButton playButton;
     TextButton stopButton;
+    TextButton Tbox[20];
+   // File Tboxfile[20];
+    int count;
     
     AudioFormatManager formatManager;
     ScopedPointer<AudioFormatReaderSource> readerSource;
@@ -67,8 +70,7 @@ public:
         stopButton.setColour (TextButton::buttonColourId, Colours::red);
         stopButton.setEnabled (false);
         
-        
-        
+        count=0;
 
         // specify the number of input and output channels that we want to open
         setAudioChannels (2, 2);
@@ -138,7 +140,7 @@ public:
         // update their positions.
         openButton.setBounds(200, 200, 100, 100);
         playButton.setBounds(200, 300, 100, 100);
-        stopButton.setBounds(200,400 , 100, 100);
+        stopButton.setBounds(200, 400 ,100, 100);
         
     }
     
@@ -189,25 +191,38 @@ public:
         if (button == &openButton)  openButtonClicked();
         if (button == &playButton)  playButtonClicked();
         if (button == &stopButton)  stopButtonClicked();
+        
     }
 
     void openButtonClicked()
     {
-        FileChooser chooser ("Select a Wave file to play...",
+
+        
+           FileChooser chooser ("Select a Wave file to play...",
                              File::nonexistent,
-                             "*.wav");                                        // [7]
-        if (chooser.browseForFileToOpen())                                    // [8]
-        {
-            File file (chooser.getResult());                                  // [9]
-            AudioFormatReader* reader = formatManager.createReaderFor (file); // [10]
-            if (reader != nullptr)
-            {
-                ScopedPointer<AudioFormatReaderSource> newSource = new AudioFormatReaderSource (reader, true); // [11]
-                transportSource.setSource (newSource, 0, nullptr, reader->sampleRate);                         // [12]
-                playButton.setEnabled (true);                                                                  // [13]
-                readerSource = newSource.release();                                                            // [14]
+                             "*.wav");
+             if (chooser.browseForFileToOpen())
+             {
+               File file (chooser.getResult());
+               AudioFormatReader* reader = formatManager.createReaderFor (file);
+            
+             if (reader != nullptr)
+             {
+                ScopedPointer<AudioFormatReaderSource> newSource = new AudioFormatReaderSource (reader, true);
+                transportSource.setSource (newSource, 0, nullptr, reader->sampleRate);
+                playButton.setEnabled (true);
+                readerSource = newSource.release();
+                addAndMakeVisible(Tbox[count]);
+                Tbox[count].setButtonText(file.getFileName());
+                Tbox[count].setEnabled(true);
+                Tbox[count].setBounds(20,50*(1+count), 50, 50);
+                count++;
+                 
             }
-        }
+               
+                 
+          }
+        
     }
     
     void playButtonClicked()
@@ -227,7 +242,7 @@ public:
     }
     
     
-    void changeListenerCallback (ChangeBroadcaster* source)
+    void changeListenerCallback (ChangeBroadcaster* source) override
     {
         if (source == &transportSource)
         {
