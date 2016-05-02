@@ -1,16 +1,17 @@
+close all;
+fclose all;
+clear all;
+clc;
 
-% [Rsq, S, p, r] = crossValidation(labels, features, n_fold)
-% objective: Cross validate a regression model on a training set.
-%
-% labels: Mx1 vector of data labels.
-% features: Mx1 vector of data fearures.
-% n_fold: int, number of folds.
-% Rsq: R squared value.
-% S: standard error of estimate.
-% p: p value.
-% r: correlation coefficient between truth & prediction.
+load('FinalFeaturesNZ.mat');
 
-function [Rsq, S, p, r, predictions] = CrossValidation(labels, features, n_fold)
+NUM_FOLDS=10000;
+% [Rsq, S, p, r, predictions] = CrossValidation(labelsNZ, featuresNZ, NUM_FOLDS);
+
+features=featuresNZ;
+labels=labelsNZ;
+n_fold=NUM_FOLDS;
+clear featuresNZ labelsNZ;
 
 % Preallocate memory.
 num_data = size(labels, 1);
@@ -21,8 +22,8 @@ sorted_labels = zeros(num_data, 1);
 folds = cvpartition(labels, 'KFold', n_fold);
 
 % Evaluate one fold at a time.
-data_start_idx = 1;
-for (fold = 1:n_fold)
+% data_start_idx = 1;
+for (fold = 1:1)
   % Grab the test data.
   test_indices = folds.test(fold);
   test_labels = labels(test_indices, :);
@@ -42,14 +43,26 @@ for (fold = 1:n_fold)
   cur_predictions = svmpredict(test_labels, test_features, svm, '-q');
   
   % Store current predictions and their corresponding labels.
-  num_test_data = size(test_labels, 1);
-  data_stop_idx = data_start_idx + num_test_data - 1;
-  predictions(data_start_idx:data_stop_idx) = cur_predictions;
-  sorted_labels(data_start_idx:data_stop_idx) = test_labels;
+%   num_test_data = size(test_labels, 1);
+%   data_stop_idx = data_start_idx + num_test_data - 1;
+  predictions(data_idx) = cur_predictions;
+  sorted_labels(data_idx) = test_labels;
   
-  data_start_idx = data_start_idx + num_test_data;
+%   data_start_idx = data_start_idx + num_test_data;
 end
-save([pwd '/MyModel.mat'],svm);
-[Rsq, S, p, r] = myRegEvaluation(sorted_labels, predictions);
+% [Rsq, S, p, r] = myRegEvaluation(test_labels, cur_predictions);%(sorted_labels, predictions);
 
-end
+save([pwd '/MyModel.mat'],'svm');
+
+y=test_labels;
+f=cur_predictions;
+
+[r, p] = corr(y, f);
+S = rms( (f-y));
+
+y_mean = mean(y);
+
+SS_tot = sum( (y - y_mean).^2);
+SS_res = sum( (y - f).^2);
+
+Rsq = 1 - SS_res / SS_tot;

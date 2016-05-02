@@ -21,13 +21,13 @@ sorted_labels = zeros(num_data, 1);
 folds = cvpartition(labels, 'KFold', n_fold);
 
 % Evaluate one fold at a time.
-data_start_idx = 1;
-for (fold = 1:n_fold)
+% data_start_idx = 1;
+for (fold = 1:1)
   % Grab the test data.
   test_indices = folds.test(fold);
   test_labels = labels(test_indices, :);
   test_features = features(test_indices, :);
-  data_start_idx = find(test_indices == 1);
+  data_idx = find(test_indices == 1);
   % Get training data.
   train_indices = folds.training(fold);
   train_labels = labels(train_indices, :);
@@ -38,18 +38,17 @@ for (fold = 1:n_fold)
   [train_features, test_features] = NormalizeFeatures(train_features, test_features);
   
   % Train the classifier and get predictions for the current fold.
-  svm = svmtrain(train_labels, train_features, '-s 4 -q');
+  svm = svmtrain(train_labels, train_features, '-s 3 -q');
   cur_predictions = svmpredict(test_labels, test_features, svm, '-q');
   
   % Store current predictions and their corresponding labels.
-  num_test_data = size(test_labels, 1);
-  data_stop_idx = data_start_idx + num_test_data - 1;
-  predictions(data_start_idx:data_stop_idx) = cur_predictions;
-  sorted_labels(data_start_idx:data_stop_idx) = test_labels;
+%   num_test_data = size(test_labels, 1);
+%   data_stop_idx = data_start_idx + num_test_data - 1;
+  predictions(data_idx) = cur_predictions;
+  sorted_labels(data_idx) = test_labels;
   
-  data_start_idx = data_start_idx + num_test_data;
+%   data_start_idx = data_start_idx + num_test_data;
 end
-save('MyModel.mat',svm);
-[Rsq, S, p, r] = myRegEvaluation(sorted_labels, predictions);
-
+[Rsq, S, p, r] = myRegEvaluation(test_labels, cur_predictions);%(sorted_labels, predictions);
+save([pwd '/MyModel.mat'],svm);
 end
