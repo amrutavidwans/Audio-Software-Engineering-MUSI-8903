@@ -14,8 +14,5 @@
 
 SUITE(CNormalizeFeatures)
 {
-    
-    
-    
-    
+       
 }
