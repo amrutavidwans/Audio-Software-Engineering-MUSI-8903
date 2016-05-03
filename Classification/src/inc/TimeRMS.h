@@ -6,8 +6,8 @@ class CTimeRMS{
 public:
     void initParams();
     void setParams(float fSamplingRate, int iBlockLength);
-    void createInstance(CTimeRMS *&pCRMS);
-    void destroyInstance(CTimeRMS *&pCRMS);
+    static void createInstance(CTimeRMS *&pCRMS);
+    static void destroyInstance(CTimeRMS *&pCRMS);
     float process(float *pfAudioSlice);
     void resetSumSqrd();
     

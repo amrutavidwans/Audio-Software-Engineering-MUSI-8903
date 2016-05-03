@@ -111,17 +111,6 @@ int main(int argc, char* argv[])
     
     time                    = clock();
     
-    phImpRespFile->getLength(iIRlen);
-    
-    while (!phImpRespFile->isEof())
-    {
-        long long iNumFrames = kBlockSize;
-        phImpRespFile->readData(ppfImpRespData, iNumFrames);
-    }
-    
-    pfIRresp=ppfImpRespData[0];
-    pCFastConv->init(pfIRresp, iIRlen, kBlockSize);
-    
     //////////////////////////////////////////////////////////////////////////////
     // get audio data and write it to the output file
 
@@ -140,14 +129,6 @@ int main(int argc, char* argv[])
         }
     }
     
-    int iLenFlush = iIRlen-1;
-    float *pfOutputReverb = new float [iLenFlush];
-    pCFastConv->flushBuffer(pfOutputReverb, iLenFlush);
-    for (int i = 0; i < iLenFlush; i++)
-    {
-        hOutputFile << pfOutputReverb[i] << "\t";
-        hOutputFile << endl;
-    }
     
     cout << "reading/writing done in: \t"    << (clock()-time)*1.F/CLOCKS_PER_SEC << " seconds." << endl;
 
