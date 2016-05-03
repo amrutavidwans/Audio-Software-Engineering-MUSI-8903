@@ -34,6 +34,7 @@ list (APPEND PROJECT_DIRECTORIES ${CMAKE_SOURCE_DIR}/src/FastConv)
 list (APPEND PROJECT_DIRECTORIES ${CMAKE_SOURCE_DIR}/src/Tests/TestExec)
 list (APPEND PROJECT_DIRECTORIES ${CMAKE_SOURCE_DIR}/src/SpectralCentroid)
 list (APPEND PROJECT_DIRECTORIES ${CMAKE_SOURCE_DIR}/src/TimeRMS)
+list (APPEND PROJECT_DIRECTORIES ${CMAKE_SOURCE_DIR}/src/NormalizeFeatures)
     
 # set includes
 set (PROJECT_INCLUDES)
@@ -71,6 +72,7 @@ if (WITH_TESTS)
     add_test(RingBuff ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TestExec RingBuff)
     add_test(RingBuff ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TestExec SpectralCentroid)
     add_test(RingBuff ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TestExec TimeRMS)
+    add_test(RingBuff ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TestExec NormalizeFeatures)
     add_cppcheck_test ()
 endif (WITH_TESTS)
 
