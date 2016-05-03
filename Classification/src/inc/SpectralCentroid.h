@@ -8,9 +8,10 @@ class CSpectralCentroid{
 public:
     void initParams();
     void setParams(float fSamplingFreq, int iNumChan, int iBlockLength);
-    float process(float **AudioSlice);
+    float process(float *AudioSlice);
     void createInstance(CSpectralCentroid *&CSpecCentr);
     void destroyInstance(CSpectralCentroid *&CSpecCentr);
+    void initSpectrumValues();
     
 protected:
     CSpectralCentroid();
@@ -21,6 +22,10 @@ private:
     int m_iNumChan;
     int m_iNxtPow2BlkLen;
     CFft *m_pCFft;
+    float *m_pfSpectrum;
+    float *m_pfMag;
+    float m_fSpectralSum;
+    float m_fSpectralCentroid;
     
 };
 
