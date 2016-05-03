@@ -8,6 +8,8 @@ CSpectralCentroid::CSpectralCentroid(){
 }
 
 CSpectralCentroid::~CSpectralCentroid(){
+    delete[] m_pfSpectrum;
+    delete[] m_pfMag;
     CFft::destroy(m_pCFft);
 }
 
@@ -20,15 +22,14 @@ void CSpectralCentroid::initParams(){
     m_fSpectralSum = 0;
 }
 
-void CSpectralCentroid::createInstance(CSpectralCentroid *&CSpecCentr){
-    this->initParams();
-    CFft::create(m_pCFft);
+ void CSpectralCentroid::createInstance(CSpectralCentroid *&CSpecCentr){
+    CSpecCentr= new CSpectralCentroid();
+    CSpecCentr->initParams();
 }
 
 void CSpectralCentroid::destroyInstance(CSpectralCentroid *&CSpecCentr){
-    CFft::destroy(m_pCFft);
-    delete[] m_pfSpectrum;
-    delete[] m_pfMag;
+    delete[] CSpecCentr;
+    CSpecCentr = 0;
 }
 
 

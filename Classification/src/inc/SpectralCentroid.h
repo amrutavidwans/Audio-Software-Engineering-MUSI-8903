@@ -9,8 +9,8 @@ public:
     void initParams();
     void setParams(float fSamplingFreq, int iBlockLength);
     float process(float *AudioSlice);
-    void createInstance(CSpectralCentroid *&CSpecCentr);
-    void destroyInstance(CSpectralCentroid *&CSpecCentr);
+    static void createInstance(CSpectralCentroid *&CSpecCentr);
+    static void destroyInstance(CSpectralCentroid *&CSpecCentr);
     void initSpectrumValues();
     
 protected:
