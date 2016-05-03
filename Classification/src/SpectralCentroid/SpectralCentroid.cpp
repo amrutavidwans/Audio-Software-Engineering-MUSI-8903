@@ -1,6 +1,8 @@
 
 #include "SpectralCentroid.h"
 #include "Util.h"
+#include <iostream>
+
 
 CSpectralCentroid::CSpectralCentroid(){
     this->initParams();
@@ -15,7 +17,6 @@ CSpectralCentroid::~CSpectralCentroid(){
 
 void CSpectralCentroid::initParams(){
     m_fSamplingFreq = 0;
-    m_pCFft = 0;
     m_pfSpectrum = 0;
     m_pfMag = 0;
     m_fSpectralCentroid = 0;
@@ -60,14 +61,18 @@ void CSpectralCentroid::initSpectrumValues(){
 
 float CSpectralCentroid::process(float *AudioSlice){
     
+
+    
     initSpectrumValues();
     m_pCFft->doFft(m_pfSpectrum, AudioSlice);
     
     m_pCFft->getMagnitude(m_pfMag, m_pfSpectrum);
     
     for (int i=0; i<m_iNxtPow2BlkLen; i++){
-        m_fSpectralSum += m_pfMag[i];
-        m_fSpectralCentroid += i*m_pfMag[i];
+        
+        m_fSpectralSum += (m_pfMag[i]*m_pfMag[i]*m_iNxtPow2BlkLen);
+        m_fSpectralCentroid += (i*m_pfMag[i]*m_pfMag[i]*m_iNxtPow2BlkLen);
+        //std::cout<< AudioSlice[i] <<" "<<m_pfMag[i]*m_iNxtPow2BlkLen<<std::endl;
     }
     
     if (m_fSpectralSum == 0){
@@ -75,7 +80,7 @@ float CSpectralCentroid::process(float *AudioSlice){
     }
     else{
         m_fSpectralCentroid = (m_fSpectralCentroid/m_fSpectralSum);
-        return ((m_fSpectralCentroid/m_iNxtPow2BlkLen)*(m_fSamplingFreq/2));
+        return (((m_fSpectralCentroid*2)/m_iNxtPow2BlkLen)*(m_fSamplingFreq/2));
     }
     
 }
