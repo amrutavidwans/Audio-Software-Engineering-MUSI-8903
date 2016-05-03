@@ -12,7 +12,8 @@ void CNormalizeFeatures::createInstance(CNormalizeFeatures *&CNorm){
 }
 
 void CNormalizeFeatures::destroyInstance(CNormalizeFeatures *&CNorm){
-    delete[] CNorm;
+    delete CNorm;
+    CNorm = 0;
 }
 
 void CNormalizeFeatures::normalize(float &featVal, SelectFeat_t kFeat){

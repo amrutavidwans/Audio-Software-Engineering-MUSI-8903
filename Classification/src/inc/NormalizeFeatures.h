@@ -21,10 +21,10 @@ protected:
     virtual ~CNormalizeFeatures();
   
 private:
-    float m_fTimeRMSMin = 0.00025602;
-    float m_fTimeRMSMax = 21692.0;
-    float m_fSpecCenMin = 0.00000067435;
-    float m_fSpecCenMax = 0.3791;
+    float m_fSpecCenMin = 0.00025602;
+    float m_fSpecCenMax = 21692.0;
+    float m_fTimeRMSMin = 0.00000067435;
+    float m_fTimeRMSMax = 0.3791;
     
 };
 
