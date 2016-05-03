@@ -34,7 +34,7 @@ public:
     TextButton playButton;
     TextButton stopButton;
     TextButton Tbox[20];
-   // File Tboxfile[20];
+    File Tboxfile[20];
     int count;
     
     AudioFormatManager formatManager;
@@ -69,6 +69,10 @@ public:
         stopButton.addListener (this);
         stopButton.setColour (TextButton::buttonColourId, Colours::red);
         stopButton.setEnabled (false);
+        
+        for (int i=0; i<20;i++){
+            Tbox[i].addListener(this);
+        }
         
         count=0;
 
@@ -191,9 +195,47 @@ public:
         if (button == &openButton)  openButtonClicked();
         if (button == &playButton)  playButtonClicked();
         if (button == &stopButton)  stopButtonClicked();
+        if (button==&Tbox[0]||button==&Tbox[1]||button==&Tbox[2]||button==&Tbox[3]||button==&Tbox[4]||button==&Tbox[5]||button==&Tbox[6]||button==&Tbox[7]||button==&Tbox[8]||button==&Tbox[9]||button==&Tbox[10]||button==&Tbox[11]||button==&Tbox[12]||button==&Tbox[13]||button==&Tbox[14]||button==&Tbox[15]||button==&Tbox[16]||button==&Tbox[17]||button==&Tbox[18]||button==&Tbox[19])
+            fileButtonClicked();
         
     }
 
+    void fileButtonClicked()
+    {
+        File file ;
+        playButton.setEnabled(true);
+        for(int i=0;i<20;i++)
+        {
+            if(Tbox[i].getState()==true)
+            {
+                file = Tboxfile[i].getFullPathName();
+                break;
+                
+            }
+        }
+        for(int i=0;i<20;i++)
+        {
+            if(Tbox[i].getState()==true)
+            {
+                Tbox[i].setEnabled(true);
+                
+            }
+            else
+                Tbox[i].setEnabled(false);
+        }
+        
+
+
+        AudioFormatReader* reader = formatManager.createReaderFor (file);
+        ScopedPointer<AudioFormatReaderSource> newSource = new AudioFormatReaderSource (reader, true);
+        transportSource.setSource (newSource, 0, nullptr, reader->sampleRate);
+        readerSource = newSource.release();
+    }
+    
+    
+    
+    
+    
     void openButtonClicked()
     {
 
@@ -210,15 +252,22 @@ public:
              {
                 ScopedPointer<AudioFormatReaderSource> newSource = new AudioFormatReaderSource (reader, true);
                 transportSource.setSource (newSource, 0, nullptr, reader->sampleRate);
-                playButton.setEnabled (true);
+                playButton.setEnabled (false);
                 readerSource = newSource.release();
                 addAndMakeVisible(Tbox[count]);
                 Tbox[count].setButtonText(file.getFileName());
                 Tbox[count].setEnabled(true);
                 Tbox[count].setBounds(20,50*(1+count), 50, 50);
+                Tboxfile[count]=file;
                 count++;
-                 
             }
+                 for(int i=0;i<20;i++)
+                 {
+                     
+                 Tbox[i].setEnabled(true);
+                     
+                 }
+
                
                  
           }
@@ -239,6 +288,13 @@ public:
             changeState (Stopped);
         else
             changeState (Stopping);
+        
+        for(int i=0;i<20;i++)
+        {
+            
+            Tbox[i].setEnabled(true);
+            
+        }
     }
     
     
