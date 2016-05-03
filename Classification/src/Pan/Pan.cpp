@@ -14,7 +14,7 @@ iNumChannels(2),
 iSampFreq(44100),
 fPan(0)
 {
-    //Left empty
+    this->resetInstance();
 }
 
 
@@ -39,18 +39,23 @@ void CPan::destroyInstance (CPan*& pCPan)
     
 }
 
-void CPan::resetInstance(){
+void CPan::resetInstance()
+{
     iNumChannels=0;
     iSampFreq=0;
     fPan=0;
     
 }
 
-void CPan::setPan(float fiPan){
+void CPan::setPan(float fiPan)
+{
    fPan=fiPan;
 }
 
-
+void CPan::setParam(int iSamplingFreq, int iNumberChannels){
+    iNumChannels=iNumberChannels;
+    iSampFreq=iSamplingFreq;
+}
 
 
 void CPan::process(float **InputBuf, float **OutputBuf, int iBlockLength)
@@ -60,7 +65,7 @@ void CPan::process(float **InputBuf, float **OutputBuf, int iBlockLength)
         for(int j=0;j<iBlockLength;j++)
         {
             if (i==0)
-                OutputBuf[i][j]=cosf(M_PI*(fPan+1)/4)*InputBuf[i][j] ;
+                 OutputBuf[i][j]=cosf(M_PI*(fPan+1)/4)*InputBuf[i][j] ;
             else if (i==1)
                  OutputBuf[i][j]=sinf(M_PI*(fPan+1)/4)*InputBuf[i][j] ;
         

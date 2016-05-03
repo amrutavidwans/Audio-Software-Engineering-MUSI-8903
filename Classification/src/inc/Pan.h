@@ -17,18 +17,19 @@ public:
     
     void setPan(float fPan);
     float getPan();
-    void createInstance(CPan*& pCPan);
-    void destroyInstance(CPan*& pCPan);
+    static void createInstance(CPan*& pCPan);
+    static void destroyInstance(CPan*& pCPan);
     void resetInstance();
     void process(float **Inputbuf, float **Outputbuf, int iBlockLength);
+    void setParam(int iSampFreq,int iNumberChannels);
     
 protected:
-    
+    CPan();
+    virtual ~CPan();
     
     
 private:
-    CPan();
-    virtual ~CPan();
+    
     int iNumChannels;
     int iSampFreq;
     float fPan;

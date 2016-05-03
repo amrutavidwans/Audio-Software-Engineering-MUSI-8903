@@ -1,5 +1,5 @@
 //
-//  Test_SpectralCentroid.cpp
+//  Test_TimeRMS.cpp
 //  MUSI8903
 //
 //  Created by Amruta Vidwans on 5/1/16.
