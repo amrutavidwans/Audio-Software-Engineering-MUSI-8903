@@ -13,7 +13,6 @@ CSpectralCentroid::~CSpectralCentroid(){
 
 void CSpectralCentroid::initParams(){
     m_fSamplingFreq = 0;
-    m_iNumChan = 0;
     m_pCFft = 0;
     m_pfSpectrum = 0;
     m_pfMag = 0;
@@ -33,9 +32,8 @@ void CSpectralCentroid::destroyInstance(CSpectralCentroid *&CSpecCentr){
 }
 
 
-void CSpectralCentroid::setParams(float fSamplingFreq, int iNumChan, int iBlockLength){
+void CSpectralCentroid::setParams(float fSamplingFreq, int iBlockLength){
     m_fSamplingFreq = fSamplingFreq;
-    m_iNumChan = iNumChan;
     
     int iZPfactor = 1;
     
