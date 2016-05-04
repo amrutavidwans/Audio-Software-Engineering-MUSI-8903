@@ -47,7 +47,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "YES"
-      customWorkingDirectory = "/Users/Amruta/Documents/MS_GTCMT/Sem2/AudioSoftwareEngineering/Audio-Software-Engineering-MUSI-8903/TestClassification/TestClassification"
+      customWorkingDirectory = "/Users/Amruta/Desktop/TestClassification/TestClassification"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
