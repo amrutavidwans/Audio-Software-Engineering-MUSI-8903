@@ -18,23 +18,24 @@ public:
     
     void setGain(float iGainIndB);
     float getGain();
-    void createInstance(CGain*& pCGain);
-    void destroyInstance(CGain*& pCGain);
+    static void createInstance(CGain*& pCGain);
+    static void destroyInstance(CGain*& pCGain);
     float valtodB(float val);
     float dBtoval(float dB);
     void resetInstance();
     void process(float **Inputbuf, float **Outputbuf, int iBlockLength);
+    void setParam(int iSampling,int NumChannels);
     
 protected:
-    
+    CGain();
+    virtual ~CGain();
     
     
 private:
-    CGain();
-    virtual ~CGain();
+    
     int iNumChannels;
     int iSampFreq;
-    float fGainIndB;
+    float fGain;
     
     
 };

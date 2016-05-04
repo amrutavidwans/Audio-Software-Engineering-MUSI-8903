@@ -11,6 +11,24 @@
             file="Source/MainComponent.cpp"/>
       <FILE id="gckLEU" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
     </GROUP>
+    <FILE id="QnZQnL" name="ErrorDef.h" compile="1" resource="0" file="Source/ErrorDef.h"/>
+    <FILE id="xSuqZV" name="Fft.cpp" compile="1" resource="0" file="Source/Fft.cpp"/>
+    <FILE id="BmwpRI" name="NormalizeFeatures.cpp" compile="1" resource="0"
+          file="Source/NormalizeFeatures.cpp"/>
+    <FILE id="vgxsHw" name="NormalizeFeatures.h" compile="0" resource="0"
+          file="Source/NormalizeFeatures.h"/>
+    <FILE id="L3bBgL" name="Pan.cpp" compile="1" resource="0" file="Source/Pan.cpp"/>
+    <FILE id="nvojV7" name="Pan.h" compile="0" resource="0" file="Source/Pan.h"/>
+    <FILE id="BUMeY1" name="rvfft.cpp" compile="1" resource="0" file="Source/rvfft.cpp"/>
+    <FILE id="G8Kwhk" name="rvfft.h" compile="0" resource="0" file="Source/rvfft.h"/>
+    <FILE id="oP7Xlt" name="SpectralCentroid.cpp" compile="1" resource="0"
+          file="Source/SpectralCentroid.cpp"/>
+    <FILE id="VBDnsm" name="SpectralCentroid.h" compile="0" resource="0"
+          file="Source/SpectralCentroid.h"/>
+    <FILE id="rprNYh" name="TimeRMS.cpp" compile="1" resource="0" file="Source/TimeRMS.cpp"/>
+    <FILE id="lSgzjX" name="TimeRMS.h" compile="0" resource="0" file="Source/TimeRMS.h"/>
+    <FILE id="Uh83Bh" name="Util.h" compile="1" resource="0" file="Source/Util.h"/>
+    <FILE id="uA5gva" name="Vector.h" compile="1" resource="0" file="Source/Vector.h"/>
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX">

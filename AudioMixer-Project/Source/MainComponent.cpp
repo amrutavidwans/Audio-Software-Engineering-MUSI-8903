@@ -33,6 +33,7 @@ public:
     TextButton openButton;
     TextButton playButton;
     TextButton stopButton;
+    TextButton mixFilesButton;
     TextButton Tbox[20];
     File Tboxfile[20];
     int count;
@@ -70,9 +71,19 @@ public:
         stopButton.setColour (TextButton::buttonColourId, Colours::red);
         stopButton.setEnabled (false);
         
+        
+        addAndMakeVisible (&mixFilesButton);
+        mixFilesButton.setButtonText ("Mix All Files");
+        mixFilesButton.setEnabled(false);
+        mixFilesButton.addListener (this);
+        mixFilesButton.setColour (TextButton::buttonColourId, Colours::blue);
+        mixFilesButton.setEnabled (false);
+        
         for (int i=0; i<20;i++){
             Tbox[i].addListener(this);
         }
+        
+        
         
         count=0;
 
@@ -142,9 +153,10 @@ public:
         // This is called when the MainContentComponent is resized.
         // If you add any child components, this is where you should
         // update their positions.
-        openButton.setBounds(200, 200, 100, 100);
-        playButton.setBounds(200, 300, 100, 100);
-        stopButton.setBounds(200, 400 ,100, 100);
+        openButton.setBounds(200, 300, 100, 100);
+        playButton.setBounds(300, 300, 100, 100);
+        stopButton.setBounds(400, 300 ,100, 100);
+        mixFilesButton.setBounds(500, 300, 100, 100);
         
     }
     
@@ -197,9 +209,54 @@ public:
         if (button == &stopButton)  stopButtonClicked();
         if (button==&Tbox[0]||button==&Tbox[1]||button==&Tbox[2]||button==&Tbox[3]||button==&Tbox[4]||button==&Tbox[5]||button==&Tbox[6]||button==&Tbox[7]||button==&Tbox[8]||button==&Tbox[9]||button==&Tbox[10]||button==&Tbox[11]||button==&Tbox[12]||button==&Tbox[13]||button==&Tbox[14]||button==&Tbox[15]||button==&Tbox[16]||button==&Tbox[17]||button==&Tbox[18]||button==&Tbox[19])
             fileButtonClicked();
+        if (button == &mixFilesButton) mixFilesButtonClicked();
+    }
+    
+    void mixFilesButtonClicked(){
+        File file;
+        file.create();
+        
+        for(int count=0;count<20;count++)
+        {
+        AudioFormatReader* reader = formatManager.createReaderFor (Tboxfile[count]);
+        ScopedPointer<AudioFormatReaderSource> newSource = new AudioFormatReaderSource (reader, true);
+            if(reader!= nullptr)
+            {
+             
+             transportSource.setSource (newSource, 0, nullptr, reader->sampleRate);
+             writeFile(reader);
+             readerSource = newSource.release();
+            }
+            else
+                break;
+        }
+    }
+    
+    void writeFile (AudioFormatReader *auReader)
+    {
+        int size=500000;
+        //AudioSampleBuffer* buffer=new AudioSampleBuffer(1,size);
+       // buffer->clear();
+    
+        WavAudioFormat* test = new WavAudioFormat();
+        File outputFile = File("/Users/milaprane/Desktop/test.wav");
+        if (outputFile.exists()==true)
+            outputFile.deleteFile();
+        
+        outputFile = File("/Users/milaprane/Desktop/test.wav");
+        FileOutputStream* outputTo = outputFile.createOutputStream();
+        AudioFormatWriter* writer = test->createWriterFor(outputTo, 44100, 1, 16,NULL, 0);
+        writer->writeFromAudioReader(*auReader,0.F,auReader->lengthInSamples);
+            delete writer;
+        
+        delete test;
         
     }
-
+    
+    
+        
+    
+    
     void fileButtonClicked()
     {
         File file ;
@@ -282,6 +339,7 @@ public:
             changeState (Pausing);
     }
     
+    
     void stopButtonClicked()
     {
         if (state == Paused)
@@ -293,8 +351,8 @@ public:
         {
             
             Tbox[i].setEnabled(true);
-            
         }
+        mixFilesButton.setEnabled(true);
     }
     
     

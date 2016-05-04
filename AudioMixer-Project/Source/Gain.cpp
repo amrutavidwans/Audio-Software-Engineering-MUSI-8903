@@ -14,9 +14,9 @@
 CGain::CGain():
 iNumChannels(2), 
 iSampFreq(44100),
-fGainIndB(0)
+fGain(0)
 {
-//Left empty
+    this->resetInstance();
 }
 
 
@@ -41,18 +41,21 @@ void CGain::destroyInstance (CGain*& pCCGain)
     
 }
 
-void CGain::resetInstance(){
+void CGain::resetInstance()
+{
     iNumChannels=0;
     iSampFreq=0;
-    fGainIndB=0;
+    fGain=0;
 
 }
 
-void CGain::setGain(float fSetGain){
-    fGainIndB=valtodB(fSetGain);
+void CGain::setGain(float fSetGain)
+{
+    fGain=fSetGain;
 }
 
-float CGain::valtodB(float val){
+float CGain::valtodB(float val)
+{
     val = 20* log10f(val);
 
     if (val < -100)
@@ -62,6 +65,13 @@ float CGain::valtodB(float val){
 
 }
 
+void CGain::setParam(int iSamplingFreq, int iNumberChannels)
+{
+    iNumChannels=iNumberChannels;
+    iSampFreq=iSamplingFreq;
+}
+
+
 
 
 void CGain::process(float **InputBuf, float **OutputBuf, int iBlockLength)
@@ -70,8 +80,9 @@ void CGain::process(float **InputBuf, float **OutputBuf, int iBlockLength)
     {
         for(int j=0;j<iBlockLength;j++)
         {
-            OutputBuf[i][j]=dBtoval(fGainIndB)* InputBuf[i][j] ;
-        
+            OutputBuf[i][j]= fGain * InputBuf[i][j] ;
+            if(OutputBuf[i][j]>=1.F)
+                OutputBuf[i][j]=1.F;
         }
 
     
@@ -80,15 +91,16 @@ void CGain::process(float **InputBuf, float **OutputBuf, int iBlockLength)
 }
 
 float CGain::dBtoval(float dB)
-{  int val;
+{   float val=0.F;
+    val=dB;
     val= val/20;
-    val=10^val;
+    val=powf(10,val);
     return val;
 }
 
 float CGain::getGain()
 {
-    return fGainIndB;
+    return fGain;
 }
 
 
