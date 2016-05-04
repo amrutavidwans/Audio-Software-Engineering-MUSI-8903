@@ -5,6 +5,8 @@
               jucerVersion="4.1.0">
   <MAINGROUP id="NqIzAj" name="AudioMixer-Project">
     <GROUP id="{20DD33B9-4BB4-87F3-8CB3-C61698C423CD}" name="Source">
+      <FILE id="k8KCcM" name="AudioMixInstance.h" compile="1" resource="0"
+            file="Source/AudioMixInstance.h"/>
       <FILE id="qpLGes" name="Gain.cpp" compile="1" resource="0" file="Source/Gain.cpp"/>
       <FILE id="T798bn" name="Gain.h" compile="1" resource="0" file="Source/Gain.h"/>
       <FILE id="M4ZB0F" name="MainComponent.cpp" compile="1" resource="0"

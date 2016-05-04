@@ -10,6 +10,7 @@
 #define MAINCOMPONENT_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
+//#include "AudioMixInstance.h"
 
 //==============================================================================
 /*
@@ -42,6 +43,8 @@ public:
     ScopedPointer<AudioFormatReaderSource> readerSource;
     AudioTransportSource transportSource;
     TransportState state;
+    MixerAudioSource audioMix;
+    
     
     
     
@@ -83,7 +86,7 @@ public:
             Tbox[i].addListener(this);
         }
         
-        
+        MixerAudioSource audioMix;
         
         count=0;
 
@@ -215,21 +218,26 @@ public:
     void mixFilesButtonClicked(){
         File file;
         file.create();
-        
-        for(int count=0;count<20;count++)
+        int iSamp=0;
+        for(int i=0;i<20;i++)
         {
-        AudioFormatReader* reader = formatManager.createReaderFor (Tboxfile[count]);
-        ScopedPointer<AudioFormatReaderSource> newSource = new AudioFormatReaderSource (reader, true);
+            
+        AudioFormatReader* reader = formatManager.createReaderFor (Tboxfile[i]);
+        AudioFormatReaderSource* newSource = new AudioFormatReaderSource(reader, true);
             if(reader!= nullptr)
-            {
-             
-             transportSource.setSource (newSource, 0, nullptr, reader->sampleRate);
-             writeFile(reader);
-             readerSource = newSource.release();
+            {   iSamp=reader->sampleRate;
+                transportSource.setSource (newSource, 0, nullptr, reader->sampleRate);
+                audioMix.addInputSource(newSource, iSamp);
+                readerSource.release();
+                
+                
             }
             else
                 break;
         }
+        stopButton.setEnabled(false);
+        transportSource.setSource(dynamic_cast<PositionableAudioSource*> (&audioMix),0,nullptr,iSamp);
+        
     }
     
     void writeFile (AudioFormatReader *auReader)
@@ -314,7 +322,7 @@ public:
                 addAndMakeVisible(Tbox[count]);
                 Tbox[count].setButtonText(file.getFileName());
                 Tbox[count].setEnabled(true);
-                Tbox[count].setBounds(20,50*(1+count), 50, 50);
+                Tbox[count].setBounds(20,50*(1+count), 100, 50);
                 Tboxfile[count]=file;
                 count++;
             }
@@ -374,7 +382,7 @@ private:
     //==============================================================================
 
     // Your private member variables go here...
-    
+    AudioDeviceManager AudDevMan;
    
 
 
